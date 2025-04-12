@@ -1,9 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { fetchPhishData } from "./utils/api-utils";
+import { fetchPhishData, slugifySongName } from "./utils/api-utils";
 import { insertSongSchema, insertShowSchema, insertPredictionSchema } from "@shared/schema";
 import { z } from "zod";
+import fs from "fs";
+import path from "path";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes
@@ -139,28 +141,151 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Try to get from storage first
       let songs = await storage.getAllSongs();
       
-      // If no songs in storage, fetch them
+      // Local file path for caching songs data
+      const songsFilePath = path.join(process.cwd(), 'phish_songs.json');
+      
+      // If no songs in storage, check if we have a local file
       if (songs.length === 0) {
-        const songsData = await fetchPhishData("/songs/artist/phish.json", {
-          username: "phishnet"
-        });
+        console.log("No songs in storage, checking for cached songs data...");
         
-        const formattedSongs = songsData.map((song: any) => ({
-          name: song.name || song.song || "",
-          slug: song.slug || "",
-          times_played: song.times_played || 0
-        }));
-        
-        // Save songs to storage
-        for (const song of formattedSongs) {
-          await storage.createSong({
-            name: song.name,
-            slug: song.slug,
-            times_played: song.times_played
-          });
+        // Check if local file exists
+        if (fs.existsSync(songsFilePath)) {
+          console.log("Loading songs from cached file...");
+          try {
+            // Read from the file
+            const fileData = fs.readFileSync(songsFilePath, 'utf8');
+            const songsList = JSON.parse(fileData);
+            
+            console.log(`Loaded ${songsList.length} songs from cached file`);
+            
+            // Save to storage
+            for (const song of songsList) {
+              await storage.createSong({
+                name: song.name,
+                slug: song.slug,
+                times_played: song.times_played
+              });
+            }
+            
+            songs = await storage.getAllSongs();
+          } catch (err) {
+            console.error("Error reading songs from cached file:", err);
+            // Continue to API fetching if file read fails
+          }
         }
         
-        songs = await storage.getAllSongs();
+        // If still no songs, fetch from API
+        if (songs.length === 0) {
+          console.log("No cached songs found, fetching from setlists API...");
+          
+          // Get as many shows as possible to extract a comprehensive song list
+          const showsData = await fetchPhishData("/shows/artist/phish.json", {
+            order_by: "showdate",
+            username: "phishnet",
+            limit: "100" // Request a large batch of shows
+          });
+          
+          // Sample shows across different eras to maximize song variety
+          const showsToProcess = [];
+          
+          // Get some recent shows (last 5 years)
+          const recentShows = showsData.filter((show: any) => {
+            const year = parseInt(show.showdate.substring(0, 4));
+            return year >= 2017;
+          }).slice(0, 20);
+          
+          // Get some "3.0 era" shows (2009-2016)
+          const era3Shows = showsData.filter((show: any) => {
+            const year = parseInt(show.showdate.substring(0, 4));
+            return year >= 2009 && year < 2017;
+          }).slice(0, 20);
+          
+          // Get some "2.0 era" shows (2002-2004)
+          const era2Shows = showsData.filter((show: any) => {
+            const year = parseInt(show.showdate.substring(0, 4));
+            return year >= 2002 && year <= 2004;
+          }).slice(0, 15);
+          
+          // Get some "1.0 era" shows (1990s)
+          const era1Shows = showsData.filter((show: any) => {
+            const year = parseInt(show.showdate.substring(0, 4));
+            return year >= 1990 && year < 2000;
+          }).slice(0, 15);
+          
+          // Combine all shows
+          showsToProcess.push(...recentShows, ...era3Shows, ...era2Shows, ...era1Shows);
+          
+          // Get unique show IDs
+          const showIds = Array.from(new Set(showsToProcess.map((show: any) => show.showid)));
+          
+          console.log(`Fetching setlists for ${showIds.length} shows across different eras...`);
+          
+          // Create a Map to store unique songs by ID
+          const uniqueSongs = new Map();
+          
+          // Fetch setlists for each show and extract songs
+          for (const showId of showIds) {
+            try {
+              const setlistData = await fetchPhishData(`/setlists/showid/${showId}.json`, {
+                username: "phishnet"
+              });
+              
+              if (Array.isArray(setlistData) && setlistData.length > 0) {
+                // Extract unique songs from setlist
+                setlistData.forEach((item: any) => {
+                  if (item.songid && item.song && !uniqueSongs.has(item.songid)) {
+                    // Store all potentially useful song information
+                    uniqueSongs.set(item.songid, {
+                      id: item.songid,
+                      name: item.song,
+                      slug: item.slug || slugifySongName(item.song),
+                      times_played: parseInt(item.gap || "0"),
+                      artist_name: item.artist_name || "Phish",
+                      artist_slug: item.artist_slug,
+                      is_cover: item.is_original === "0",
+                      debut_date: item.debut_date,
+                      last_played_date: item.last_played_date,
+                      jam_chart: item.isjamchart === "1",
+                      jamchart_description: item.jamchart_description || "",
+                      footnote: item.footnote || "",
+                      // Store any additional fields that might be useful
+                      meta: {
+                        tour_name: item.tourname || "",
+                        is_soundcheck: item.soundcheck === "1",
+                        transition_mark: item.trans_mark || "",
+                        set_name: item.set || ""
+                      }
+                    });
+                  }
+                });
+              }
+              console.log(`Processed show ${showId}, current song count: ${uniqueSongs.size}`);
+            } catch (err) {
+              console.error(`Error fetching setlist for show ${showId}:`, err);
+              // Continue with next show
+            }
+          }
+          
+          console.log(`Found ${uniqueSongs.size} unique songs from setlists`);
+          
+          // Convert Map to Array for storage
+          const songsArray = Array.from(uniqueSongs.values());
+          
+          // Save songs to local file for future use
+          fs.writeFileSync(songsFilePath, JSON.stringify(songsArray, null, 2));
+          console.log(`Saved ${songsArray.length} songs to ${songsFilePath}`);
+          
+          // Save songs to storage
+          for (const songData of songsArray) {
+            await storage.createSong({
+              name: songData.name,
+              slug: songData.slug,
+              times_played: songData.times_played
+            });
+          }
+          
+          songs = await storage.getAllSongs();
+        }
       }
       
       res.json({ songs });
