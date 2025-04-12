@@ -49,7 +49,7 @@ export function SortableItem({
       <div 
         className={`flex-1 border rounded-lg p-3 ${textColor} 
           ${hasSong 
-            ? `hover:bg-[rgba(255,255,255,0.1)] border-${titleColor.replace('text-', '')}/50 cursor-pointer` 
+            ? `hover:bg-[rgba(255,255,255,0.1)] ${borderColor}/50 cursor-pointer` 
             : 'border-gray-700 cursor-default'
           }
           transition-colors flex items-center`}
