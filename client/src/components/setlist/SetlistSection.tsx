@@ -37,9 +37,7 @@ export default function SetlistSection({
   setType, 
   setItems, 
   titleColor, 
-  maxItems, 
   height,
-  onAddSong, 
   onSetSong,
   selectedSong,
   onReorderSongs

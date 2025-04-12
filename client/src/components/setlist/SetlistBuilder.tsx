@@ -1,68 +1,16 @@
-import React, { useContext, useState, createContext } from 'react';
+import React, { useContext } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
-
-// Create a context for the setlist
-export const SetlistContext = createContext({
-  setlist: {
-    set1: Array(5).fill({ song: null }),
-    set2: Array(5).fill({ song: null }),
-    encore: []
-  },
-  selectedSong: null,
-  setSetlistSpot: () => {},
-  addSongToSet: () => {},
-  reorderSongs: () => {},
-  clearSetlist: () => {}
-});
-
-
-export function SetlistProvider({ children }) {
-  const [setlist, setSetlist] = useState({
-    set1: Array(5).fill({ song: null }),
-    set2: Array(5).fill({ song: null }),
-    encore: []
-  });
-  const [selectedSong, setSelectedSong] = useState(null);
-
-  const setSetlistSpot = (setType, index, song) => {
-    setSetlist(prevSetlist => ({
-      ...prevSetlist,
-      [setType]: prevSetlist[setType].map((item, i) => i === index ? { song } : item)
-    }));
-  };
-
-  const addSongToSet = (setType, song) => {
-    //This function is not used anymore.
-  };
-
-  const reorderSongs = (setType, newItems) => {
-    setSetlist(prevSetlist => ({
-      ...prevSetlist,
-      [setType]: newItems
-    }));
-  };
-
-  const clearSetlist = () => {
-    setSetlist({
-      set1: Array(5).fill({ song: null }),
-      set2: Array(5).fill({ song: null }),
-      encore: []
-    });
-  };
-
-  return (
-    <SetlistContext.Provider value={{ setlist, selectedSong, setSetlistSpot, addSongToSet, reorderSongs, clearSetlist }}>
-      {children}
-    </SetlistContext.Provider>
-  );
-}
+import { SetlistContext } from '@/contexts/SetlistContext';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, reorderSongs, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, reorderSongs, clearSetlist, addSongToSet } = useContext(SetlistContext);
   const { toast } = useToast();
+  
+  // Log the content of the setlist to see if encore has any items
+  console.log("SetlistBuilder - setlist content:", setlist);
 
   const handleSubmitPrediction = async () => {
     const hasAnySongs = setlist.set1.some(item => item.song) || 
