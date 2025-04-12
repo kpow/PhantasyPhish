@@ -18,6 +18,7 @@ export default function SongsList() {
     addSongToSet,
     setSetlist
   } = useContext(SetlistContext);
+  const { scrollToSet } = useScroll();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState<'az' | 'plays'>('plays');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
@@ -79,6 +80,12 @@ export default function SongsList() {
     if (position !== -1) {
       // If there's an empty spot, use it
       setSetlistSpot(setType, position, song);
+      
+      // If it's in the last position, trigger scroll
+      if (position === setlist[setType].length - 1) {
+        // Trigger scroll to this set
+        scrollToSet(setType);
+      }
     } else {
       // If no empty spots and not at max capacity, add a new slot with the song
       const maxSize = setType === 'encore' ? 5 : 15;
@@ -100,6 +107,9 @@ export default function SongsList() {
         
         // Update the entire setlist in one operation
         setSetlist(updatedSetlist);
+        
+        // Always trigger scroll when adding a new spot
+        scrollToSet(setType);
       }
     }
     
