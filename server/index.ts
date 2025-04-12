@@ -3,11 +3,15 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import path from "path";
 import fs from "fs";
+import pg from 'pg';
+import connectPgSimple from 'connect-pg-simple';
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import passport, { configurePassport } from "./auth/passport";
 import { setupEmailTransporter } from "./auth/email";
 import { runMigrations } from "./database";
+
+const { Pool } = pg;
 
 // Create uploads directory for avatars
 const uploadsDir = path.join(process.cwd(), "uploads", "avatars");
@@ -19,9 +23,19 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Configure PostgreSQL session store
+const PgSession = connectPgSimple(session);
+const pgPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
 // Configure session
 app.use(
   session({
+    store: new PgSession({
+      pool: pgPool,
+      tableName: 'session',
+    }),
     secret: process.env.SESSION_SECRET || "phish-setlist-predictor-secret",
     resave: false,
     saveUninitialized: false,

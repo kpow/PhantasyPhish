@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { Pool } from 'pg';
+import pg from 'pg';
 import { 
   users, 
   songs, 
@@ -8,6 +8,8 @@ import {
   predictions, 
   password_reset_tokens
 } from "@shared/schema";
+
+const { Pool } = pg;
 
 // Create a connection pool to the PostgreSQL database
 const pool = new Pool({
