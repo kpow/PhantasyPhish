@@ -11,9 +11,14 @@ export async function fetchPhishData(endpoint: string, params: Record<string, st
     
     console.log(`Fetching data from: ${url}`);
     
+    // Add default parameters for all requests
+    const defaultParams = {
+      apikey: API_KEY
+    };
+    
     const response = await axios.get(url, {
       params: {
-        apikey: API_KEY,
+        ...defaultParams,
         ...params,
       },
     });

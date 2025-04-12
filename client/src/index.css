@@ -8,6 +8,33 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased bg-black text-foreground;
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  .font-display {
+    font-family: 'Slackey', cursive;
+  }
+  
+  /* KPow style overrides */
+  .bg-cardBg {
+    background-color: #1E1E1E;
+  }
+  
+  .text-primary {
+    color: #3B82F6; /* Blue color from kpow.png */
+  }
+  
+  .bg-primary {
+    background-color: #3B82F6; /* Blue color from kpow.png */
+  }
+  
+  .text-secondary {
+    color: #9333EA; /* Purple color from kpow.png */
+  }
+  
+  .bg-secondary {
+    background-color: #9333EA; /* Purple color from kpow.png */
   }
 }
