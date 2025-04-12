@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -9,6 +9,20 @@ import { Plus } from 'lucide-react';
 export default function SetlistBuilder() {
   const { setlist, selectedSong, setSetlistSpot, addSongToSet, clearSetlist, setSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
+  
+  // Create refs for each ScrollArea
+  const set1ScrollRef = useRef<HTMLDivElement>(null);
+  const set2ScrollRef = useRef<HTMLDivElement>(null);
+  const encoreScrollRef = useRef<HTMLDivElement>(null);
+  
+  // Function to scroll to bottom of a scroll area
+  const scrollToBottom = (ref: React.RefObject<HTMLDivElement>) => {
+    setTimeout(() => {
+      if (ref.current) {
+        ref.current.scrollTop = ref.current.scrollHeight;
+      }
+    }, 50); // Small delay to ensure the DOM has updated
+  };
 
   const handleSubmitPrediction = async () => {
     // Check if there are any songs selected
@@ -134,7 +148,7 @@ export default function SetlistBuilder() {
         <div className="mb-6">
           <h3 className="font-display text-xl mb-3 text-primary">Set 1</h3>
           <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
-            <ScrollArea className="h-[240px] pr-4"> {/* Fixed height of 5 items (approximately) */}
+            <ScrollArea className="h-[240px] pr-4" ref={set1ScrollRef}> {/* Fixed height of 5 items (approximately) */}
               <div className="space-y-2 p-2">
                 {setlist.set1.map((_, index) => (
                   <div key={`set1-${index}`} className="flex items-center">
@@ -161,6 +175,9 @@ export default function SetlistBuilder() {
                   ...prev,
                   set1: newSet1
                 }));
+                
+                // Scroll to bottom to show the new item
+                scrollToBottom(set1ScrollRef);
               }}
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -173,7 +190,7 @@ export default function SetlistBuilder() {
         <div className="mb-6">
           <h3 className="font-display text-xl mb-3 text-secondary">Set 2</h3>
           <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
-            <ScrollArea className="h-[240px] pr-4"> {/* Fixed height of 5 items (approximately) */}
+            <ScrollArea className="h-[240px] pr-4" ref={set2ScrollRef}> {/* Fixed height of 5 items (approximately) */}
               <div className="space-y-2 p-2">
                 {setlist.set2.map((_, index) => (
                   <div key={`set2-${index}`} className="flex items-center">
@@ -200,6 +217,9 @@ export default function SetlistBuilder() {
                   ...setlist,
                   set2: newSet2
                 });
+                
+                // Scroll to bottom to show the new item
+                scrollToBottom(set2ScrollRef);
               }}
             >
               <Plus className="h-4 w-4 mr-2" />
@@ -212,7 +232,7 @@ export default function SetlistBuilder() {
         <div>
           <h3 className="font-display text-xl mb-3 text-green-500">Encore</h3>
           <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
-            <ScrollArea className="h-[120px] pr-4"> {/* Half height for encore (only need 2-3 items) */}
+            <ScrollArea className="h-[120px] pr-4" ref={encoreScrollRef}> {/* Half height for encore (only need 2-3 items) */}
               <div className="space-y-2 p-2">
                 {setlist.encore.map((_, index) => (
                   <div key={`encore-${index}`} className="flex items-center">
@@ -239,6 +259,9 @@ export default function SetlistBuilder() {
                   ...setlist,
                   encore: newEncore
                 });
+                
+                // Scroll to bottom to show the new item
+                scrollToBottom(encoreScrollRef);
               }}
             >
               <Plus className="h-4 w-4 mr-2" />
