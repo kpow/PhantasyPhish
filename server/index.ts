@@ -40,9 +40,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      // For production, use 'secure: true' only if using HTTPS
+      secure: process.env.NODE_ENV === "production" && process.env.FORCE_SECURE_COOKIE === "true",
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      sameSite: process.env.NODE_ENV === "production" ? 'lax' : 'strict',
+      httpOnly: true,
+      path: '/',
     },
+    name: 'phish.sid', // Custom name to avoid default 'connect.sid'
   })
 );
 

@@ -70,6 +70,12 @@ export default function Login() {
     setIsSubmitting(true);
     try {
       await loginMutation.mutateAsync(values);
+      // Explicitly refetch user data after login to ensure auth state is updated
+      await refetchUser();
+      // Force a slight delay to ensure the state is updated
+      setTimeout(() => {
+        navigate('/');
+      }, 100);
     } finally {
       setIsSubmitting(false);
     }

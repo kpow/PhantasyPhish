@@ -44,10 +44,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Define query options with proper type handling
   const queryOptions: UseQueryOptions<User, Error, User, string[]> = {
     queryKey: ["/api/auth/me"],
-    retry: false,
-    refetchOnWindowFocus: false,
-    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
-    staleTime: 4 * 60 * 1000, // Data becomes stale after 4 minutes
+    retry: 1,
+    retryDelay: 1000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
+    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
+    staleTime: 1 * 60 * 1000, // Data becomes stale after 1 minute
   };
 
   const {
