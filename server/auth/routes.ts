@@ -177,25 +177,12 @@ router.post("/reset-password/request", async (req: Request, res: Response) => {
       expires_at: expiresAt,
     });
     
-    // Generate reset URL
-    // In production, use the actual hostname rather than relying on req.get("host")
-    // which might not be correctly set in Replit's environment
-    let baseUrl;
-    if (process.env.NODE_ENV === 'production') {
-      // Use a hard-coded domain if we're in production
-      // This should be your app's actual domain when deployed on Replit
-      const replitDomain = process.env.REPL_SLUG ? `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co` : req.get("host");
-      baseUrl = `https://${replitDomain}`;
-    } else {
-      // In development, use the request's protocol and host
-      baseUrl = `${req.protocol}://${req.get("host")}`;
-    }
+    // Generate reset URL - use a hardcoded URL for Replit
+    
+    // For Replit we need to use the exact deployment URL
+    const resetUrl = `https://pp-auth-v2.kpow.repl.co/reset-password/${resetToken}`;
     
     console.log(`Generating password reset URL with token: ${resetToken}`);
-    // Ensure token is properly passed in the URL
-    // Use the format that matches what our frontend is expecting
-    // The frontend can handle both routes with parameters and query params
-    const resetUrl = `${baseUrl}/reset-password/${resetToken}`;
     console.log(`Reset URL: ${resetUrl}`);
     
     // Send email
