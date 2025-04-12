@@ -178,13 +178,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (songs.length === 0) {
           console.log("No cached songs found, fetching from setlists API...");
           
-          // Use only show IDs that are confirmed to work based on our testing
-          const showIds = [
-            // These IDs are confirmed to work with the API
-            "1718730981", // Cancun 2025-02-01
-            "1737486654", // Seattle 2025-04-18
-            "1737486683", // Seattle 2025-04-19
-          ];
+          // Fetch recent past shows to get their setlists
+          console.log("Fetching past shows to extract setlists...");
+          const currentDate = new Date().toISOString().split('T')[0];
+          const showsData = await fetchPhishData("/shows/artist/phish.json", {
+            order_by: "showdate",
+            username: "phishnet",
+            limit: "50" // Get more shows to have a better chance of finding setlists
+          });
+          
+          // Get past shows (but skip the future ones as they won't have setlists)
+          const pastShows = showsData.filter((show: any) => show.showdate < currentDate);
+          
+          // Take the 20 most recent past shows (they should have setlists)
+          const recentPastShows = pastShows.slice(-20);
+          
+          // Extract show IDs
+          const showIds = recentPastShows.map((show: any) => show.showid);
+          
+          // Add the one show we know works (Cancun 2025-02-01)
+          if (!showIds.includes("1718730981")) {
+            showIds.push("1718730981");
+          }
           
           console.log(`Fetching setlists for ${showIds.length} specific shows across different eras...`);
           
