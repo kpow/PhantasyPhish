@@ -148,7 +148,7 @@ export default function SetlistSection({
           </div>
         </ScrollArea>
       </div>
-      {setItems.length < maxItems && (
+      {setItems.length < maxItems && setItems.every(item => item.song) && (
         <Button 
           variant="outline" 
           size="sm" 
