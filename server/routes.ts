@@ -135,16 +135,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get or fetch all songs and their play counts
+  // Get all songs from local data file
   app.get("/api/songs/all", async (_req, res) => {
     try {
       // Try to get from storage first
       let songs = await storage.getAllSongs();
       
-      // Local file path for caching songs data
+      // Local file path for cached songs data
       const songsFilePath = path.join(process.cwd(), 'phish_songs.json');
       
-      // If no songs in storage, check if we have a local file
+      // If no songs in storage, load from local file
       if (songs.length === 0) {
         console.log("No songs in storage, checking for cached songs data...");
         
@@ -170,154 +170,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             songs = await storage.getAllSongs();
           } catch (err) {
             console.error("Error reading songs from cached file:", err);
-            // Continue to API fetching if file read fails
+            res.status(500).json({ message: "Error loading song data" });
+            return;
           }
-        }
-        
-        // If still no songs, fetch from API
-        if (songs.length === 0) {
-          console.log("No cached songs found, fetching from setlists API...");
-          
-          // Use a more direct approach to fetch songs
-          console.log("Fetching comprehensive song catalog directly...");
-          
-          // Create a Map to store unique songs by ID
-          const uniqueSongs = new Map();
-          
-          // First, try to get all songs directly (most reliable method)
-          try {
-            console.log("Fetching complete song catalog from /songs...");
-            const allSongs = await fetchPhishData("/songs/artist/phish.json", {
-              username: "phishnet"
-            });
-            
-            if (Array.isArray(allSongs) && allSongs.length > 0) {
-              console.log(`Successfully retrieved ${allSongs.length} songs from song catalog`);
-              
-              // Convert to our song format
-              allSongs.forEach((song: any) => {
-                if (song.songid && !uniqueSongs.has(song.songid)) {
-                  uniqueSongs.set(song.songid, {
-                    id: song.songid,
-                    name: song.song || song.name || "Unknown Song",
-                    slug: song.slug || slugifySongName(song.song || song.name || "Unknown Song"),
-                    times_played: parseInt(song.times_played || "0"),
-                    artist_name: song.artist_name || "Phish",
-                    artist_slug: song.artist_slug,
-                    is_cover: song.is_cover === "1" || song.is_original === "0",
-                    debut_date: song.debut_date,
-                    last_played_date: song.last_played_date,
-                    jam_chart: false, // We'll set this later if we have data
-                    meta: {
-                      tour_name: "",
-                      is_soundcheck: false,
-                      transition_mark: "",
-                      set_name: ""
-                    }
-                  });
-                }
-              });
-              
-              console.log(`Processed ${uniqueSongs.size} songs from catalog`);
-            }
-          } catch (err) {
-            console.error("Error fetching song catalog:", err);
-          }
-          
-          // Also get some known-good shows to ensure quality data
-          // These show IDs are confirmed to have good setlist data
-          const showIds = [
-            "1718730981", // Cancun 2025-02-01
-            "1476840558", // 2018-07-28 The Forum
-            "1252184007", // 2019-06-16 Alpine Valley
-            "1448304043", // 2022-08-07 Atlantic City
-            "1493338318", // 2023-08-13 Hershey
-            "1493337854", // 2023-07-15 PNC Bank
-            "1251262498", // Good Vegas show
-            "1387728661", // 2021-10-28 Vegas
-            "1300051480", // 2016-06-22 
-            "1300052438"  // Another known good show
-          ];
-          
-          console.log(`Fetching setlists for ${showIds.length} specific shows across different eras...`);
-          
-          // Fetch setlists for each show and extract songs
-          for (const showId of showIds) {
-            try {
-              const setlistData = await fetchPhishData(`/setlists/showid/${showId}.json`, {
-                username: "phishnet"
-              });
-              
-              if (Array.isArray(setlistData) && setlistData.length > 0) {
-                console.log(`Show ${showId} has ${setlistData.length} setlist entries`);
-                
-                // Debug the first item to understand what's available
-                if (setlistData.length > 0 && showId === "1718730981") { // Just debug one show
-                  const firstItem = setlistData[0];
-                  console.log("Sample setlist item structure:", Object.keys(firstItem));
-                  console.log("Sample songid:", firstItem.songid);
-                  console.log("Sample song:", firstItem.song);
-                }
-                
-                // Extract unique songs from setlist
-                setlistData.forEach((item: any) => {
-                  // Make sure we have a way to uniquely identify the song
-                  if (item.songid && !uniqueSongs.has(item.songid)) {
-                    // Store all potentially useful song information
-                    uniqueSongs.set(item.songid, {
-                      id: item.songid,
-                      name: item.song || "Unknown Song",
-                      slug: item.slug || slugifySongName(item.song || "Unknown Song"),
-                      times_played: parseInt(item.gap || "0"),
-                      artist_name: item.artist_name || "Phish",
-                      artist_slug: item.artist_slug,
-                      is_cover: item.is_original === "0",
-                      debut_date: item.debut_date,
-                      last_played_date: item.last_played_date,
-                      jam_chart: item.isjamchart === "1",
-                      jamchart_description: item.jamchart_description || "",
-                      footnote: item.footnote || "",
-                      // Store any additional fields that might be useful
-                      meta: {
-                        tour_name: item.tourname || "",
-                        is_soundcheck: item.soundcheck === "1",
-                        transition_mark: item.trans_mark || "",
-                        set_name: item.set || ""
-                      }
-                    });
-                    
-                    if (uniqueSongs.size % 50 === 0) {
-                      console.log(`Milestone: Found ${uniqueSongs.size} unique songs so far`);
-                    }
-                  }
-                });
-              }
-              console.log(`Processed show ${showId}, current song count: ${uniqueSongs.size}`);
-            } catch (err) {
-              console.error(`Error fetching setlist for show ${showId}:`, err);
-              // Continue with next show
-            }
-          }
-          
-          console.log(`Found ${uniqueSongs.size} unique songs from setlists`);
-          
-          // Convert Map to Array for storage
-          const songsArray = Array.from(uniqueSongs.values());
-          
-          // Save songs to local file for future use
-          fs.writeFileSync(songsFilePath, JSON.stringify(songsArray, null, 2));
-          console.log(`Saved ${songsArray.length} songs to ${songsFilePath}`);
-          
-          // Save songs to storage
-          for (const songData of songsArray) {
-            await storage.createSong({
-              name: songData.name,
-              slug: songData.slug,
-              times_played: songData.times_played
-            });
-          }
-          
-          songs = await storage.getAllSongs();
+        } else {
+          console.error("No songs file found at:", songsFilePath);
+          res.status(500).json({ message: "Song data file not found" });
+          return;
         }
       }
       
@@ -356,123 +215,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Initialize and seed data route (admin)
+  // Initialize data from local file (admin)
   app.post("/api/admin/seed", async (_req, res) => {
     try {
-      console.log("Starting comprehensive song catalog collection...");
+      console.log("Loading songs from local file...");
       
-      // Create a Map to store unique songs by ID
-      const uniqueSongs = new Map();
-      
-      // Try multiple API endpoints to gather songs
-      
-      // 1. Try the main song catalog endpoint
-      try {
-        console.log("Fetching from primary song catalog endpoint...");
-        const songsData = await fetchPhishData("/songs/artist/phish.json", {
-          apikey: process.env.PHISH_API_KEY || 'DE6FDFF136D545E19C4C'
-        });
-        
-        if (Array.isArray(songsData) && songsData.length > 0) {
-          console.log(`Retrieved ${songsData.length} songs from catalog API`);
-          
-          // Process songs
-          songsData.forEach((song: any) => {
-            if (song.songid) {
-              uniqueSongs.set(song.songid, {
-                name: song.song || song.name || "Unknown Song",
-                slug: song.slug || slugifySongName(song.song || song.name || "Unknown Song"),
-                times_played: parseInt(song.times_played || "0")
-              });
-            }
-          });
-        }
-      } catch (err) {
-        console.error("Error with primary song catalog:", err);
-      }
-      
-      // 2. Get songs from jamcharts endpoint (typically contains popular songs)
-      try {
-        console.log("Fetching from jamcharts endpoint...");
-        const jamchartData = await fetchPhishData("/jamcharts/all.json", {
-          apikey: process.env.PHISH_API_KEY || 'DE6FDFF136D545E19C4C'
-        });
-        
-        if (Array.isArray(jamchartData) && jamchartData.length > 0) {
-          console.log(`Retrieved ${jamchartData.length} songs from jamcharts`);
-          
-          // Process songs
-          jamchartData.forEach((song: any) => {
-            if (song.songid) {
-              uniqueSongs.set(song.songid, {
-                name: song.song || "Unknown Song", 
-                slug: song.slug || slugifySongName(song.song || "Unknown Song"),
-                times_played: parseInt(song.times_played || "0")
-              });
-            }
-          });
-        }
-      } catch (err) {
-        console.error("Error with jamcharts endpoint:", err);
-      }
-      
-      // 3. Also try to get from known good shows
-      try {
-        const knownGoodShows = [
-          "1718730981", // Cancun 2025-02-01
-          "1476840558", // 2018-07-28 Forum
-          "1252184007", // 2019-06-16 Alpine Valley
-          "1251262498"  // Vegas show
-        ];
-        
-        console.log(`Fetching songs from ${knownGoodShows.length} known shows...`);
-        
-        for (const showId of knownGoodShows) {
-          try {
-            const setlistData = await fetchPhishData(`/setlists/showid/${showId}.json`, {
-              apikey: process.env.PHISH_API_KEY || 'DE6FDFF136D545E19C4C'
-            });
-            
-            if (Array.isArray(setlistData) && setlistData.length > 0) {
-              console.log(`Show ${showId} has ${setlistData.length} setlist entries`);
-              
-              // Extract unique songs
-              setlistData.forEach((item: any) => {
-                if (item.songid && item.song) {
-                  uniqueSongs.set(item.songid, {
-                    name: item.song,
-                    slug: item.slug || slugifySongName(item.song),
-                    times_played: parseInt(item.gap || "0")
-                  });
-                }
-              });
-            }
-          } catch (err) {
-            console.error(`Error fetching setlist for show ${showId}:`, err);
-          }
-        }
-      } catch (err) {
-        console.error("Error fetching from known good shows:", err);
-      }
-      
-      // Convert to array and save to storage
-      const songsArray = Array.from(uniqueSongs.values());
-      console.log(`Collected ${songsArray.length} unique songs total`);
-      
-      // Save to JSON file for caching
+      // Local file path for song data
       const songsFilePath = path.join(process.cwd(), 'phish_songs.json');
-      fs.writeFileSync(songsFilePath, JSON.stringify(songsArray, null, 2));
-      console.log(`Saved ${songsArray.length} songs to cache file`);
       
-      // Clear existing songs
-      // (This would require a storage.clearSongs method, which we don't have)
-      
-      // Save to storage
-      for (const song of songsArray) {
-        await storage.createSong(song);
+      if (!fs.existsSync(songsFilePath)) {
+        throw new Error(`Songs file not found at: ${songsFilePath}`);
       }
       
-      res.json({ message: "Data seeded successfully", songsCount: songsArray.length });
+      // Read from the file
+      const fileData = fs.readFileSync(songsFilePath, 'utf8');
+      const songsList = JSON.parse(fileData);
+      
+      console.log(`Loaded ${songsList.length} songs from local file`);
+      
+      // Clear existing songs (would require a clearSongs method)
+      // Save to storage
+      for (const song of songsList) {
+        await storage.createSong({
+          name: song.name,
+          slug: song.slug,
+          times_played: song.times_played
+        });
+      }
+      
+      const songs = await storage.getAllSongs();
+      res.json({ message: "Data seeded successfully", songsCount: songs.length });
     } catch (error) {
       console.error("Error seeding data:", error);
       res.status(500).json({ message: (error as Error).message });
