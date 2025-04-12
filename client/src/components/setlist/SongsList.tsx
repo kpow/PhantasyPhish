@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SetlistContext } from '@/contexts/SetlistContext';
+import { useScroll } from '@/contexts/ScrollContext';
 import { usePhishData } from '@/hooks/usePhishData';
 import { PhishSong } from '@/types';
 import { Search, ChevronUp, ArrowDown, ArrowUp, SortAsc, SortDesc } from 'lucide-react';

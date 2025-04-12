@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import { SetlistProvider } from "./contexts/SetlistContext";
+import { ScrollProvider } from "./contexts/ScrollContext";
 
 function Router() {
   return (
@@ -19,7 +20,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SetlistProvider>
-        <Router />
+        <ScrollProvider>
+          <Router />
+          <Toaster />
+        </ScrollProvider>
       </SetlistProvider>
     </QueryClientProvider>
   );

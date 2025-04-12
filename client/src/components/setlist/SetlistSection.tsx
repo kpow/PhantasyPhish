@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { SetlistItem, PhishSong } from '@/types';
 import { SortableItem } from './SortableItem';
+import { useScroll } from '@/contexts/ScrollContext';
 import { 
   DndContext, 
   closestCenter,
@@ -46,6 +47,15 @@ export default function SetlistSection({
   onReorderSongs
 }: SetlistSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { triggerScroll, resetTrigger } = useScroll();
+  
+  // Listen for scroll triggers
+  useEffect(() => {
+    if (triggerScroll[setType]) {
+      scrollToBottom();
+      resetTrigger(setType);
+    }
+  }, [triggerScroll, setType, resetTrigger]);
   
   // Setup DnD sensors
   const sensors = useSensors(
