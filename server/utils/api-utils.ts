@@ -11,18 +11,37 @@ export async function fetchPhishData(endpoint: string, params: Record<string, st
     
     console.log(`Fetching data from: ${url}`);
     
-    // Add default parameters for all requests
-    const defaultParams = {
+    // Add API key as a parameter - the exact parameter name matters
+    const paramsWithApiKey = {
+      ...params,
       apikey: API_KEY
     };
     
+    // For debugging
+    console.log('Request parameters:', paramsWithApiKey);
+    
     const response = await axios.get(url, {
-      params: {
-        ...defaultParams,
-        ...params,
-      },
+      params: paramsWithApiKey,
     });
 
+    // Show abbreviated response for debug purposes
+    console.log('API Response Summary:', {
+      status: response.status,
+      errorFlag: response.data?.error,
+      hasResponseData: !!response.data?.data,
+      dataCount: response.data?.data?.length || 0
+    });
+    
+    // Debug specific endpoints
+    if (endpoint.includes('/songs/')) {
+      console.log('Song API Response Sample:', JSON.stringify(response.data).substring(0, 500) + '...');
+      
+      // Try to extract useful info from song response
+      if (response.data?.data?.length > 0) {
+        console.log('First song:', response.data.data[0]);
+      }
+    }
+    
     // The Phish.net API returns data with 'error' field instead of 'error_code'
     if (response.data && response.data.error === false) {
       // For debugging setlist data
@@ -38,12 +57,12 @@ export async function fetchPhishData(endpoint: string, params: Record<string, st
       // Enhanced error logging
       console.error('API Error Details:', {
         url,
-        params: { ...defaultParams, ...params },
-        errorMessage: response.data.error_message || 'Unknown error',
+        params: paramsWithApiKey,
+        errorMessage: response.data?.error_message || 'Unknown error',
         statusCode: response.status,
-        responseData: response.data
+        responseDataSample: JSON.stringify(response.data).substring(0, 300) + '...'
       });
-      throw new Error(response.data.error_message || 'Failed to fetch data from Phish.net API');
+      throw new Error(response.data?.error_message || 'Failed to fetch data from Phish.net API');
     }
   } catch (error) {
     console.error('Error fetching data from Phish.net API:', error);
