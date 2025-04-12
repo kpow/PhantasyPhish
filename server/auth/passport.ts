@@ -30,6 +30,13 @@ export function configurePassport() {
             return done(null, false, { message: "Invalid email or password" });
           }
           
+          // Check if email is verified
+          if (!user.email_verified) {
+            return done(null, false, { 
+              message: "Email not verified. Please check your email for verification link or request a new one."
+            });
+          }
+          
           // Authentication successful
           return done(null, user);
         } catch (error) {

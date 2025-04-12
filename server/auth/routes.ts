@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { storage } from "../storage";
 import { isAuthenticated } from "./middleware";
 import { upload, getAvatarUrl, deleteAvatar } from "./uploads";
-import { sendPasswordResetEmail } from "./email";
+import { sendPasswordResetEmail, sendEmailVerificationEmail } from "./email";
 import { 
   insertUserSchema, 
   loginSchema, 
@@ -33,19 +33,50 @@ router.post("/register", async (req: Request, res: Response) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(userData.password, salt);
     
-    // Create user
+    // Create user with email_verified set to false
     const user = await storage.createUser({
       ...userData,
       password: hashedPassword,
     });
     
+    // Generate verification token
+    const verificationToken = uuidv4();
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24); // Token valid for 24 hours
+    
+    // Store verification token in database
+    await storage.createEmailVerificationToken({
+      user_id: user.id,
+      token: verificationToken,
+      expires_at: expiresAt,
+    });
+    
+    // Generate verification URL
+    const verificationUrl = `https://phantasy-phish.replit.app/verify-email/${verificationToken}`;
+    
+    console.log(`Generating email verification URL with token: ${verificationToken}`);
+    console.log(`Verification URL: ${verificationUrl}`);
+    
+    // Send verification email
+    try {
+      await sendEmailVerificationEmail(user.email, verificationUrl);
+      console.log(`Verification email sent to: ${user.email}`);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      // Continue processing even if email fails
+    }
+    
     // Return user without password
     const { password, ...userWithoutPassword } = user;
-    res.status(201).json(userWithoutPassword);
+    res.status(201).json({ 
+      ...userWithoutPassword,
+      message: "Registration successful. Please check your email to verify your account."
+    });
   } catch (error: any) {
     if (error.name === "ZodError") {
       return res.status(400).json({ message: "Invalid input data", errors: error.errors });
     }
+    console.error("Registration error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
@@ -304,6 +335,116 @@ router.put("/change-password", isAuthenticated, async (req: Request, res: Respon
     if (error.name === "ZodError") {
       return res.status(400).json({ message: "Invalid input data", errors: error.errors });
     }
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Verify email with token
+router.get("/verify-email/:token", async (req: Request, res: Response) => {
+  try {
+    const { token } = req.params;
+    
+    console.log(`Email verification request with token: ${token}`);
+    
+    // Find token in database
+    const verificationToken = await storage.getEmailVerificationToken(token);
+    
+    if (!verificationToken) {
+      console.log(`Verification token not found in database: ${token}`);
+      return res.status(400).json({ message: "Invalid verification token" });
+    }
+    
+    console.log(`Verification token found: ${verificationToken.token}, expires at: ${verificationToken.expires_at}, used: ${verificationToken.used}`);
+    
+    // Check if token is already used
+    if (verificationToken.used) {
+      console.log(`Verification token has already been used: ${token}`);
+      return res.status(400).json({ message: "Verification token has already been used" });
+    }
+    
+    // Check if token is expired
+    const now = new Date();
+    const expirationDate = new Date(verificationToken.expires_at);
+    if (now > expirationDate) {
+      console.log(`Verification token has expired at ${expirationDate} (now: ${now})`);
+      return res.status(400).json({ message: "Verification token has expired" });
+    }
+    
+    // Find user
+    const user = await storage.getUser(verificationToken.user_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    // Verify user's email
+    await storage.verifyUserEmail(user.id);
+    
+    // Mark token as used
+    await storage.markEmailVerificationTokenAsUsed(verificationToken.id);
+    
+    // Redirect to login page with success message
+    res.redirect('/login?verified=true');
+  } catch (error) {
+    console.error("Email verification error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Resend verification email
+router.post("/resend-verification", async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+    
+    // Find user by email
+    const user = await storage.getUserByEmail(email);
+    if (!user) {
+      // Don't reveal that user doesn't exist
+      return res.json({ 
+        message: "If your email exists in our system, you will receive a verification email" 
+      });
+    }
+    
+    // Check if email is already verified
+    if (user.email_verified) {
+      return res.json({ message: "Your email is already verified" });
+    }
+    
+    // Generate verification token
+    const verificationToken = uuidv4();
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 24); // Token valid for 24 hours
+    
+    // Store verification token in database
+    await storage.createEmailVerificationToken({
+      user_id: user.id,
+      token: verificationToken,
+      expires_at: expiresAt,
+    });
+    
+    // Generate verification URL
+    const verificationUrl = `https://phantasy-phish.replit.app/verify-email/${verificationToken}`;
+    
+    console.log(`Resending verification email with token: ${verificationToken}`);
+    console.log(`Verification URL: ${verificationUrl}`);
+    
+    // Send verification email
+    try {
+      await sendEmailVerificationEmail(user.email, verificationUrl);
+      console.log(`Verification email resent to: ${user.email}`);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      // Continue processing even if email fails
+    }
+    
+    res.json({ 
+      message: "If your email exists in our system, you will receive a verification email" 
+    });
+  } catch (error) {
+    console.error("Resend verification error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
