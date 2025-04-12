@@ -4584,6 +4584,22 @@
     "original_artist": "ZZ Top"
   },
   {
+    "id": "tweezer",
+    "name": "Tweezer",
+    "slug": "tweezer",
+    "times_played": 468,
+    "url": "https://phish.net/song/tweezer",
+    "original_artist": "Phish"
+  },
+  {
+    "id": "tweezer-reprise",
+    "name": "Tweezer Reprise",
+    "slug": "tweezer-reprise",
+    "times_played": 292,
+    "url": "https://phish.net/song/tweezer-reprise",
+    "original_artist": "Phish"
+  },
+  {
     "id": "uncle-pen",
     "name": "Uncle Pen",
     "slug": "uncle-pen",
