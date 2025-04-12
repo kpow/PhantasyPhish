@@ -99,6 +99,7 @@ export default function SetlistBuilder() {
           setType="set1"
           setItems={setlist.set1}
           titleColor="text-primary"
+          borderColor="border-primary" 
           height="h-[240px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -109,7 +110,8 @@ export default function SetlistBuilder() {
           title="Set 2"
           setType="set2"
           setItems={setlist.set2}
-          titleColor="text-secondary"
+          titleColor="text-orange-500"
+          borderColor="border-orange-500"
           height="h-[240px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -121,6 +123,7 @@ export default function SetlistBuilder() {
           setType="encore"
           setItems={setlist.encore}
           titleColor="text-green-500"
+          borderColor="border-green-500"
           height="h-[120px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}

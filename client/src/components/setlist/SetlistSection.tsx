@@ -26,6 +26,7 @@ interface SetlistSectionProps {
   setType: 'set1' | 'set2' | 'encore';
   setItems: SetlistItem[];
   titleColor: string;
+  borderColor: string;
   height: string;
   onSetSong: (setType: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
   selectedSong: PhishSong | null;
@@ -37,6 +38,7 @@ export default function SetlistSection({
   setType, 
   setItems, 
   titleColor, 
+  borderColor,
   height,
   onSetSong,
   selectedSong,
@@ -131,6 +133,7 @@ export default function SetlistSection({
                       hasSong={!!item.song}
                       selectedSong={selectedSong}
                       titleColor={titleColor}
+                      borderColor={borderColor}
                     />
                   );
                 })}

@@ -12,6 +12,7 @@ interface SortableItemProps {
   hasSong: boolean;
   selectedSong: PhishSong | null;
   titleColor: string;
+  borderColor: string;
 }
 
 export function SortableItem({
@@ -22,7 +23,8 @@ export function SortableItem({
   textColor,
   hasSong,
   selectedSong,
-  titleColor
+  titleColor,
+  borderColor
 }: SortableItemProps) {
   const {
     attributes,
@@ -45,8 +47,11 @@ export function SortableItem({
     <div ref={setNodeRef} style={style} className="flex items-center mb-2">
       <span className={`font-display text-lg mr-3 ${titleColor} w-6 text-center`}>{index + 1}</span>
       <div 
-        className={`flex-1 border border-gray-700 rounded-lg p-3 ${textColor} 
-          ${hasSong ? 'hover:bg-[rgba(255,255,255,0.1)] border-primary/50 cursor-pointer' : 'border-gray-700 cursor-default'}
+        className={`flex-1 border rounded-lg p-3 ${textColor} 
+          ${hasSong 
+            ? `hover:bg-[rgba(255,255,255,0.1)] border-${titleColor.replace('text-', '')}/50 cursor-pointer` 
+            : 'border-gray-700 cursor-default'
+          }
           transition-colors flex items-center`}
         onClick={hasSong ? handleClick : undefined}
         {...attributes}

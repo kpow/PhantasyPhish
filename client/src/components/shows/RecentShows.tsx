@@ -123,7 +123,7 @@ export default function RecentShows() {
 
   if (!recentShows || recentShows.length === 0) {
     return (
-      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
+      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-0">
         <CardContent className="p-5">
           <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
           <p className="text-[#E5E5E5]">No recent shows found.</p>
@@ -134,7 +134,7 @@ export default function RecentShows() {
 
   return (
     <>
-      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
+      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-0">
         <CardContent className="p-5">
           <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
