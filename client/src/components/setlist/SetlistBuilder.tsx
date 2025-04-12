@@ -1,20 +1,74 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, createContext } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { SetlistContext } from '@/contexts/SetlistContext';
 import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
 
+// Create a context for the setlist
+export const SetlistContext = createContext({
+  setlist: {
+    set1: Array(5).fill({ song: null }),
+    set2: Array(5).fill({ song: null }),
+    encore: []
+  },
+  selectedSong: null,
+  setSetlistSpot: () => {},
+  addSongToSet: () => {},
+  reorderSongs: () => {},
+  clearSetlist: () => {}
+});
+
+
+export function SetlistProvider({ children }) {
+  const [setlist, setSetlist] = useState({
+    set1: Array(5).fill({ song: null }),
+    set2: Array(5).fill({ song: null }),
+    encore: []
+  });
+  const [selectedSong, setSelectedSong] = useState(null);
+
+  const setSetlistSpot = (setType, index, song) => {
+    setSetlist(prevSetlist => ({
+      ...prevSetlist,
+      [setType]: prevSetlist[setType].map((item, i) => i === index ? { song } : item)
+    }));
+  };
+
+  const addSongToSet = (setType, song) => {
+    //This function is not used anymore.
+  };
+
+  const reorderSongs = (setType, newItems) => {
+    setSetlist(prevSetlist => ({
+      ...prevSetlist,
+      [setType]: newItems
+    }));
+  };
+
+  const clearSetlist = () => {
+    setSetlist({
+      set1: Array(5).fill({ song: null }),
+      set2: Array(5).fill({ song: null }),
+      encore: []
+    });
+  };
+
+  return (
+    <SetlistContext.Provider value={{ setlist, selectedSong, setSetlistSpot, addSongToSet, reorderSongs, clearSetlist }}>
+      {children}
+    </SetlistContext.Provider>
+  );
+}
+
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, addSongToSet, reorderSongs, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, reorderSongs, clearSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
-  
+
   const handleSubmitPrediction = async () => {
-    // Check if there are any songs selected
     const hasAnySongs = setlist.set1.some(item => item.song) || 
                         setlist.set2.some(item => item.song) || 
                         setlist.encore.some(item => item.song);
-    
+
     if (!hasAnySongs) {
       toast({
         title: "Can't submit empty prediction",
@@ -25,10 +79,9 @@ export default function SetlistBuilder() {
     }
 
     try {
-      // Create the prediction data object
       const predictionData = {
-        userId: 1, // For simplicity, we'll use a fixed userId
-        showId: "upcoming-show", // This would normally come from the selected show
+        userId: 1, 
+        showId: "upcoming-show", 
         set1: JSON.stringify(
           setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
         ),
@@ -38,11 +91,10 @@ export default function SetlistBuilder() {
         encore: JSON.stringify(
           setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
         ),
-        score: 0, // Initial score before the show happens
+        score: 0, 
         created: new Date().toISOString()
       };
 
-      // Save to both API and localStorage for backup
       const response = await fetch('/api/predictions', {
         method: 'POST',
         body: JSON.stringify(predictionData),
@@ -55,7 +107,6 @@ export default function SetlistBuilder() {
         throw new Error('Failed to save prediction to server');
       }
 
-      // Also save to localStorage as a backup
       localStorage.setItem('savedPrediction', JSON.stringify(predictionData));
 
       toast({
@@ -63,12 +114,10 @@ export default function SetlistBuilder() {
         description: "Your setlist prediction has been saved for the upcoming show."
       });
 
-      // Clear the form
       clearSetlist();
     } catch (error) {
       console.error('Error saving prediction:', error);
-      
-      // Check if we can save to localStorage as a fallback
+
       try {
         const fallbackData = {
           showId: "upcoming-show",
@@ -80,7 +129,7 @@ export default function SetlistBuilder() {
           created: new Date().toISOString()
         };
         localStorage.setItem('savedPrediction', JSON.stringify(fallbackData));
-        
+
         toast({
           title: "Partially Saved",
           description: "Couldn't save to server, but your prediction is saved locally."
@@ -99,49 +148,40 @@ export default function SetlistBuilder() {
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
       <CardContent className="p-5">
         <h2 className="font-display text-2xl mb-4 text-white">Build a Setlist</h2>
-        
-        {/* Set 1 */}
+
         <SetlistSection 
           title="Set 1"
           setType="set1"
           setItems={setlist.set1}
           titleColor="text-primary"
-          maxItems={15}
           height="h-[240px]"
-          onAddSong={addSongToSet}
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
           selectedSong={selectedSong}
         />
-        
-        {/* Set 2 */}
+
         <SetlistSection 
           title="Set 2"
           setType="set2"
           setItems={setlist.set2}
           titleColor="text-secondary"
-          maxItems={15}
           height="h-[240px]"
-          onAddSong={addSongToSet}
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
           selectedSong={selectedSong}
         />
-        
-        {/* Encore */}
+
         <SetlistSection 
           title="Encore"
           setType="encore"
           setItems={setlist.encore}
           titleColor="text-green-500"
-          maxItems={5}
           height="h-[120px]"
-          onAddSong={addSongToSet}
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
           selectedSong={selectedSong}
         />
-        
+
         <div className="mt-6 flex gap-2">
           <Button 
             className="w-full bg-primary hover:bg-blue-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"

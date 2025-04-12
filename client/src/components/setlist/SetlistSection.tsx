@@ -26,9 +26,7 @@ interface SetlistSectionProps {
   setType: 'set1' | 'set2' | 'encore';
   setItems: SetlistItem[];
   titleColor: string;
-  maxItems: number;
   height: string;
-  onAddSong: (setType: 'set1' | 'set2' | 'encore') => void;
   onSetSong: (setType: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
   selectedSong: PhishSong | null;
   onReorderSongs: (setType: 'set1' | 'set2' | 'encore', oldIndex: number, newIndex: number) => void;
@@ -105,15 +103,10 @@ export default function SetlistSection({
     }
   };
   
-  const handleAddSong = () => {
-    onAddSong(setType);
-    scrollToBottom();
-  };
-  
   return (
     <div className="mb-6">
       <h3 className={`font-display text-xl mb-3 ${titleColor}`}>{title}</h3>
-      <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
+      <div className="border border-gray-800 rounded-lg overflow-hidden">
         <ScrollArea className={`${height} pr-4`} ref={scrollRef}>
           <div className="p-2">
             <DndContext 
@@ -148,17 +141,6 @@ export default function SetlistSection({
           </div>
         </ScrollArea>
       </div>
-      {setItems.length < maxItems && setItems.every(item => item.song) && (
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
-          onClick={handleAddSong}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          Add Song
-        </Button>
-      )}
     </div>
   );
 }
