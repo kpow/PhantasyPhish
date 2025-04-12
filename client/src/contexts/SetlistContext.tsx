@@ -11,6 +11,7 @@ interface SetlistContextType {
   setSelectedSong: (song: PhishSong | null) => void;
   setSetlistSpot: (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
   addSongToSet: (set: 'set1' | 'set2' | 'encore') => void;
+  reorderSongs: (set: 'set1' | 'set2' | 'encore', oldIndex: number, newIndex: number) => void;
   clearSetlist: () => void;
   setSetlist: React.Dispatch<React.SetStateAction<{
     set1: SetlistItem[];
@@ -29,6 +30,7 @@ export const SetlistContext = createContext<SetlistContextType>({
   setSelectedSong: () => {},
   setSetlistSpot: () => {},
   addSongToSet: () => {},
+  reorderSongs: () => {},
   clearSetlist: () => {},
   // Empty function for the default value of setSetlist
   setSetlist: () => {}
@@ -95,6 +97,30 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     });
   };
 
+  // Function to reorder songs within a set
+  const reorderSongs = (set: 'set1' | 'set2' | 'encore', oldIndex: number, newIndex: number) => {
+    // Create a new array for the specific set
+    const items = [...setlist[set]];
+    
+    // Remove the item from its old position
+    const [removedItem] = items.splice(oldIndex, 1);
+    
+    // Add the item at its new position
+    items.splice(newIndex, 0, removedItem);
+    
+    // Update the position property of each item
+    const updatedItems = items.map((item, index) => ({
+      ...item,
+      position: index
+    }));
+    
+    // Update the setlist
+    setSetlist({
+      ...setlist,
+      [set]: updatedItems
+    });
+  };
+
   const clearSetlist = () => {
     setSetlist(initialSetlist);
     setSelectedSong(null);
@@ -107,6 +133,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
       setSelectedSong,
       setSetlistSpot,
       addSongToSet,
+      reorderSongs,
       clearSetlist,
       setSetlist
     }}>

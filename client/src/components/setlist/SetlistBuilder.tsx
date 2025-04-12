@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, addSongToSet, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, addSongToSet, reorderSongs, clearSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
   
   const handleSubmitPrediction = async () => {
@@ -110,6 +110,7 @@ export default function SetlistBuilder() {
           height="h-[240px]"
           onAddSong={addSongToSet}
           onSetSong={setSetlistSpot}
+          onReorderSongs={reorderSongs}
           selectedSong={selectedSong}
         />
         
@@ -123,6 +124,7 @@ export default function SetlistBuilder() {
           height="h-[240px]"
           onAddSong={addSongToSet}
           onSetSong={setSetlistSpot}
+          onReorderSongs={reorderSongs}
           selectedSong={selectedSong}
         />
         
@@ -136,6 +138,7 @@ export default function SetlistBuilder() {
           height="h-[120px]"
           onAddSong={addSongToSet}
           onSetSong={setSetlistSpot}
+          onReorderSongs={reorderSongs}
           selectedSong={selectedSong}
         />
         
