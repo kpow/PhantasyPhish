@@ -6,7 +6,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SetlistContext } from '@/contexts/SetlistContext';
 import { usePhishData } from '@/hooks/usePhishData';
 import { PhishSong } from '@/types';
-import { Search, ChevronUp } from 'lucide-react';
+import { Search, ChevronUp, ArrowDown, ArrowUp, SortAsc, SortDesc } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SongsList() {
@@ -17,6 +17,7 @@ export default function SongsList() {
   } = useContext(SetlistContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState<'az' | 'plays'>('az');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedSongId, setExpandedSongId] = useState<string | null>(null);
 
   // Sort and filter songs
@@ -27,12 +28,31 @@ export default function SongsList() {
       song.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     
+    // Create a sorted array based on sort type and direction
     if (sortType === 'az') {
-      return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+      return [...filtered].sort((a, b) => {
+        const comparison = a.name.localeCompare(b.name);
+        return sortDirection === 'asc' ? comparison : -comparison;
+      });
     } else {
-      return [...filtered].sort((a, b) => b.times_played - a.times_played);
+      return [...filtered].sort((a, b) => {
+        const comparison = b.times_played - a.times_played;
+        return sortDirection === 'asc' ? comparison : -comparison;
+      });
     }
-  }, [songs, searchTerm, sortType]);
+  }, [songs, searchTerm, sortType, sortDirection]);
+
+  // Toggle sort type and handle sort direction
+  const toggleSort = (type: 'az' | 'plays') => {
+    if (sortType === type) {
+      // If clicking the same sort type, toggle direction
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // If changing sort type, set direction to ascending
+      setSortType(type);
+      setSortDirection('asc');
+    }
+  };
 
   // Function to find the first empty spot in a set
   const findFirstEmptySpot = (setType: 'set1' | 'set2' | 'encore') => {
@@ -73,18 +93,28 @@ export default function SongsList() {
             <Button 
               size="sm"
               variant={sortType === 'plays' ? 'default' : 'secondary'}
-              onClick={() => setSortType('plays')} 
+              onClick={() => toggleSort('plays')} 
               className={sortType === 'plays' ? 'bg-primary' : 'bg-gray-700'}
             >
-              Plays
+              <span className="mr-1">Plays</span>
+              {sortType === 'plays' && (
+                sortDirection === 'asc' ? 
+                <SortAsc className="h-3 w-3" /> : 
+                <SortDesc className="h-3 w-3" />
+              )}
             </Button>
             <Button 
               size="sm"
               variant={sortType === 'az' ? 'default' : 'secondary'}
-              onClick={() => setSortType('az')}
+              onClick={() => toggleSort('az')}
               className={sortType === 'az' ? 'bg-primary' : 'bg-gray-700'}
             >
-              A-Z
+              <span className="mr-1">A-Z</span>
+              {sortType === 'az' && (
+                sortDirection === 'asc' ? 
+                <SortAsc className="h-3 w-3" /> : 
+                <SortDesc className="h-3 w-3" />
+              )}
             </Button>
           </div>
         </div>
