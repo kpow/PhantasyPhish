@@ -23,11 +23,11 @@
   }
   
   .text-primary {
-    color: #009EFA;
+    color: #3B82F6; /* Blue color from kpow.png */
   }
   
   .bg-primary {
-    background-color: #009EFA;
+    background-color: #3B82F6; /* Blue color from kpow.png */
   }
   
   .text-secondary {
