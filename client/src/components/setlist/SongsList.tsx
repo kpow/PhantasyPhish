@@ -6,13 +6,20 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SetlistContext } from '@/contexts/SetlistContext';
 import { usePhishData } from '@/hooks/usePhishData';
 import { PhishSong } from '@/types';
-import { Search } from 'lucide-react';
+import { Search, ChevronUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SongsList() {
   const { songs, isLoadingSongs } = usePhishData();
-  const { selectedSong, setSelectedSong } = useContext(SetlistContext);
+  const { 
+    selectedSong, 
+    setSelectedSong, 
+    setlist,
+    setSetlistSpot 
+  } = useContext(SetlistContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState<'az' | 'plays'>('az');
+  const [expandedSongId, setExpandedSongId] = useState<string | null>(null);
 
   // Sort and filter songs
   const filteredSongs = useMemo(() => {
@@ -31,6 +38,33 @@ export default function SongsList() {
 
   const handleSongClick = (song: PhishSong) => {
     setSelectedSong(song);
+  };
+
+  // Function to find the first empty spot in a set
+  const findFirstEmptySpot = (setType: 'set1' | 'set2' | 'encore') => {
+    const set = setlist[setType];
+    for (let i = 0; i < set.length; i++) {
+      if (!set[i].song) {
+        return i; // Return the position of the first empty spot
+      }
+    }
+    return -1; // Return -1 if no empty spots found
+  };
+
+  // Function to add song to a specific set
+  const addSongToFirstEmptySpot = (song: PhishSong, setType: 'set1' | 'set2' | 'encore') => {
+    const position = findFirstEmptySpot(setType);
+    if (position !== -1) {
+      setSetlistSpot(setType, position, song);
+    }
+    // Close the menu after adding
+    setExpandedSongId(null);
+  };
+
+  // Toggle the expanded state of a song
+  const toggleSongExpand = (e: React.MouseEvent, songId: string) => {
+    e.stopPropagation(); // Prevent triggering the row click
+    setExpandedSongId(expandedSongId === songId ? null : songId);
   };
 
   if (isLoadingSongs) {
@@ -79,18 +113,80 @@ export default function SongsList() {
         {/* Song List */}
         <ScrollArea className="h-[69vh] pr-2" type="always">
           <div className="space-y-1">
-            {filteredSongs.map(song => (
-              <div 
-                key={song.id} 
-                className={`p-2 rounded-lg flex justify-between transition-colors cursor-pointer ${
-                  selectedSong?.id === song.id 
-                    ? 'bg-[rgba(59,130,246,0.3)] border-l-4 border-primary'
-                    : 'hover:bg-[rgba(59,130,246,0.2)]'
-                }`}
-                onClick={() => handleSongClick(song)}
-              >
-                <span className="text-[#E5E5E5]">{song.name}</span>
-                <span className="text-xs text-gray-400">{song.times_played}x</span>
+            {filteredSongs.map((song, index) => (
+              <div key={song.id} className="relative">
+                <div 
+                  className={`p-2 rounded-lg flex justify-between transition-colors cursor-pointer ${
+                    selectedSong?.id === song.id 
+                      ? 'bg-[rgba(59,130,246,0.3)] border-l-4 border-primary'
+                      : index % 2 === 0
+                        ? 'bg-[rgba(30,30,30,0.8)] hover:bg-[rgba(59,130,246,0.2)]'
+                        : 'bg-[rgba(40,40,40,0.8)] hover:bg-[rgba(59,130,246,0.2)]'
+                  }`}
+                  onClick={() => handleSongClick(song)}
+                >
+                  <div className="flex items-center justify-between w-full">
+                    <span className="text-[#E5E5E5]">{song.name}</span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-400">{song.times_played}x</span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-5 w-5 p-0 text-gray-400 hover:text-white"
+                        onClick={(e) => toggleSongExpand(e, song.id)}
+                      >
+                        <ChevronUp 
+                          className={`h-4 w-4 transition-transform ${
+                            expandedSongId === song.id ? 'rotate-0' : 'rotate-180'
+                          }`} 
+                        />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Quick Add Buttons */}
+                <AnimatePresence>
+                  {expandedSongId === song.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden bg-gray-800 rounded-b-lg"
+                    >
+                      <div className="p-2 flex justify-center space-x-4">
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          className="bg-blue-800 hover:bg-blue-700 text-white border-blue-700"
+                          onClick={() => addSongToFirstEmptySpot(song, 'set1')}
+                          disabled={findFirstEmptySpot('set1') === -1}
+                        >
+                          S1
+                        </Button>
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          className="bg-purple-800 hover:bg-purple-700 text-white border-purple-700"
+                          onClick={() => addSongToFirstEmptySpot(song, 'set2')}
+                          disabled={findFirstEmptySpot('set2') === -1}
+                        >
+                          S2
+                        </Button>
+                        <Button 
+                          size="sm"
+                          variant="outline"
+                          className="bg-red-800 hover:bg-red-700 text-white border-red-700"
+                          onClick={() => addSongToFirstEmptySpot(song, 'encore')}
+                          disabled={findFirstEmptySpot('encore') === -1}
+                        >
+                          E
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             ))}
             
