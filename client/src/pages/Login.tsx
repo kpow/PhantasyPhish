@@ -3,13 +3,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Link, useLocation } from "wouter";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Form schema
 const loginSchema = z.object({
@@ -22,6 +23,8 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function Login() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { refetchUser } = useAuth();
+  const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form setup
@@ -42,7 +45,11 @@ export default function Login() {
         body: JSON.stringify(values),
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      // Invalidate and refetch current user data
+      await queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      await refetchUser();
+      
       toast({
         title: "Login successful",
         description: "You have been logged in successfully.",

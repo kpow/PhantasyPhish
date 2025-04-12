@@ -83,7 +83,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       });
 
       // Clear query cache
-      queryClient.invalidateQueries();
+      await queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      await queryClient.resetQueries({ queryKey: ["/api/auth/me"] });
       setIsAuthenticated(false);
 
       toast({
