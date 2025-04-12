@@ -130,7 +130,6 @@ router.post("/reset-password/request", async (req: Request, res: Response) => {
       user_id: user.id,
       token: resetToken,
       expires_at: expiresAt,
-      is_used: false,
     });
     
     // Generate reset URL
@@ -163,7 +162,7 @@ router.post("/reset-password", async (req: Request, res: Response) => {
     const resetToken = await storage.getPasswordResetToken(token);
     
     // Check if token exists and is valid
-    if (!resetToken || resetToken.is_used || new Date() > new Date(resetToken.expires_at)) {
+    if (!resetToken || resetToken.used || new Date() > new Date(resetToken.expires_at)) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
     
