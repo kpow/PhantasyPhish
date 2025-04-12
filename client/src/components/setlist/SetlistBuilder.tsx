@@ -90,7 +90,7 @@ export default function SetlistBuilder() {
   };
 
   return (
-    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
+    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg h-[calc(100vh-80px)]">
       <CardContent className="p-5">
         <h2 className="font-display text-2xl mb-4 text-white">Build a Setlist</h2>
 

@@ -176,7 +176,7 @@ export default function SongsList() {
         </div>
         
         {/* Song List */}
-        <ScrollArea className="h-[69vh] pr-2" type="always">
+        <ScrollArea className="h-[calc(100vh-180px)] pr-2" type="always">
           <div className="space-y-1">
             {filteredSongs.map((song, index) => (
               <div key={song.id} className="relative">
