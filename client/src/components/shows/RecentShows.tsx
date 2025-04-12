@@ -47,15 +47,17 @@ export default function RecentShows() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSetlist, setCurrentSetlist] = useState<Setlist | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleViewSetlist = async (showId: string) => {
+  const [currentShowIndex, setCurrentShowIndex] = useState<number>(0);
+  
+  // Load a setlist for a specific show
+  const loadSetlist = async (showId: string) => {
     setIsLoading(true);
     
     try {
       const setlist = await fetchSetlist(showId);
       setCurrentSetlist(setlist);
-      setIsModalOpen(true);
       setIsLoading(false);
+      return true;
     } catch (error) {
       console.error('Error fetching setlist:', error);
       setIsLoading(false);
@@ -64,7 +66,39 @@ export default function RecentShows() {
         description: "There was an error loading the setlist. Please try again.",
         variant: "destructive"
       });
+      return false;
     }
+  };
+
+  // Handler for clicking on a show card
+  const handleViewSetlist = async (showId: string) => {
+    // Find the index of the clicked show
+    const index = recentShows.findIndex(show => show.showid === showId);
+    if (index !== -1) {
+      setCurrentShowIndex(index);
+      const success = await loadSetlist(showId);
+      if (success) {
+        setIsModalOpen(true);
+      }
+    }
+  };
+  
+  // Navigate to previous show
+  const goToPreviousShow = async () => {
+    if (!recentShows || recentShows.length === 0) return;
+    
+    const newIndex = (currentShowIndex - 1 + recentShows.length) % recentShows.length;
+    setCurrentShowIndex(newIndex);
+    await loadSetlist(recentShows[newIndex].showid);
+  };
+  
+  // Navigate to next show
+  const goToNextShow = async () => {
+    if (!recentShows || recentShows.length === 0) return;
+    
+    const newIndex = (currentShowIndex + 1) % recentShows.length;
+    setCurrentShowIndex(newIndex);
+    await loadSetlist(recentShows[newIndex].showid);
   };
 
   if (isLoadingRecentShows) {
@@ -119,25 +153,70 @@ export default function RecentShows() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="bg-[#1E1E1E] text-white border-gray-700 max-w-3xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle className="text-xl text-white">
-              {currentSetlist && `Setlist for ${formatShowDate(currentSetlist.showdate)}`}
-            </DialogTitle>
-            <DialogDescription className="text-gray-300">
-              {currentSetlist && `${currentSetlist.venue}, ${currentSetlist.location}`}
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="mt-4 text-white whitespace-pre-wrap overflow-y-auto max-h-[60vh] font-medium">
-            {currentSetlist?.setlistdata}
-          </div>
-          
-          {currentSetlist?.setlistnotes && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <h4 className="text-sm font-semibold text-gray-300 mb-1">Notes:</h4>
-              <div className="text-sm text-gray-300">
-                {currentSetlist.setlistnotes}
+            <div className="flex items-center justify-between">
+              <div>
+                <DialogTitle className="text-xl text-white">
+                  {currentSetlist && `Setlist for ${formatShowDate(currentSetlist.showdate)}`}
+                </DialogTitle>
+                <DialogDescription className="text-gray-300">
+                  {currentSetlist && `${currentSetlist.venue}, ${currentSetlist.location}`}
+                </DialogDescription>
+              </div>
+              
+              <div className="flex space-x-2">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-8 w-8 rounded-full border-gray-600 hover:bg-gray-700"
+                  onClick={goToPreviousShow}
+                  disabled={isLoading}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left">
+                    <path d="m15 18-6-6 6-6"/>
+                  </svg>
+                  <span className="sr-only">Previous Show</span>
+                </Button>
+                
+                <div className="text-sm text-gray-400 py-1 px-2 rounded-md bg-gray-800">
+                  {currentShowIndex + 1} / {recentShows.length}
+                </div>
+                
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-8 w-8 rounded-full border-gray-600 hover:bg-gray-700"
+                  onClick={goToNextShow}
+                  disabled={isLoading}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right">
+                    <path d="m9 18 6-6-6-6"/>
+                  </svg>
+                  <span className="sr-only">Next Show</span>
+                </Button>
               </div>
             </div>
+          </DialogHeader>
+          
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-solid border-current border-r-transparent motion-reduce:animate-[spin_1.5s_linear_infinite]"></div>
+              <span className="ml-2">Loading setlist...</span>
+            </div>
+          ) : (
+            <>
+              <div className="mt-4 text-white whitespace-pre-wrap overflow-y-auto max-h-[60vh] font-medium">
+                {currentSetlist?.setlistdata}
+              </div>
+              
+              {currentSetlist?.setlistnotes && (
+                <div className="mt-4 pt-4 border-t border-gray-700">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-1">Notes:</h4>
+                  <div className="text-sm text-gray-300">
+                    {currentSetlist.setlistnotes}
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </DialogContent>
       </Dialog>
