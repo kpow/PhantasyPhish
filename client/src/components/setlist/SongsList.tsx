@@ -14,7 +14,8 @@ export default function SongsList() {
   const { 
     setlist,
     setSetlistSpot,
-    addSongToSet 
+    addSongToSet,
+    setSetlist
   } = useContext(SetlistContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState<'az' | 'plays'>('plays');
@@ -78,12 +79,27 @@ export default function SongsList() {
       // If there's an empty spot, use it
       setSetlistSpot(setType, position, song);
     } else {
-      // If no empty spots, add a new one first
-      addSongToSet(setType);
+      // If no empty spots and not at max capacity, add a new slot with the song
+      const maxSize = setType === 'encore' ? 5 : 15;
       
-      // Then set the song at the new position
-      const newPosition = setlist[setType].length - 1;
-      setSetlistSpot(setType, newPosition, song);
+      if (setlist[setType].length < maxSize) {
+        // Create a deep copy of the current setlist
+        const updatedSetlist = { 
+          set1: [...setlist.set1],
+          set2: [...setlist.set2],
+          encore: [...setlist.encore]
+        };
+        
+        // Create a new spot with the song
+        const newPosition = updatedSetlist[setType].length;
+        const newSpot = { position: newPosition, song };
+        
+        // Add the new spot with the song to the appropriate set
+        updatedSetlist[setType].push(newSpot);
+        
+        // Update the entire setlist in one operation
+        setSetlist(updatedSetlist);
+      }
     }
     
     // Close the menu after adding
