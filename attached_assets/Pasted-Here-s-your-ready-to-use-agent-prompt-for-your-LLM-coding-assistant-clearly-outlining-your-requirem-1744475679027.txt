@@ -1,0 +1,58 @@
+Here’s your ready-to-use agent prompt for your LLM coding assistant, clearly outlining your requirements:  
+
+---
+
+You will implement a complete **User Account Management System** in our existing Node.js/Express.js application. The user system must include the following features:
+
+### Features Required:
+- **User Authentication**
+  - Default authentication using **email/password**.
+  - User's primary identifier (username) is their **email address**.
+  - Include a separate user-friendly **display name** attribute.
+  - Ask yourself: "Would OAuth or Magic Link authentication significantly simplify this implementation without introducing complexity?" If so, briefly suggest the simpler approach.
+
+- **Account Management**
+  - A dedicated user profile management API route allowing users to:
+    - Update their **display name**.
+    - Upload/change their **avatar image**.
+      - Avatar images uploaded directly to the server (local file storage).
+      - API should handle file validation (simple validation: file size/type).
+
+- **Password Reset Flow**
+  - Implement a straightforward email-based password reset workflow:
+    - User requests password reset via email.
+    - Generate secure, temporary reset tokens.
+    - Send simple plain-text emails with reset instructions and a unique URL to complete the password reset.
+
+### Technical Specifications:
+- **Backend Stack**
+  - Built on existing Node.js + Express.js API framework.
+  - Continue using existing database (**PostgreSQL**).
+  - Utilize Passport.js for authentication (if Passport is not simplest, recommend clearly the simpler alternative).
+
+- **Email Delivery**
+  - Use **GMAIL** SMTP integration for sending emails.
+  - Emails must be **plain-text** only, simple and direct with clear reset instructions.
+
+### User Interface (Frontend)
+- Build three key UI views/pages:
+  1. **Login page**
+      - Simple email/password login form.
+      - Link to "forgot password" functionality.
+  2. **Password Reset page**
+      - View for submitting email to initiate reset.
+      - View for entering new password (after clicking reset email link).
+  3. **Account Management page**
+      - Update display name.
+      - Upload and manage avatar.
+      - Update password.
+
+- UI should integrate smoothly with our **existing frontend stack** and style components.
+
+---
+
+**Ask yourself** clearly during implementation:
+- "Is there a simpler alternative to any selected method or tool?" Briefly suggest if so.
+- "Does this implementation clearly meet the outlined requirements without unnecessary complexity?"
+
+Please clarify immediately if any part of this specification needs adjustment or additional details.
