@@ -38,7 +38,7 @@ export default function SongsList() {
   }
 
   return (
-    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
+    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg h-full">
       <CardContent className="p-5">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-display text-2xl text-white">Song List</h2>
@@ -77,7 +77,7 @@ export default function SongsList() {
         </div>
         
         {/* Song List */}
-        <ScrollArea className="h-96 pr-2" type="always">
+        <ScrollArea className="h-[69vh] pr-2" type="always">
           <div className="space-y-1">
             {filteredSongs.map(song => (
               <div 

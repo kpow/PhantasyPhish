@@ -10,6 +10,7 @@ interface SetlistContextType {
   selectedSong: PhishSong | null;
   setSelectedSong: (song: PhishSong | null) => void;
   setSetlistSpot: (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
+  addSongToSet: (set: 'set1' | 'set2' | 'encore') => void;
   clearSetlist: () => void;
 }
 
@@ -22,6 +23,7 @@ export const SetlistContext = createContext<SetlistContextType>({
   selectedSong: null,
   setSelectedSong: () => {},
   setSetlistSpot: () => {},
+  addSongToSet: () => {},
   clearSetlist: () => {}
 });
 
@@ -30,15 +32,18 @@ interface SetlistProviderProps {
 }
 
 export function SetlistProvider({ children }: SetlistProviderProps) {
-  // Initialize empty setlist with position placeholders
+  // Initialize setlist with 4 spots in each set
   const initialSetlist = {
-    set1: Array(5).fill(0).map((_, i) => ({ position: i, song: null })),
-    set2: Array(5).fill(0).map((_, i) => ({ position: i, song: null })),
+    set1: Array(4).fill(0).map((_, i) => ({ position: i, song: null })),
+    set2: Array(4).fill(0).map((_, i) => ({ position: i, song: null })),
     encore: Array(2).fill(0).map((_, i) => ({ position: i, song: null }))
   };
 
   const [setlist, setSetlist] = useState(initialSetlist);
   const [selectedSong, setSelectedSong] = useState<PhishSong | null>(null);
+
+  // Maximum number of songs allowed per set
+  const MAX_SET_SIZE = 15;
 
   const setSetlistSpot = (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => {
     setSetlist(prev => ({
@@ -52,6 +57,24 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     setSelectedSong(null);
   };
 
+  const addSongToSet = (set: 'set1' | 'set2' | 'encore') => {
+    setSetlist(prev => {
+      // Only add a new spot if we're under the maximum
+      if (prev[set].length >= MAX_SET_SIZE) {
+        return prev;
+      }
+      
+      // Create a new setlist spot at the next position
+      const newPosition = prev[set].length;
+      const newSpot = { position: newPosition, song: null };
+      
+      return {
+        ...prev,
+        [set]: [...prev[set], newSpot]
+      };
+    });
+  };
+
   const clearSetlist = () => {
     setSetlist(initialSetlist);
     setSelectedSong(null);
@@ -63,6 +86,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
       selectedSong,
       setSelectedSong,
       setSetlistSpot,
+      addSongToSet,
       clearSetlist
     }}>
       {children}

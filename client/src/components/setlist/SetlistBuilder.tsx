@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { SetlistContext } from '@/contexts/SetlistContext';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
+import { Plus } from 'lucide-react';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, addSongToSet, clearSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
 
   const handleSubmitPrediction = async () => {
@@ -132,14 +133,29 @@ export default function SetlistBuilder() {
         {/* Set 1 */}
         <div className="mb-6">
           <h3 className="font-display text-xl mb-3 text-primary">Set 1</h3>
-          <div className="space-y-2">
-            {setlist.set1.map((_, index) => (
-              <div key={`set1-${index}`} className="flex items-center">
-                <span className="font-display text-lg mr-3 text-primary">{index + 1}</span>
-                {renderSetlistSpot('set1', index)}
+          <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
+            <ScrollArea className="h-[240px] pr-4"> {/* Fixed height of 5 items (approximately) */}
+              <div className="space-y-2 p-2">
+                {setlist.set1.map((_, index) => (
+                  <div key={`set1-${index}`} className="flex items-center">
+                    <span className="font-display text-lg mr-3 text-primary w-6 text-center">{index + 1}</span>
+                    {renderSetlistSpot('set1', index)}
+                  </div>
+                ))}
               </div>
-            ))}
+            </ScrollArea>
           </div>
+          {setlist.set1.length < 15 && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
+              onClick={() => addSongToSet('set1')}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Song
+            </Button>
+          )}
         </div>
         
         {/* Set 2 */}
