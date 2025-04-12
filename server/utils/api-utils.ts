@@ -25,9 +25,24 @@ export async function fetchPhishData(endpoint: string, params: Record<string, st
 
     // The Phish.net API returns data with 'error' field instead of 'error_code'
     if (response.data && response.data.error === false) {
+      // For debugging setlist data
+      if (endpoint.includes('/setlists/')) {
+        console.log(`API Response for ${url}:`, {
+          dataLength: response.data.data ? response.data.data.length : 0,
+          sampleSong: response.data.data && response.data.data.length > 0 ? 
+            JSON.stringify(response.data.data[0].song) : 'No songs found'
+        });
+      }
       return response.data.data || [];
     } else {
-      console.error('API Error:', response.data.error_message || 'Unknown error');
+      // Enhanced error logging
+      console.error('API Error Details:', {
+        url,
+        params: { ...defaultParams, ...params },
+        errorMessage: response.data.error_message || 'Unknown error',
+        statusCode: response.status,
+        responseData: response.data
+      });
       throw new Error(response.data.error_message || 'Failed to fetch data from Phish.net API');
     }
   } catch (error) {
