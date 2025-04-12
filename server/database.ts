@@ -7,7 +7,8 @@ import {
   songs, 
   shows, 
   predictions, 
-  password_reset_tokens
+  password_reset_tokens,
+  email_verification_tokens
 } from "@shared/schema";
 
 const { Pool } = pg;
@@ -28,7 +29,7 @@ export async function runMigrations() {
     console.log('Migrations completed successfully');
     
     // Verify all required tables exist after migration
-    const tables = ['users', 'password_reset_tokens', 'songs', 'shows', 'predictions', 'session'];
+    const tables = ['users', 'password_reset_tokens', 'email_verification_tokens', 'songs', 'shows', 'predictions', 'session'];
     for (const table of tables) {
       const result = await db.execute(sql`SELECT EXISTS (
         SELECT FROM information_schema.tables 

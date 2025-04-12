@@ -4,6 +4,7 @@ import {
   shows, 
   predictions, 
   password_reset_tokens,
+  email_verification_tokens,
   type User, 
   type InsertUser,
   type UpdateUser,
@@ -14,7 +15,9 @@ import {
   type Prediction, 
   type InsertPrediction,
   type PasswordResetToken,
-  type InsertPasswordResetToken
+  type InsertPasswordResetToken,
+  type EmailVerificationToken,
+  type InsertEmailVerificationToken
 } from "@shared/schema";
 import { DatabaseStorage } from "./database-storage";
 
