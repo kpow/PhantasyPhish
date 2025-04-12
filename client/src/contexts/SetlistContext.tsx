@@ -40,13 +40,21 @@ interface SetlistProviderProps {
 
 export function SetlistProvider({ children }: SetlistProviderProps) {
   // Initialize setlist with 4 spots in each set
-  const initialSetlist = {
-    set1: Array(4).fill(0).map((_, i) => ({ position: i, song: null })),
-    set2: Array(4).fill(0).map((_, i) => ({ position: i, song: null })),
-    encore: Array(2).fill(0).map((_, i) => ({ position: i, song: null }))
+  const initialSetlist: {
+    set1: SetlistItem[];
+    set2: SetlistItem[];
+    encore: SetlistItem[];
+  } = {
+    set1: Array(4).fill(0).map((_, i) => ({ position: i, song: null as PhishSong | null })),
+    set2: Array(4).fill(0).map((_, i) => ({ position: i, song: null as PhishSong | null })),
+    encore: Array(2).fill(0).map((_, i) => ({ position: i, song: null as PhishSong | null }))
   };
 
-  const [setlist, setSetlist] = useState(initialSetlist);
+  const [setlist, setSetlist] = useState<{
+    set1: SetlistItem[];
+    set2: SetlistItem[];
+    encore: SetlistItem[];
+  }>(initialSetlist);
   const [selectedSong, setSelectedSong] = useState<PhishSong | null>(null);
 
   // Maximum number of songs allowed per set
@@ -75,7 +83,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     
     // Create a new spot object
     const newPosition = setlist[set].length;
-    const newSpot: SetlistItem = { position: newPosition, song: null };
+    const newSpot: SetlistItem = { position: newPosition, song: null as PhishSong | null };
     
     // Create a completely new setlist object to ensure React re-renders
     const newSetArray = [...setlist[set], newSpot];
