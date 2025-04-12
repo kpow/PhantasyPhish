@@ -38,6 +38,7 @@ function Router() {
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/reset-password/:token" component={ResetPassword} />
       <Route path="/profile">
         <ProtectedRoute component={Profile} />
       </Route>
