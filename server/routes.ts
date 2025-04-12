@@ -178,28 +178,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (songs.length === 0) {
           console.log("No cached songs found, fetching from setlists API...");
           
-          // Fetch recent past shows to get their setlists
-          console.log("Fetching past shows to extract setlists...");
+          // We'll collect shows from different eras to get a more comprehensive song list
+          console.log("Fetching shows from multiple eras to extract setlists...");
           const currentDate = new Date().toISOString().split('T')[0];
-          const showsData = await fetchPhishData("/shows/artist/phish.json", {
-            order_by: "showdate",
-            username: "phishnet",
-            limit: "50" // Get more shows to have a better chance of finding setlists
-          });
           
-          // Get past shows (but skip the future ones as they won't have setlists)
-          const pastShows = showsData.filter((show: any) => show.showdate < currentDate);
+          // Array to hold all the show IDs we'll fetch
+          let showIds: string[] = [];
           
-          // Take the 20 most recent past shows (they should have setlists)
-          const recentPastShows = pastShows.slice(-20);
+          // Function to fetch shows from a specific year
+          async function fetchShowsFromYear(year: string) {
+            console.log(`Fetching shows from ${year}...`);
+            const yearShows = await fetchPhishData("/shows/artist/phish.json", {
+              order_by: "showdate",
+              username: "phishnet",
+              year: year,
+              limit: "75" // Get a good number of shows per year
+            });
+            
+            // Filter to only past shows
+            const pastShows = yearShows.filter((show: any) => show.showdate < currentDate);
+            
+            // Select a sample of shows from this year (every 5th show to get variety)
+            const sampledShows = pastShows.filter((_: any, index: number) => index % 5 === 0);
+            
+            console.log(`Found ${pastShows.length} shows from ${year}, sampling ${sampledShows.length}`);
+            
+            // Extract and return the show IDs
+            return sampledShows.map((show: any) => show.showid);
+          }
           
-          // Extract show IDs
-          const showIds = recentPastShows.map((show: any) => show.showid);
+          // Collect shows from important eras in Phish history to get diverse song selection
+          // 1.0 era
+          const shows1994 = await fetchShowsFromYear("1994");
+          const shows1997 = await fetchShowsFromYear("1997");
           
-          // Add the one show we know works (Cancun 2025-02-01)
+          // 2.0 era
+          const shows2003 = await fetchShowsFromYear("2003");
+          
+          // 3.0 era
+          const shows2009 = await fetchShowsFromYear("2009");
+          const shows2013 = await fetchShowsFromYear("2013");
+          const shows2018 = await fetchShowsFromYear("2018");
+          
+          // 4.0 era (post-COVID)
+          const shows2021 = await fetchShowsFromYear("2021");
+          const shows2023 = await fetchShowsFromYear("2023");
+          
+          // Combine all the show IDs, limiting to a reasonable number per era
+          showIds = [
+            ...shows1994.slice(0, 5),
+            ...shows1997.slice(0, 5),
+            ...shows2003.slice(0, 5),
+            ...shows2009.slice(0, 5),
+            ...shows2013.slice(0, 5),
+            ...shows2018.slice(0, 5),
+            ...shows2021.slice(0, 5),
+            ...shows2023.slice(0, 5)
+          ];
+          
+          // Add our known good show if it's not already included
           if (!showIds.includes("1718730981")) {
             showIds.push("1718730981");
           }
+          
+          console.log(`Collected ${showIds.length} shows spanning from 1994 to 2023`);
           
           console.log(`Fetching setlists for ${showIds.length} specific shows across different eras...`);
           
