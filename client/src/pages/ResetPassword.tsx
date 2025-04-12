@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -30,9 +30,38 @@ export default function ResetPassword() {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [hasError, setHasError] = useState(!match || !params?.token);
+  const [hasError, setHasError] = useState(false);
   
-  const token = params?.token || "";
+  // Get token from URL query parameter or route param
+  const getTokenFromUrl = () => {
+    // First check query params
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const tokenFromQuery = urlSearchParams.get('token');
+    
+    if (tokenFromQuery) {
+      console.log("Found token in query params:", tokenFromQuery);
+      return tokenFromQuery;
+    }
+    
+    // If not in query, check route params
+    if (match && params?.token) {
+      console.log("Found token in route params:", params.token);
+      return params.token;
+    }
+    
+    console.log("No token found in URL");
+    return "";
+  };
+  
+  const token = getTokenFromUrl();
+  
+  // Check if token exists
+  useEffect(() => {
+    if (!token) {
+      console.log("Token is missing, showing error");
+      setHasError(true);
+    }
+  }, [token]);
 
   // Form setup
   const form = useForm<ResetPasswordFormValues>({

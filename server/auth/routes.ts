@@ -168,7 +168,7 @@ router.post("/reset-password/request", async (req: Request, res: Response) => {
     // Generate token
     const resetToken = uuidv4();
     const expiresAt = new Date();
-    expiresAt.setHours(expiresAt.getHours() + 1); // Token valid for 1 hour
+    expiresAt.setHours(expiresAt.getHours() + 24); // Token valid for 24 hours to give users plenty of time
     
     // Store token in database
     await storage.createPasswordResetToken({
@@ -178,11 +178,30 @@ router.post("/reset-password/request", async (req: Request, res: Response) => {
     });
     
     // Generate reset URL
-    const resetUrl = `${req.protocol}://${req.get("host")}/reset-password?token=${resetToken}`;
+    // In production, use the actual hostname rather than relying on req.get("host")
+    // which might not be correctly set in Replit's environment
+    let baseUrl;
+    if (process.env.NODE_ENV === 'production') {
+      // Use a hard-coded domain if we're in production
+      // This should be your app's actual domain when deployed on Replit
+      const replitDomain = process.env.REPL_SLUG ? `${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co` : req.get("host");
+      baseUrl = `https://${replitDomain}`;
+    } else {
+      // In development, use the request's protocol and host
+      baseUrl = `${req.protocol}://${req.get("host")}`;
+    }
+    
+    console.log(`Generating password reset URL with token: ${resetToken}`);
+    // Ensure token is properly passed in the URL
+    // Use the format that matches what our frontend is expecting
+    // The frontend can handle both routes with parameters and query params
+    const resetUrl = `${baseUrl}/reset-password/${resetToken}`;
+    console.log(`Reset URL: ${resetUrl}`);
     
     // Send email
     try {
       await sendPasswordResetEmail(email, resetUrl);
+      console.log(`Password reset email sent to: ${email}`);
     } catch (emailError) {
       console.error("Failed to send password reset email:", emailError);
       // Continue processing even if email fails
@@ -203,12 +222,30 @@ router.post("/reset-password", async (req: Request, res: Response) => {
     // Validate request
     const { token, password } = resetPasswordSchema.parse(req.body);
     
+    console.log(`Password reset request with token: ${token}`);
+    
     // Find token in database
     const resetToken = await storage.getPasswordResetToken(token);
     
-    // Check if token exists and is valid
-    if (!resetToken || resetToken.used || new Date() > new Date(resetToken.expires_at)) {
-      return res.status(400).json({ message: "Invalid or expired token" });
+    if (!resetToken) {
+      console.log(`Token not found in database: ${token}`);
+      return res.status(400).json({ message: "Invalid token" });
+    }
+    
+    console.log(`Token found: ${resetToken.token}, expires at: ${resetToken.expires_at}, used: ${resetToken.used}`);
+    
+    // Check if token is already used
+    if (resetToken.used) {
+      console.log(`Token has already been used: ${token}`);
+      return res.status(400).json({ message: "Token has already been used" });
+    }
+    
+    // Check if token is expired
+    const now = new Date();
+    const expirationDate = new Date(resetToken.expires_at);
+    if (now > expirationDate) {
+      console.log(`Token has expired at ${expirationDate} (now: ${now})`);
+      return res.status(400).json({ message: "Token has expired" });
     }
     
     // Find user
