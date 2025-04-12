@@ -16,8 +16,8 @@ export default function SongsList() {
     setSetlistSpot 
   } = useContext(SetlistContext);
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortType, setSortType] = useState<'az' | 'plays'>('az');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortType, setSortType] = useState<'az' | 'plays'>('plays');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [expandedSongId, setExpandedSongId] = useState<string | null>(null);
 
   // Sort and filter songs
@@ -35,10 +35,12 @@ export default function SongsList() {
         return sortDirection === 'asc' ? comparison : -comparison;
       });
     } else {
-      return [...filtered].sort((a, b) => {
-        const comparison = b.times_played - a.times_played;
-        return sortDirection === 'asc' ? comparison : -comparison;
-      });
+      // For plays, ascending means least to most, descending means most to least
+      if (sortDirection === 'asc') {
+        return [...filtered].sort((a, b) => a.times_played - b.times_played);
+      } else {
+        return [...filtered].sort((a, b) => b.times_played - a.times_played);
+      }
     }
   }, [songs, searchTerm, sortType, sortDirection]);
 
@@ -48,9 +50,11 @@ export default function SongsList() {
       // If clicking the same sort type, toggle direction
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
-      // If changing sort type, set direction to ascending
+      // If changing sort type, set a sensible default direction:
+      // For A-Z, default to ascending (A to Z)
+      // For Plays, default to descending (most played first)
       setSortType(type);
-      setSortDirection('asc');
+      setSortDirection(type === 'az' ? 'asc' : 'desc');
     }
   };
 
