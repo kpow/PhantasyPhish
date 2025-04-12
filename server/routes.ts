@@ -142,7 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let songs = await storage.getAllSongs();
       
       // Local file path for cached songs data
-      const songsFilePath = path.join(process.cwd(), 'phish_songs.json');
+      const songsFilePath = path.join(process.cwd(), 'data', 'phish_songs.json');
       
       // If no songs in storage, load from local file
       if (songs.length === 0) {
@@ -221,7 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log("Loading songs from local file...");
       
       // Local file path for song data
-      const songsFilePath = path.join(process.cwd(), 'phish_songs.json');
+      const songsFilePath = path.join(process.cwd(), 'data', 'phish_songs.json');
       
       if (!fs.existsSync(songsFilePath)) {
         throw new Error(`Songs file not found at: ${songsFilePath}`);
