@@ -23,7 +23,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/shows/upcoming", async (_req, res) => {
     try {
       const currentDate = new Date().toISOString().split('T')[0];
-      const showsData = await fetchPhishData("/shows/artist/phish", {
+      const showsData = await fetchPhishData("/shows/artist/phish.json", {
         order_by: "showdate",
       });
       
@@ -47,7 +47,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/shows/recent", async (_req, res) => {
     try {
       const currentDate = new Date().toISOString().split('T')[0];
-      const showsData = await fetchPhishData("/shows/artist/phish", {
+      const showsData = await fetchPhishData("/shows/artist/phish.json", {
         order_by: "showdate",
       });
       
@@ -75,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/setlists/:showId", async (req, res) => {
     try {
       const { showId } = req.params;
-      const setlistData = await fetchPhishData(`/setlists/showid/${showId}`);
+      const setlistData = await fetchPhishData(`/setlists/showid/${showId}.json`);
 
       if (Array.isArray(setlistData) && setlistData.length > 0) {
         const setGroups = setlistData.reduce((acc: any, song: any) => {
@@ -136,7 +136,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If no songs in storage, fetch them
       if (songs.length === 0) {
-        const songsData = await fetchPhishData("/songs/artist/phish");
+        const songsData = await fetchPhishData("/songs/artist/phish.json");
         
         const formattedSongs = songsData.map((song: any) => ({
           name: song.name || song.song || "",
@@ -195,7 +195,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/admin/seed", async (_req, res) => {
     try {
       // Fetch songs
-      const songsData = await fetchPhishData("/songs/artist/phish");
+      const songsData = await fetchPhishData("/songs/artist/phish.json");
       
       // Process and save songs
       const songsToSave = songsData.map((song: any) => ({

@@ -6,7 +6,8 @@ const API_KEY = process.env.PHISH_API_KEY || 'DE6FDFF136D545E19C4C';
 // Function to fetch data from Phish.net API
 export async function fetchPhishData(endpoint: string, params: Record<string, string> = {}) {
   try {
-    const url = `${API_BASE_URL}${endpoint}.json`;
+    // Format the URL correctly - URL should include .json extension
+    const url = `${API_BASE_URL}${endpoint}`;
     
     console.log(`Fetching data from: ${url}`);
     
@@ -17,7 +18,8 @@ export async function fetchPhishData(endpoint: string, params: Record<string, st
       },
     });
 
-    if (response.data && response.data.error_code === 0) {
+    // The Phish.net API returns data with 'error' field instead of 'error_code'
+    if (response.data && response.data.error === false) {
       return response.data.data || [];
     } else {
       console.error('API Error:', response.data.error_message || 'Unknown error');
