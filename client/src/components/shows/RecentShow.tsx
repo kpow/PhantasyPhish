@@ -71,9 +71,6 @@ export default function RecentShow() {
     );
   }
 
-  // Create location string from city and state
-  const location = recentShow ? `${recentShow.city}, ${recentShow.state}` : '';
-
   return (
     <>
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
@@ -82,7 +79,7 @@ export default function RecentShow() {
           <div className="text-[#E5E5E5]">
             <p className="text-lg font-semibold">{formatShowDate(recentShow.showdate)}</p>
             <p>{recentShow.venue}</p>
-            <p>{location}</p>
+            <p>{typeof recentShow.location === 'string' ? recentShow.location : ''}</p>
           </div>
           <div className="mt-4">
             <Button 

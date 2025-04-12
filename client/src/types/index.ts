@@ -2,8 +2,7 @@ export interface PhishShow {
   showid: string;
   showdate: string;
   venue: string;
-  city: string;
-  state: string;
+  location: string;
   country: string;
   notes?: string;
 }
