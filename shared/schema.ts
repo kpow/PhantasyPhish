@@ -93,6 +93,12 @@ export const insertPasswordResetTokenSchema = createInsertSchema(password_reset_
   expires_at: true,
 });
 
+export const insertEmailVerificationTokenSchema = createInsertSchema(email_verification_tokens).pick({
+  user_id: true,
+  token: true,
+  expires_at: true,
+});
+
 export const insertSongSchema = createInsertSchema(songs).pick({
   name: true,
   slug: true,
@@ -124,6 +130,9 @@ export type ResetPassword = z.infer<typeof resetPasswordSchema>;
 
 export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSchema>;
 export type PasswordResetToken = typeof password_reset_tokens.$inferSelect;
+
+export type InsertEmailVerificationToken = z.infer<typeof insertEmailVerificationTokenSchema>;
+export type EmailVerificationToken = typeof email_verification_tokens.$inferSelect;
 
 export type InsertSong = z.infer<typeof insertSongSchema>;
 export type Song = typeof songs.$inferSelect;

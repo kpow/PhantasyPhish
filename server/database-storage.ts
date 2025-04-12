@@ -7,6 +7,7 @@ import {
   shows, 
   predictions, 
   password_reset_tokens,
+  email_verification_tokens,
   type User, 
   type InsertUser,
   type UpdateUser,
@@ -17,7 +18,9 @@ import {
   type Prediction, 
   type InsertPrediction,
   type PasswordResetToken,
-  type InsertPasswordResetToken
+  type InsertPasswordResetToken,
+  type EmailVerificationToken,
+  type InsertEmailVerificationToken
 } from "@shared/schema";
 
 export class DatabaseStorage implements IStorage {
@@ -70,6 +73,23 @@ export class DatabaseStorage implements IStorage {
     
     return result[0];
   }
+  
+  async verifyUserEmail(id: number): Promise<User> {
+    const result = await db
+      .update(users)
+      .set({
+        email_verified: true,
+        updated_at: new Date()
+      })
+      .where(eq(users.id, id))
+      .returning();
+    
+    if (!result[0]) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    
+    return result[0];
+  }
 
   // Password reset operations
   async createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken> {
@@ -94,6 +114,34 @@ export class DatabaseStorage implements IStorage {
     
     if (!result[0]) {
       throw new Error(`Token with id ${tokenId} not found`);
+    }
+    
+    return result[0];
+  }
+  
+  // Email verification operations
+  async createEmailVerificationToken(token: InsertEmailVerificationToken): Promise<EmailVerificationToken> {
+    const result = await db.insert(email_verification_tokens).values(token).returning();
+    return result[0];
+  }
+
+  async getEmailVerificationToken(token: string): Promise<EmailVerificationToken | undefined> {
+    const result = await db
+      .select()
+      .from(email_verification_tokens)
+      .where(eq(email_verification_tokens.token, token));
+    return result[0];
+  }
+
+  async markEmailVerificationTokenAsUsed(tokenId: number): Promise<EmailVerificationToken> {
+    const result = await db
+      .update(email_verification_tokens)
+      .set({ used: true })
+      .where(eq(email_verification_tokens.id, tokenId))
+      .returning();
+    
+    if (!result[0]) {
+      throw new Error(`Email verification token with id ${tokenId} not found`);
     }
     
     return result[0];

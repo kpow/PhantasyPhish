@@ -26,11 +26,17 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: number, updates: UpdateUser): Promise<User>;
   updatePassword(id: number, hashedPassword: string): Promise<User>;
+  verifyUserEmail(id: number): Promise<User>;
   
   // Password reset operations
   createPasswordResetToken(token: InsertPasswordResetToken): Promise<PasswordResetToken>;
   getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
   markTokenAsUsed(tokenId: number): Promise<PasswordResetToken>;
+  
+  // Email verification operations
+  createEmailVerificationToken(token: InsertEmailVerificationToken): Promise<EmailVerificationToken>;
+  getEmailVerificationToken(token: string): Promise<EmailVerificationToken | undefined>;
+  markEmailVerificationTokenAsUsed(tokenId: number): Promise<EmailVerificationToken>;
   
   // Song operations
   getAllSongs(): Promise<Song[]>;

@@ -102,3 +102,61 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string) {
   
   return info;
 }
+
+/**
+ * Send email verification email
+ * @param to Recipient email
+ * @param verificationUrl Email verification URL
+ */
+export async function sendEmailVerificationEmail(to: string, verificationUrl: string) {
+  if (!transporter) {
+    console.warn("Email transporter not set up. Cannot send email verification.");
+    return;
+  }
+
+  // Send mail with defined transport object
+  const info = await transporter.sendMail({
+    from: '"Phish Setlist Predictor" <no-reply@phishsetlist.com>',
+    to: to,
+    subject: "Verify Your Email - Phish Setlist Predictor",
+    text: `
+      Hello,
+      
+      Thank you for registering with Phish Setlist Predictor!
+      
+      Please click the link below to verify your email address:
+      ${verificationUrl}
+      
+      This link will expire in 24 hours.
+      
+      If you didn't create an account with us, you can safely ignore this email.
+      
+      Thank you,
+      Phish Setlist Predictor Team
+    `,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #2D3748;">Verify Your Email</h2>
+        <p>Hello,</p>
+        <p>Thank you for registering with Phish Setlist Predictor!</p>
+        <p>Please click the button below to verify your email address:</p>
+        <p style="text-align: center;">
+          <a href="${verificationUrl}" style="display: inline-block; background-color: #4299E1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Verify Email</a>
+        </p>
+        <p>This link will expire in 24 hours.</p>
+        <p>If you didn't create an account with us, you can safely ignore this email.</p>
+        <p>Thank you,<br>Phish Setlist Predictor Team</p>
+      </div>
+    `,
+  });
+
+  // Log email info for development
+  if (process.env.NODE_ENV === "development") {
+    console.log("Email sent: %s", info.messageId);
+    if (nodemailer.getTestMessageUrl(info)) {
+      console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    }
+  }
+  
+  return info;
+}
