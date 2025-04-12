@@ -8,11 +8,21 @@ export const users = pgTable("users", {
   display_name: text("display_name"),
   password: text("password").notNull(),
   avatar_path: text("avatar_path"),
+  email_verified: boolean("email_verified").default(false),
   created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at").defaultNow(),
 });
 
 export const password_reset_tokens = pgTable("password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  user_id: integer("user_id").references(() => users.id).notNull(),
+  token: text("token").notNull().unique(),
+  expires_at: timestamp("expires_at").notNull(),
+  used: boolean("used").default(false),
+  created_at: timestamp("created_at").defaultNow(),
+});
+
+export const email_verification_tokens = pgTable("email_verification_tokens", {
   id: serial("id").primaryKey(),
   user_id: integer("user_id").references(() => users.id).notNull(),
   token: text("token").notNull().unique(),
