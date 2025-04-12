@@ -1,11 +1,43 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import path from "path";
+import fs from "fs";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import passport from "./auth/passport";
+import { setupEmailTransporter } from "./auth/email";
+
+// Create uploads directory for avatars
+const uploadsDir = path.join(process.cwd(), "uploads", "avatars");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Configure session
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "phish-setlist-predictor-secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    },
+  })
+);
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Serve static files from uploads directory
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+// Logging middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -37,6 +69,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Set up email transporter if credentials are available
+  if (process.env.GMAIL_USER && process.env.GMAIL_PASSWORD) {
+    await setupEmailTransporter(process.env.GMAIL_USER, process.env.GMAIL_PASSWORD);
+    log("Email transporter configured");
+  } else {
+    log("WARNING: Gmail credentials not provided. Password reset emails will not be sent.");
+  }
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

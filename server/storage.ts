@@ -94,10 +94,13 @@ export class MemStorage implements IStorage {
     const id = this.currentUserId++;
     const now = new Date();
     const user: User = { 
-      ...insertUser, 
-      id, 
-      created_at: now, 
-      updated_at: now 
+      id,
+      email: insertUser.email,
+      display_name: insertUser.display_name || null,
+      password: insertUser.password,
+      avatar_path: insertUser.avatar_path || null,
+      created_at: now,
+      updated_at: now
     };
     this.users.set(id, user);
     return user;
@@ -110,8 +113,9 @@ export class MemStorage implements IStorage {
     }
     
     const updatedUser: User = { 
-      ...user, 
-      ...updates, 
+      ...user,
+      display_name: updates.display_name !== undefined ? updates.display_name : user.display_name,
+      avatar_path: updates.avatar_path !== undefined ? updates.avatar_path : user.avatar_path,
       updated_at: new Date()
     };
     this.users.set(id, updatedUser);
@@ -183,7 +187,12 @@ export class MemStorage implements IStorage {
   
   async createSong(insertSong: InsertSong): Promise<Song> {
     const id = this.currentSongId++;
-    const song: Song = { ...insertSong, id };
+    const song: Song = { 
+      id,
+      name: insertSong.name,
+      slug: insertSong.slug,
+      times_played: insertSong.times_played || null
+    };
     this.songs.set(id, song);
     return song;
   }
@@ -205,7 +214,15 @@ export class MemStorage implements IStorage {
   
   async createShow(insertShow: InsertShow): Promise<Show> {
     const id = this.currentShowId++;
-    const show: Show = { ...insertShow, id };
+    const show: Show = { 
+      id,
+      show_id: insertShow.show_id,
+      date: insertShow.date,
+      venue: insertShow.venue,
+      city: insertShow.city,
+      state: insertShow.state || null,
+      country: insertShow.country
+    };
     this.shows.set(id, show);
     return show;
   }
@@ -234,8 +251,10 @@ export class MemStorage implements IStorage {
   async createPrediction(insertPrediction: InsertPrediction): Promise<Prediction> {
     const id = this.currentPredictionId++;
     const prediction: Prediction = { 
-      ...insertPrediction, 
-      id, 
+      id,
+      user_id: insertPrediction.user_id || null,
+      show_id: insertPrediction.show_id,
+      setlist: insertPrediction.setlist,
       created_at: new Date(),
       score: null 
     };

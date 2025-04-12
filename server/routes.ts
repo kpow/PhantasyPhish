@@ -6,6 +6,7 @@ import { insertSongSchema, insertShowSchema, insertPredictionSchema } from "@sha
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
+import authRoutes from "./auth/routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // API Routes
