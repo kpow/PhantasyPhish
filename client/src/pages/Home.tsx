@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from '@/components/layout/Header';
 import UpcomingShow from '@/components/shows/UpcomingShow';
-import RecentShow from '@/components/shows/RecentShow';
+import RecentShows from '@/components/shows/RecentShows';
 import SetlistBuilder from '@/components/setlist/SetlistBuilder';
 import SongsList from '@/components/setlist/SongsList';
 import { usePhishData } from '@/hooks/usePhishData';
@@ -12,10 +12,10 @@ export default function Home() {
   const { 
     isLoadingSongs, 
     isLoadingUpcomingShow, 
-    isLoadingRecentShow 
+    isLoadingRecentShows
   } = usePhishData();
 
-  const isLoading = isLoadingSongs || isLoadingUpcomingShow || isLoadingRecentShow;
+  const isLoading = isLoadingSongs || isLoadingUpcomingShow || isLoadingRecentShows;
 
   return (
     <div className="min-h-screen bg-dark text-white" 
@@ -40,6 +40,7 @@ export default function Home() {
 function LoadingState() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
+      {/* Left Column */}
       <div className="lg:col-span-3 space-y-6">
         <Card className="bg-cardBg shadow-lg">
           <CardContent className="p-5">
@@ -48,26 +49,33 @@ function LoadingState() {
             <Skeleton className="h-4 w-5/6" />
           </CardContent>
         </Card>
-        <Card className="bg-cardBg shadow-lg">
-          <CardContent className="p-5">
-            <Skeleton className="h-8 w-2/3 mb-4" />
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-5/6 mb-2" />
-            <Skeleton className="h-4 w-4/6 mb-4" />
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
-        <Card className="bg-cardBg shadow-lg">
-          <CardContent className="p-5">
-            <Skeleton className="h-8 w-2/3 mb-4" />
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-5/6 mb-2" />
-            <Skeleton className="h-4 w-4/6 mb-4" />
-            <Skeleton className="h-10 w-full" />
-          </CardContent>
-        </Card>
+        
+        {/* Upcoming Shows Loading */}
+        <div>
+          <Card className="bg-cardBg shadow-lg">
+            <CardContent className="p-5">
+              <Skeleton className="h-8 w-2/3 mb-4" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-5/6 mb-2" />
+              <Skeleton className="h-4 w-4/6 mb-4" />
+              <Skeleton className="h-10 w-full" />
+            </CardContent>
+          </Card>
+          
+          {[...Array(2)].map((_, i) => (
+            <Card key={i} className="bg-cardBg shadow-lg mt-4">
+              <CardContent className="p-4">
+                <Skeleton className="h-5 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-1/2 mb-1" />
+                <Skeleton className="h-4 w-2/3 mb-3" />
+                <Skeleton className="h-8 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
       
+      {/* Middle Column */}
       <div className="lg:col-span-5">
         <Card className="bg-cardBg shadow-lg">
           <CardContent className="p-5">
@@ -90,6 +98,7 @@ function LoadingState() {
         </Card>
       </div>
       
+      {/* Right Column */}
       <div className="lg:col-span-4">
         <Card className="bg-cardBg shadow-lg">
           <CardContent className="p-5">
@@ -109,6 +118,23 @@ function LoadingState() {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Recent Shows Row (Full Width) */}
+      <div className="lg:col-span-12 mt-4">
+        <Skeleton className="h-8 w-1/6 mb-4" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <Card key={i} className="bg-cardBg shadow-lg">
+              <CardContent className="p-4">
+                <Skeleton className="h-5 w-3/4 mb-2" />
+                <Skeleton className="h-4 w-1/2 mb-1" />
+                <Skeleton className="h-4 w-2/3 mb-3" />
+                <Skeleton className="h-8 w-full rounded-lg" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -116,6 +142,7 @@ function LoadingState() {
 function MainContent() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-8">
+      {/* Left Column */}
       <div className="lg:col-span-3 space-y-6">
         {/* Title Card */}
         <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
@@ -125,11 +152,8 @@ function MainContent() {
           </CardContent>
         </Card>
 
-        {/* Upcoming Show Card */}
+        {/* Upcoming Shows Cards */}
         <UpcomingShow />
-
-        {/* Most Recent Show Card */}
-        <RecentShow />
       </div>
       
       {/* Middle Column - Build a Setlist */}
@@ -140,6 +164,11 @@ function MainContent() {
       {/* Right Column - Song List */}
       <div className="lg:col-span-4">
         <SongsList />
+      </div>
+      
+      {/* Recent Shows Row (Full Width) */}
+      <div className="lg:col-span-12">
+        <RecentShows />
       </div>
     </div>
   );
