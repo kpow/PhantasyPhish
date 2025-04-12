@@ -9,6 +9,8 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
+import VerifyEmail from "@/pages/VerifyEmail";
+import ResendVerification from "@/pages/ResendVerification";
 import Profile from "@/pages/Profile";
 import { SetlistProvider } from "./contexts/SetlistContext";
 import { ScrollProvider } from "./contexts/ScrollContext";
@@ -39,6 +41,8 @@ function Router() {
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route path="/reset-password/:token" component={ResetPassword} />
+      <Route path="/verify-email/:token" component={VerifyEmail} />
+      <Route path="/resend-verification" component={ResendVerification} />
       <Route path="/profile">
         <ProtectedRoute component={Profile} />
       </Route>

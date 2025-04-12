@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
+import { CheckCircle } from "lucide-react";
 
 // Form schema
 const loginSchema = z.object({
@@ -21,11 +23,20 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function Login() {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const auth = useAuth();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showVerifiedMessage, setShowVerifiedMessage] = useState(false);
+  
+  // Check if user came from email verification
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('verified') === 'true') {
+      setShowVerifiedMessage(true);
+    }
+  }, []);
 
   // Form setup
   const form = useForm<LoginFormValues>({
@@ -91,6 +102,14 @@ export default function Login() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {showVerifiedMessage && (
+            <Alert className="mb-4 bg-green-50 border-green-500">
+              <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+              <AlertDescription className="text-green-700">
+                Your email has been successfully verified! You can now log in to your account.
+              </AlertDescription>
+            </Alert>
+          )}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -131,6 +150,11 @@ export default function Login() {
           <div className="text-center text-sm text-muted-foreground">
             <Link href="/forgot-password" className="text-primary hover:underline">
               Forgot your password?
+            </Link>
+          </div>
+          <div className="text-center text-sm text-muted-foreground">
+            <Link href="/resend-verification" className="text-primary hover:underline">
+              Need to verify your email?
             </Link>
           </div>
           <div className="text-center text-sm text-muted-foreground">
