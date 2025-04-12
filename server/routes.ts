@@ -178,47 +178,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (songs.length === 0) {
           console.log("No cached songs found, fetching from setlists API...");
           
-          // Get as many shows as possible to extract a comprehensive song list
-          const showsData = await fetchPhishData("/shows/artist/phish.json", {
-            order_by: "showdate",
-            username: "phishnet",
-            limit: "100" // Request a large batch of shows
-          });
+          // Instead of trying to filter shows, let's use specific show IDs from different eras
+          // We're using a combination of legendary shows, recent shows, and shows with unique repertoire
+          const showIds = [
+            // Recent shows from 2025
+            "1718730981", // Cancun 2025-02-01
+            "1737486654", // Seattle 2025-04-18
+            "1737486683", // Seattle 2025-04-19
+            
+            // Classic 1.0 era shows (1990s)
+            "1282471487", // Big Cypress 1999-12-31
+            "1251594895", // UIC Pavilion 1994-06-18 (OJ show)
+            "1252170044", // The Great Went 1997-08-16
+            "1252170063", // The Great Went 1997-08-17
+            "1252339266", // Island Tour 1998-04-02
+            "1252339284", // Island Tour 1998-04-03
+            "1252339302", // Island Tour 1998-04-04
+            "1252339320", // Island Tour 1998-04-05
+            "1252338950", // Hampton 1997-11-21
+            "1252338968", // Hampton 1997-11-22
+            "1252338986", // Hampton 1997-11-23
+            
+            // 2.0 era shows (2002-2004)
+            "1252676302", // IT Festival 2003-08-02
+            "1252676320", // IT Festival 2003-08-03
+            "1252861803", // Coventry 2004-08-15
+            "1252861785", // Coventry 2004-08-14
+            
+            // 3.0 era shows (2009-present)
+            "1254469716", // Hampton 2009-03-06 (3.0 era start)
+            "1374010871", // Baker's Dozen 2017-07-21
+            "1374010889", // Baker's Dozen 2017-07-22
+            "1374010907", // Baker's Dozen 2017-07-23
+            "1374010925", // Baker's Dozen 2017-07-25
+            "1374010943", // Baker's Dozen 2017-07-26
+            "1374010961", // Baker's Dozen 2017-07-28
+            "1374010979", // Baker's Dozen 2017-07-29
+            "1374010997", // Baker's Dozen 2017-07-30
+            "1393021145", // MSG 2018-12-31
+            
+            // Recent shows
+            "1550133398", // Atlantic City 2021-08-13
+            "1627969236", // MSG 2022-04-20
+            "1718730841", // Mexico 2023-02-23
+            
+            // Halloween shows (with covers/musical costumes)
+            "1254664481", // Festival 8 2009-10-31 (Exile on Main St.)
+            "1310796334", // Atlantic City 2010-10-31 (Waiting for Columbus)
+            "1356537886", // Atlantic City 2013-10-31 (Wingsuit)
+            "1441577299", // Las Vegas 2014-10-31 (Chilling, Thrilling Sounds)
+            "1508542997", // Las Vegas 2016-10-31 (Ziggy Stardust)
+            "1596073502", // Las Vegas 2018-10-31 (Kasvot Växt)
+            "1641044090", // Las Vegas 2021-10-31 (Sci-Fi Soldier)
+            
+            // Special shows and festivals
+            "1311956034", // Super Ball IX 2011-07-01
+            "1311956052", // Super Ball IX 2011-07-02
+            "1311956070", // Super Ball IX 2011-07-03
+            "1441837964", // Magnaball 2015-08-21
+            "1441837977", // Magnaball 2015-08-22
+            "1441837995", // Magnaball 2015-08-23
+            "1678914518", // MSG 2022-12-31 (New Year's)
+            "1678914541", // MSG 2023-01-01 (New Year's)
+          ];
           
-          // Sample shows across different eras to maximize song variety
-          const showsToProcess = [];
-          
-          // Get some recent shows (last 5 years)
-          const recentShows = showsData.filter((show: any) => {
-            const year = parseInt(show.showdate.substring(0, 4));
-            return year >= 2017;
-          }).slice(0, 20);
-          
-          // Get some "3.0 era" shows (2009-2016)
-          const era3Shows = showsData.filter((show: any) => {
-            const year = parseInt(show.showdate.substring(0, 4));
-            return year >= 2009 && year < 2017;
-          }).slice(0, 20);
-          
-          // Get some "2.0 era" shows (2002-2004)
-          const era2Shows = showsData.filter((show: any) => {
-            const year = parseInt(show.showdate.substring(0, 4));
-            return year >= 2002 && year <= 2004;
-          }).slice(0, 15);
-          
-          // Get some "1.0 era" shows (1990s)
-          const era1Shows = showsData.filter((show: any) => {
-            const year = parseInt(show.showdate.substring(0, 4));
-            return year >= 1990 && year < 2000;
-          }).slice(0, 15);
-          
-          // Combine all shows
-          showsToProcess.push(...recentShows, ...era3Shows, ...era2Shows, ...era1Shows);
-          
-          // Get unique show IDs
-          const showIds = Array.from(new Set(showsToProcess.map((show: any) => show.showid)));
-          
-          console.log(`Fetching setlists for ${showIds.length} shows across different eras...`);
+          console.log(`Fetching setlists for ${showIds.length} specific shows across different eras...`);
           
           // Create a Map to store unique songs by ID
           const uniqueSongs = new Map();
