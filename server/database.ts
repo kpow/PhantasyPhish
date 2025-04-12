@@ -1,24 +1,12 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { migrate } from 'drizzle-orm/node-postgres/migrator';
-import { pgTable, eq, and, sql } from 'drizzle-orm/pg-core';
 import { Pool } from 'pg';
 import { 
   users, 
   songs, 
   shows, 
   predictions, 
-  password_reset_tokens,
-  type User, 
-  type InsertUser,
-  type UpdateUser,
-  type Song, 
-  type InsertSong, 
-  type Show, 
-  type InsertShow, 
-  type Prediction, 
-  type InsertPrediction,
-  type PasswordResetToken,
-  type InsertPasswordResetToken
+  password_reset_tokens
 } from "@shared/schema";
 
 // Create a connection pool to the PostgreSQL database

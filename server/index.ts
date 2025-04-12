@@ -7,6 +7,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import passport, { configurePassport } from "./auth/passport";
 import { setupEmailTransporter } from "./auth/email";
+import { runMigrations } from "./database";
 
 // Create uploads directory for avatars
 const uploadsDir = path.join(process.cwd(), "uploads", "avatars");
@@ -70,6 +71,14 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  try {
+    // Run database migrations
+    await runMigrations();
+    log("Database migrations completed successfully");
+  } catch (error) {
+    log("Error running database migrations: " + error);
+  }
+
   // Configure Passport authentication
   configurePassport();
   log("Passport authentication configured");
