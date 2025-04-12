@@ -9,7 +9,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import passport, { configurePassport } from "./auth/passport";
 import { setupEmailTransporter } from "./auth/email";
-import { runMigrations } from "./database";
+import { runMigrations, checkDatabaseTables } from "./database";
 
 const { Pool } = pg;
 
@@ -94,11 +94,21 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
-    // Run database migrations
-    await runMigrations();
-    log("Database migrations completed successfully");
+    // Only run migrations automatically in development mode
+    // or if RUN_MIGRATIONS environment variable is set
+    if (app.get("env") === "development" || process.env.RUN_MIGRATIONS === "true") {
+      await runMigrations();
+      log("Database migrations completed successfully");
+    } else {
+      log("Skipping automatic migrations in production. Set RUN_MIGRATIONS=true to run them");
+      // In production, just check that the tables exist without running migrations
+      const allTablesExist = await checkDatabaseTables();
+      if (!allTablesExist) {
+        log("WARNING: Some required database tables are missing. Consider running migrations");
+      }
+    }
   } catch (error) {
-    log("Error running database migrations: " + error);
+    log("Error with database setup: " + error);
   }
 
   // Configure Passport authentication
