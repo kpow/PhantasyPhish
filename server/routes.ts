@@ -51,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get most recent show
+  // Get most recent show (singular) - kept for backward compatibility
   app.get("/api/shows/recent", async (_req, res) => {
     try {
       const currentDate = new Date().toISOString().split('T')[0];
@@ -76,6 +76,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       console.error("Error fetching recent show:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get multiple recent shows
+  app.get("/api/shows/recent/multiple", async (_req, res) => {
+    try {
+      const currentDate = new Date().toISOString().split('T')[0];
+      const showsData = await fetchPhishData("/shows/artist/phish.json", {
+        order_by: "showdate",
+        username: "phishnet"
+      });
+      
+      const pastShows = showsData.filter((show: any) => show.showdate < currentDate);
+      // Get the 4 most recent shows
+      const recentShows = pastShows.slice(-4).reverse();
+
+      if (recentShows.length > 0) {
+        const formattedShows = recentShows.map((show: any) => ({
+          showid: show.showid,
+          showdate: show.showdate,
+          venue: show.venue,
+          location: `${show.city}, ${show.state}`,
+          country: show.country,
+        }));
+        
+        res.json({ shows: formattedShows });
+      } else {
+        res.status(404).json({ message: "No recent shows found" });
+      }
+    } catch (error) {
+      console.error("Error fetching recent shows:", error);
       res.status(500).json({ message: (error as Error).message });
     }
   });

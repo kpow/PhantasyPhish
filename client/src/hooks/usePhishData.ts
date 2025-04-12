@@ -27,12 +27,20 @@ export function usePhishData() {
     queryKey: ['/api/shows/upcoming'],
   });
 
-  // Fetch recent show
+  // Fetch recent show (single)
   const {
     data: recentShowData,
     isLoading: isLoadingRecentShow
   } = useQuery<PhishShow>({
     queryKey: ['/api/shows/recent'],
+  });
+  
+  // Fetch multiple recent shows
+  const {
+    data: recentShowsData,
+    isLoading: isLoadingRecentShows
+  } = useQuery<{ shows: PhishShow[] }>({
+    queryKey: ['/api/shows/recent/multiple'],
   });
 
   // Function to fetch setlist for a specific show
@@ -46,11 +54,14 @@ export function usePhishData() {
 
   return {
     songs: songsData?.songs || [],
+    upcomingShows: upcomingShowsData?.shows || [],
     upcomingShow: upcomingShowsData?.shows?.[0],
     recentShow: recentShowData,
+    recentShows: recentShowsData?.shows || [],
     isLoadingSongs,
     isLoadingUpcomingShow,
     isLoadingRecentShow,
+    isLoadingRecentShows,
     fetchSetlist,
     formatShowDate
   };
