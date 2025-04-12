@@ -33,7 +33,10 @@ export default function SetlistSection({
   const scrollToBottom = () => {
     setTimeout(() => {
       if (scrollRef.current) {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+        const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (scrollContainer) {
+          scrollContainer.scrollTop = scrollContainer.scrollHeight;
+        }
       }
     }, 50); // Small delay to ensure the DOM has updated
   };
