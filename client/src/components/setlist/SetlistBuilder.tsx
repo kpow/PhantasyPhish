@@ -161,27 +161,57 @@ export default function SetlistBuilder() {
         {/* Set 2 */}
         <div className="mb-6">
           <h3 className="font-display text-xl mb-3 text-secondary">Set 2</h3>
-          <div className="space-y-2">
-            {setlist.set2.map((_, index) => (
-              <div key={`set2-${index}`} className="flex items-center">
-                <span className="font-display text-lg mr-3 text-secondary">{index + 1}</span>
-                {renderSetlistSpot('set2', index)}
+          <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
+            <ScrollArea className="h-[240px] pr-4"> {/* Fixed height of 5 items (approximately) */}
+              <div className="space-y-2 p-2">
+                {setlist.set2.map((_, index) => (
+                  <div key={`set2-${index}`} className="flex items-center">
+                    <span className="font-display text-lg mr-3 text-secondary w-6 text-center">{index + 1}</span>
+                    {renderSetlistSpot('set2', index)}
+                  </div>
+                ))}
               </div>
-            ))}
+            </ScrollArea>
           </div>
+          {setlist.set2.length < 15 && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
+              onClick={() => addSongToSet('set2')}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Song
+            </Button>
+          )}
         </div>
         
         {/* Encore */}
         <div>
           <h3 className="font-display text-xl mb-3 text-green-500">Encore</h3>
-          <div className="space-y-2">
-            {setlist.encore.map((_, index) => (
-              <div key={`encore-${index}`} className="flex items-center">
-                <span className="font-display text-lg mr-3 text-green-500">{index + 1}</span>
-                {renderSetlistSpot('encore', index)}
+          <div className="border border-gray-800 rounded-lg overflow-hidden mb-2">
+            <ScrollArea className="h-[120px] pr-4"> {/* Half height for encore (only need 2-3 items) */}
+              <div className="space-y-2 p-2">
+                {setlist.encore.map((_, index) => (
+                  <div key={`encore-${index}`} className="flex items-center">
+                    <span className="font-display text-lg mr-3 text-green-500 w-6 text-center">{index + 1}</span>
+                    {renderSetlistSpot('encore', index)}
+                  </div>
+                ))}
               </div>
-            ))}
+            </ScrollArea>
           </div>
+          {setlist.encore.length < 5 && ( // Encores are usually shorter
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
+              onClick={() => addSongToSet('encore')}
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add Song
+            </Button>
+          )}
         </div>
         
         <div className="mt-6 flex gap-2">
