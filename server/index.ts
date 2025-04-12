@@ -35,10 +35,12 @@ app.use(
     store: new PgSession({
       pool: pgPool,
       tableName: 'session',
+      createTableIfMissing: true,
     }),
     secret: process.env.SESSION_SECRET || "phish-setlist-predictor-secret",
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // Save the session even if it's not modified
+    saveUninitialized: true, // Save new sessions that haven't been modified
+    rolling: true, // Force a cookie set on every response
     cookie: {
       // In production, we'll trust the proxy and allow non-secure cookies
       // This is necessary for Replit's deployment environment
@@ -47,7 +49,6 @@ app.use(
       sameSite: 'lax', // Allow cross-site requests with top-level navigation
       httpOnly: true, // Prevent client-side JS from reading the cookie
       path: '/',
-      domain: process.env.NODE_ENV === "production" ? undefined : 'localhost',
     },
     name: 'phish.sid', // Custom name to avoid default 'connect.sid'
   })

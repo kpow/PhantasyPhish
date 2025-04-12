@@ -1,4 +1,14 @@
 import { Request, Response, NextFunction } from "express";
+import { SessionData } from "express-session";
+
+// Add passport property to SessionData interface
+declare module "express-session" {
+  interface SessionData {
+    passport?: {
+      user?: number;
+    };
+  }
+}
 
 // Middleware to check if user is authenticated
 export function isAuthenticated(req: Request, res: Response, next: NextFunction) {

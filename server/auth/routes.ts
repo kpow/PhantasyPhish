@@ -56,24 +56,40 @@ router.post("/login", (req: Request, res: Response, next: NextFunction) => {
     // Validate request body
     const loginData = loginSchema.parse(req.body);
     
+    console.log(`Login attempt for email: ${loginData.email}`);
+    
     passport.authenticate("local", (err: any, user: Express.User, info: any) => {
       if (err) {
+        console.error("Login error:", err);
         return next(err);
       }
+      
       if (!user) {
+        console.log(`Authentication failed for ${loginData.email}: ${info.message}`);
         return res.status(401).json({ message: info.message || "Authentication failed" });
       }
       
       req.logIn(user, (err) => {
         if (err) {
+          console.error("Login session error:", err);
           return next(err);
         }
         
-        // Return user information
-        const { password, ...userWithoutPassword } = user as any;
-        return res.json({
-          message: "Login successful",
-          user: userWithoutPassword,
+        console.log(`User authenticated successfully: ${(user as any).email} (ID: ${(user as any).id})`);
+        console.log(`Session ID: ${req.sessionID}`);
+        
+        // Save the session immediately to ensure it's stored
+        req.session.save((err) => {
+          if (err) {
+            console.error("Error saving session:", err);
+          }
+          
+          // Return user information
+          const { password, ...userWithoutPassword } = user as any;
+          return res.json({
+            message: "Login successful",
+            user: userWithoutPassword,
+          });
         });
       });
     })(req, res, next);
@@ -81,12 +97,23 @@ router.post("/login", (req: Request, res: Response, next: NextFunction) => {
     if (error.name === "ZodError") {
       return res.status(400).json({ message: "Invalid input data", errors: error.errors });
     }
+    console.error("Login route error:", error);
     res.status(500).json({ message: "Server error" });
   }
 });
 
 // Get current user
-router.get("/me", isAuthenticated, (req: Request, res: Response) => {
+router.get("/me", (req: Request, res: Response) => {
+  console.log(`/me: Session ID: ${req.sessionID}, Is authenticated: ${req.isAuthenticated()}`);
+  
+  if (req.session && req.session.passport) {
+    console.log(`/me: Session passport data: ${JSON.stringify(req.session.passport)}`);
+  }
+  
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  
   // Return authenticated user (passport adds user to request)
   const { password, ...userWithoutPassword } = req.user as any;
   res.json(userWithoutPassword);
