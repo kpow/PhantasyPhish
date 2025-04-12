@@ -28,8 +28,22 @@ export default function Header() {
   };
 
   const handleLogout = async () => {
-    await logout();
-    setLocation("/login");
+    try {
+      await logout();
+      
+      // Clear any local storage or session storage that might contain auth state
+      localStorage.removeItem('auth_state');
+      sessionStorage.removeItem('auth_state');
+      
+      // Force a slight delay to ensure state updates
+      setTimeout(() => {
+        setLocation("/login");
+      }, 50);
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if logout API call fails, redirect to login page
+      setLocation("/login");
+    }
   };
 
   return (

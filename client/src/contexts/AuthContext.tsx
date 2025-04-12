@@ -44,12 +44,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Define query options with proper type handling
   const queryOptions: UseQueryOptions<User, Error, User, string[]> = {
     queryKey: ["/api/auth/me"],
-    retry: 1,
-    retryDelay: 1000,
+    retry: 3, // Increase retry attempts
+    retryDelay: 2000, // Longer delay between retries
     refetchOnWindowFocus: true,
     refetchOnMount: true,
-    refetchInterval: 2 * 60 * 1000, // Refetch every 2 minutes
-    staleTime: 1 * 60 * 1000, // Data becomes stale after 1 minute
+    refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes (reduced frequency)
+    staleTime: 2 * 60 * 1000, // Data becomes stale after 2 minutes
+    refetchOnReconnect: true, // Refetch when network reconnects
+    // Optimistically consider the user logged in if we have cached data
+    placeholderData: (previousData) => previousData,
   };
 
   const {
@@ -67,12 +70,33 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [user, isLoading]);
 
-  // Refetch user data
+  // Refetch user data with improved error handling
   const refetchUser = async (): Promise<User | null> => {
     try {
+      // Force invalidation of auth query before refetching
+      await queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      
+      // Refetch with increased timeout
       const result = await refetch();
+      
+      // If we got data, update the authentication state
+      if (result.data) {
+        setIsAuthenticated(true);
+      }
+      
       return result.data as User || null;
     } catch (error) {
+      console.error("Failed to refetch user data:", error);
+      
+      // Check if we have a network error
+      if (error instanceof Error && error.message.includes('network')) {
+        // Don't clear authentication state on network errors
+        // as this could be temporary
+        return user || null;
+      }
+      
+      // For other errors, clear authentication state
+      setIsAuthenticated(false);
       return null;
     }
   };

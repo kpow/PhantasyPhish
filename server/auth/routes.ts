@@ -94,14 +94,32 @@ router.get("/me", isAuthenticated, (req: Request, res: Response) => {
 
 // Logout user
 router.post("/logout", (req: Request, res: Response, next: NextFunction) => {
+  // If user is not logged in, just return success
+  if (!req.isAuthenticated()) {
+    return res.json({ message: "Logout successful" });
+  }
+  
   req.logout((err) => {
     if (err) {
+      console.error("Logout error:", err);
       return next(err);
     }
+    
+    // Clear the session from database as well
     req.session.destroy((err) => {
       if (err) {
+        console.error("Session destruction error:", err);
         return next(err);
       }
+      
+      // Clear the cookie by sending an expired one
+      res.clearCookie('phish.sid', {
+        path: '/',
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: false
+      });
+      
       res.json({ message: "Logout successful" });
     });
   });
