@@ -12,8 +12,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function SongsList() {
   const { songs, isLoadingSongs } = usePhishData();
   const { 
-    selectedSong, 
-    setSelectedSong, 
     setlist,
     setSetlistSpot 
   } = useContext(SetlistContext);
@@ -35,10 +33,6 @@ export default function SongsList() {
       return [...filtered].sort((a, b) => b.times_played - a.times_played);
     }
   }, [songs, searchTerm, sortType]);
-
-  const handleSongClick = (song: PhishSong) => {
-    setSelectedSong(song);
-  };
 
   // Function to find the first empty spot in a set
   const findFirstEmptySpot = (setType: 'set1' | 'set2' | 'encore') => {
@@ -62,8 +56,7 @@ export default function SongsList() {
   };
 
   // Toggle the expanded state of a song
-  const toggleSongExpand = (e: React.MouseEvent, songId: string) => {
-    e.stopPropagation(); // Prevent triggering the row click
+  const toggleSongExpand = (songId: string) => {
     setExpandedSongId(expandedSongId === songId ? null : songId);
   };
 
@@ -116,31 +109,21 @@ export default function SongsList() {
             {filteredSongs.map((song, index) => (
               <div key={song.id} className="relative">
                 <div 
-                  className={`p-2 rounded-lg flex justify-between transition-colors cursor-pointer ${
-                    selectedSong?.id === song.id 
-                      ? 'bg-[rgba(59,130,246,0.3)] border-l-4 border-primary'
-                      : index % 2 === 0
-                        ? 'bg-[rgba(30,30,30,0.8)] hover:bg-[rgba(59,130,246,0.2)]'
-                        : 'bg-[rgba(40,40,40,0.8)] hover:bg-[rgba(59,130,246,0.2)]'
-                  }`}
-                  onClick={() => handleSongClick(song)}
+                  className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                    index % 2 === 0
+                    ? 'bg-[rgba(30,30,30,0.8)] hover:bg-[rgba(59,130,246,0.2)]'
+                    : 'bg-[rgba(40,40,40,0.8)] hover:bg-[rgba(59,130,246,0.2)]'
+                  } ${expandedSongId === song.id ? 'bg-[rgba(59,130,246,0.3)]' : ''}`}
+                  onClick={() => toggleSongExpand(song.id)}
                 >
                   <div className="flex items-center justify-between w-full">
                     <span className="text-[#E5E5E5]">{song.name}</span>
                     <div className="flex items-center space-x-2">
                       <span className="text-xs text-gray-400">{song.times_played}x</span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-5 w-5 p-0 text-gray-400 hover:text-white"
-                        onClick={(e) => toggleSongExpand(e, song.id)}
-                      >
-                        <ChevronUp 
-                          className={`h-4 w-4 transition-transform ${
-                            expandedSongId === song.id ? 'rotate-0' : 'rotate-180'
-                          }`} 
-                        />
-                      </Button>
+                      <ChevronUp 
+                        className={`h-4 w-4 transition-transform text-gray-400 
+                          ${expandedSongId === song.id ? 'rotate-0' : 'rotate-180'}`} 
+                      />
                     </div>
                   </div>
                 </div>

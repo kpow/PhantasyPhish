@@ -46,10 +46,9 @@ export function SortableItem({
       <span className={`font-display text-lg mr-3 ${titleColor} w-6 text-center`}>{index + 1}</span>
       <div 
         className={`flex-1 border border-gray-700 rounded-lg p-3 ${textColor} 
-          ${selectedSong ? 'hover:bg-green-900/30' : 'hover:bg-[rgba(255,255,255,0.1)]'} 
-          ${hasSong ? 'border-primary/50' : 'border-gray-700'}
-          transition-colors cursor-pointer flex items-center`}
-        onClick={handleClick}
+          ${hasSong ? 'hover:bg-[rgba(255,255,255,0.1)] border-primary/50 cursor-pointer' : 'border-gray-700 cursor-default'}
+          transition-colors flex items-center`}
+        onClick={hasSong ? handleClick : undefined}
         {...attributes}
         {...listeners}
       >

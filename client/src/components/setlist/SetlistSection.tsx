@@ -87,12 +87,9 @@ export default function SetlistSection({
   };
   
   const handleSongClick = (position: number) => {
+    // With the quick add menu, we now only allow removing songs by clicking on them
     const currentItem = setItems[position];
-    
-    // If there's a selected song, add it here
-    if (selectedSong) {
-      onSetSong(setType, position, selectedSong);
-    } else if (currentItem.song) {
+    if (currentItem.song) {
       // If clicking on a song that's already set, remove it
       onSetSong(setType, position, null);
     }
@@ -119,7 +116,7 @@ export default function SetlistSection({
                 strategy={verticalListSortingStrategy}
               >
                 {setItems.map((item, index) => {
-                  const songName = item.song ? item.song.name : 'Click to add a song';
+                  const songName = item.song ? item.song.name : 'Use quick add menu to add a song';
                   const textColor = item.song ? 'text-white' : 'text-gray-500';
                   
                   return (
