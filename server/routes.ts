@@ -9,6 +9,9 @@ import path from "path";
 import authRoutes from "./auth/routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Register authentication routes
+  app.use("/api/auth", authRoutes);
+  
   // API Routes
   
   // Get all songs

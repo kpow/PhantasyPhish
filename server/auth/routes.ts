@@ -48,12 +48,12 @@ router.post("/register", async (req, res) => {
 });
 
 // Login
-router.post("/login", (req, res, next) => {
+router.post("/login", (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate request body
     loginSchema.parse(req.body);
     
-    passport.authenticate("local", (err: Error, user: any, info: any) => {
+    passport.authenticate("local", (err: Error | null, user: any, info: any) => {
       if (err) {
         return next(err);
       }
@@ -62,7 +62,7 @@ router.post("/login", (req, res, next) => {
         return res.status(401).json({ message: info.message || "Invalid credentials" });
       }
       
-      req.logIn(user, (loginErr) => {
+      req.logIn(user, (loginErr: Error | null) => {
         if (loginErr) {
           return next(loginErr);
         }
@@ -83,7 +83,7 @@ router.post("/login", (req, res, next) => {
 }, handleAuthErrors);
 
 // Get current user
-router.get("/me", isAuthenticated, (req, res) => {
+router.get("/me", isAuthenticated, (req: Request, res: Response) => {
   // Remove password from response
   const { password, ...userWithoutPassword } = req.user as any;
   
@@ -91,8 +91,8 @@ router.get("/me", isAuthenticated, (req, res) => {
 });
 
 // Logout
-router.post("/logout", (req, res, next) => {
-  req.logout((err) => {
+router.post("/logout", (req: Request, res: Response, next: NextFunction) => {
+  req.logout((err: Error | null) => {
     if (err) {
       return next(err);
     }
@@ -101,7 +101,7 @@ router.post("/logout", (req, res, next) => {
 });
 
 // Request password reset
-router.post("/reset-password/request", async (req, res) => {
+router.post("/reset-password/request", async (req: Request, res: Response) => {
   try {
     const { email } = resetPasswordRequestSchema.parse(req.body);
     
@@ -149,7 +149,7 @@ router.post("/reset-password/request", async (req, res) => {
 });
 
 // Reset password with token
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", async (req: Request, res: Response) => {
   try {
     const { token, password } = resetPasswordSchema.parse(req.body);
     
@@ -177,7 +177,7 @@ router.post("/reset-password", async (req, res) => {
 });
 
 // Update user profile
-router.put("/profile", isAuthenticated, async (req, res) => {
+router.put("/profile", isAuthenticated, async (req: Request, res: Response) => {
   try {
     const userId = (req.user as any).id;
     const updateData = updateUserSchema.parse(req.body);
@@ -195,7 +195,7 @@ router.put("/profile", isAuthenticated, async (req, res) => {
 });
 
 // Update password (authenticated)
-router.put("/change-password", isAuthenticated, async (req, res) => {
+router.put("/change-password", isAuthenticated, async (req: Request, res: Response) => {
   try {
     const userId = (req.user as any).id;
     const { password } = updatePasswordSchema.parse(req.body);
@@ -214,7 +214,7 @@ router.put("/change-password", isAuthenticated, async (req, res) => {
 });
 
 // Upload avatar
-router.post("/avatar", isAuthenticated, upload.single("avatar"), async (req, res) => {
+router.post("/avatar", isAuthenticated, upload.single("avatar"), async (req: Request, res: Response) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
