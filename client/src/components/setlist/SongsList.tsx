@@ -13,7 +13,8 @@ export default function SongsList() {
   const { songs, isLoadingSongs } = usePhishData();
   const { 
     setlist,
-    setSetlistSpot 
+    setSetlistSpot,
+    addSongToSet 
   } = useContext(SetlistContext);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState<'az' | 'plays'>('plays');
@@ -72,9 +73,19 @@ export default function SongsList() {
   // Function to add song to a specific set
   const addSongToFirstEmptySpot = (song: PhishSong, setType: 'set1' | 'set2' | 'encore') => {
     const position = findFirstEmptySpot(setType);
+    
     if (position !== -1) {
+      // If there's an empty spot, use it
       setSetlistSpot(setType, position, song);
+    } else {
+      // If no empty spots, add a new one first
+      addSongToSet(setType);
+      
+      // Then set the song at the new position
+      const newPosition = setlist[setType].length - 1;
+      setSetlistSpot(setType, newPosition, song);
     }
+    
     // Close the menu after adding
     setExpandedSongId(null);
   };
@@ -178,7 +189,7 @@ export default function SongsList() {
                           variant="outline"
                           className="bg-blue-800 hover:bg-blue-700 text-white border-blue-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'set1')}
-                          disabled={findFirstEmptySpot('set1') === -1}
+                          disabled={setlist['set1'].length >= 15} // Only disable if at max length
                         >
                           S1
                         </Button>
@@ -187,7 +198,7 @@ export default function SongsList() {
                           variant="outline"
                           className="bg-purple-800 hover:bg-purple-700 text-white border-purple-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'set2')}
-                          disabled={findFirstEmptySpot('set2') === -1}
+                          disabled={setlist['set2'].length >= 15} // Only disable if at max length
                         >
                           S2
                         </Button>
@@ -196,7 +207,7 @@ export default function SongsList() {
                           variant="outline"
                           className="bg-red-800 hover:bg-red-700 text-white border-red-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={findFirstEmptySpot('encore') === -1}
+                          disabled={setlist['encore'].length >= 5} // Only disable if at max length
                         >
                           E
                         </Button>
