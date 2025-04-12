@@ -1,61 +1,64 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 // Create uploads directory if it doesn't exist
-const uploadsDir = path.join(process.cwd(), "uploads", "avatars");
+const uploadsDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
 // Configure storage
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+  destination: function (_req, _file, cb) {
     cb(null, uploadsDir);
   },
-  filename: (_req, file, cb) => {
-    // Create unique filename: timestamp + original extension
-    const uniqueFilename = `${Date.now()}-${Math.round(Math.random() * 1E9)}${path.extname(file.originalname)}`;
-    cb(null, uniqueFilename);
+  filename: function (_req, file, cb) {
+    // Generate a unique filename with original extension
+    const extension = path.extname(file.originalname);
+    const uniqueId = uuidv4();
+    cb(null, `${uniqueId}${extension}`);
   },
 });
 
-// File filter - only allow images
+// File filter to accept only image files
 const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
-  // Accept images only
-  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
-    return cb(new Error("Only image files are allowed!"));
+  // Accept only image files
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed"));
   }
-  cb(null, true);
 };
 
-// Upload middleware
+// Create multer upload instance
 export const upload = multer({
   storage,
   limits: {
-    fileSize: 1024 * 1024 * 2, // 2MB max file size
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
   },
   fileFilter,
 });
 
-// Helper function to get public URL for an avatar
+// Get public URL for avatar
 export function getAvatarUrl(filename: string): string {
-  return `/uploads/avatars/${filename}`;
+  return `/uploads/${filename}`;
 }
 
-// Helper function to delete an avatar file
-export function deleteAvatar(filename: string): Promise<void> {
+// Delete avatar file
+export function deleteAvatar(filepath: string): Promise<void> {
+  // Remove the leading slash and 'uploads' from the path
+  const relativeFilepath = filepath.replace(/^\/uploads\//, "");
+  const absoluteFilepath = path.join(uploadsDir, relativeFilepath);
+
   return new Promise((resolve, reject) => {
-    const filepath = path.join(uploadsDir, path.basename(filename));
-    fs.unlink(filepath, (err) => {
+    fs.unlink(absoluteFilepath, (err) => {
       if (err) {
-        // If file doesn't exist, consider it successful
-        if (err.code === 'ENOENT') {
-          return resolve();
-        }
-        return reject(err);
+        reject(err);
+      } else {
+        resolve();
       }
-      resolve();
     });
   });
 }

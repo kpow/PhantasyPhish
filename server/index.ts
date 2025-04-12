@@ -4,7 +4,7 @@ import path from "path";
 import fs from "fs";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import passport from "./auth/passport";
+import passport, { configurePassport } from "./auth/passport";
 import { setupEmailTransporter } from "./auth/email";
 
 // Create uploads directory for avatars
@@ -69,6 +69,10 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Configure Passport authentication
+  configurePassport();
+  log("Passport authentication configured");
+
   // Set up email transporter if credentials are available
   if (process.env.GMAIL_USER && process.env.GMAIL_PASSWORD) {
     await setupEmailTransporter(process.env.GMAIL_USER, process.env.GMAIL_PASSWORD);

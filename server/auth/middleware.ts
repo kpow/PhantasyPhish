@@ -5,14 +5,12 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
   if (req.isAuthenticated()) {
     return next();
   }
+  
   res.status(401).json({ message: "Unauthorized" });
 }
 
-// Middleware to capture authentication errors
+// Middleware to handle authentication errors
 export function handleAuthErrors(err: Error, req: Request, res: Response, next: NextFunction) {
-  if (err) {
-    console.error("Authentication error:", err);
-    return res.status(500).json({ message: "Authentication error", error: err.message });
-  }
-  next();
+  console.error("Authentication error:", err);
+  res.status(500).json({ message: "Authentication error" });
 }

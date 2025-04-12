@@ -2,52 +2,57 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
 import { storage } from "../storage";
-import { User } from "@shared/schema";
+import type { User } from "@shared/schema";
 
-// Configure passport to use local strategy
-passport.use(
-  new LocalStrategy(
-    {
-      usernameField: "email",
-      passwordField: "password",
-    },
-    async (email, password, done) => {
-      try {
-        // Find user with the given email
-        const user = await storage.getUserByEmail(email);
-        
-        // If user not found or password is incorrect
-        if (!user || !await bcrypt.compare(password, user.password)) {
-          return done(null, false, { message: "Invalid email or password" });
+// Configure Passport.js local strategy
+export function configurePassport() {
+  // Use local strategy for username/password authentication
+  passport.use(
+    new LocalStrategy(
+      {
+        usernameField: "email",
+        passwordField: "password",
+      },
+      async (email, password, done) => {
+        try {
+          // Find user by email
+          const user = await storage.getUserByEmail(email);
+          
+          // If user not found or password doesn't match
+          if (!user) {
+            return done(null, false, { message: "Invalid email or password" });
+          }
+          
+          // Compare password with hashed password in database
+          const isMatch = await bcrypt.compare(password, user.password);
+          
+          if (!isMatch) {
+            return done(null, false, { message: "Invalid email or password" });
+          }
+          
+          // Authentication successful
+          return done(null, user);
+        } catch (error) {
+          return done(error);
         }
-        
-        // Authentication successful
-        return done(null, user);
-      } catch (error) {
-        return done(error);
       }
+    )
+  );
+  
+  // Serialize user to store in session
+  passport.serializeUser((user: Express.User, done) => {
+    done(null, (user as User).id);
+  });
+  
+  // Deserialize user from session
+  passport.deserializeUser(async (id: number, done) => {
+    try {
+      const user = await storage.getUser(id);
+      done(null, user);
+    } catch (error) {
+      done(error);
     }
-  )
-);
-
-// Serialize user to the session
-passport.serializeUser((user: Express.User, done) => {
-  done(null, (user as User).id);
-});
-
-// Deserialize user from the session
-passport.deserializeUser(async (id: number, done) => {
-  try {
-    const user = await storage.getUser(id);
-    
-    if (!user) {
-      return done(new Error("User not found"));
-    }
-    
-    done(null, user);
-  } catch (error) {
-    done(error);
-  }
-});
+  });
+}
 
 export default passport;
