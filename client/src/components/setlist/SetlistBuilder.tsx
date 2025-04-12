@@ -189,7 +189,18 @@ export default function SetlistBuilder() {
               variant="outline" 
               size="sm" 
               className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
-              onClick={() => addSongToSet('set2')}
+              onClick={() => {
+                // Create a new spot
+                const newPosition = setlist.set2.length;
+                const newSpot = { position: newPosition, song: null };
+                const newSet2 = [...setlist.set2, newSpot];
+                
+                // Update the setlist with the new spot
+                setSetlist({
+                  ...setlist,
+                  set2: newSet2
+                });
+              }}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Song
@@ -217,7 +228,18 @@ export default function SetlistBuilder() {
               variant="outline" 
               size="sm" 
               className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
-              onClick={() => addSongToSet('encore')}
+              onClick={() => {
+                // Create a new spot
+                const newPosition = setlist.encore.length;
+                const newSpot = { position: newPosition, song: null };
+                const newEncore = [...setlist.encore, newSpot];
+                
+                // Update the setlist with the new spot
+                setSetlist({
+                  ...setlist,
+                  encore: newEncore
+                });
+              }}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Song
