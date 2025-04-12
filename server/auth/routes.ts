@@ -180,7 +180,7 @@ router.post("/reset-password/request", async (req: Request, res: Response) => {
     // Generate reset URL - use a hardcoded URL for Replit
     
     // For Replit we need to use the exact deployment URL
-    const resetUrl = `https://pp-auth-v2.kpow.repl.co/reset-password/${resetToken}`;
+    const resetUrl = `https://phantasy-phish.replit.app/reset-password/${resetToken}`;
     
     console.log(`Generating password reset URL with token: ${resetToken}`);
     console.log(`Reset URL: ${resetUrl}`);
