@@ -40,12 +40,14 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      // For production, use 'secure: true' only if using HTTPS
-      secure: process.env.NODE_ENV === "production" && process.env.FORCE_SECURE_COOKIE === "true",
+      // In production, we'll trust the proxy and allow non-secure cookies
+      // This is necessary for Replit's deployment environment
+      secure: false, // Don't require HTTPS for cookies to work
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: process.env.NODE_ENV === "production" ? 'lax' : 'strict',
-      httpOnly: true,
+      sameSite: 'lax', // Allow cross-site requests with top-level navigation
+      httpOnly: true, // Prevent client-side JS from reading the cookie
       path: '/',
+      domain: process.env.NODE_ENV === "production" ? undefined : 'localhost',
     },
     name: 'phish.sid', // Custom name to avoid default 'connect.sid'
   })

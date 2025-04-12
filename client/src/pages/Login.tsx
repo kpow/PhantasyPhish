@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,7 +23,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export default function Login() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const { refetchUser } = useAuth();
+  const auth = useAuth();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,7 +48,7 @@ export default function Login() {
     onSuccess: async () => {
       // Invalidate and refetch current user data
       await queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      await refetchUser();
+      await auth.refetchUser();
       
       toast({
         title: "Login successful",
@@ -71,10 +71,10 @@ export default function Login() {
     try {
       await loginMutation.mutateAsync(values);
       // Explicitly refetch user data after login to ensure auth state is updated
-      await refetchUser();
+      await auth.refetchUser();
       // Force a slight delay to ensure the state is updated
       setTimeout(() => {
-        navigate('/');
+        setLocation('/');
       }, 100);
     } finally {
       setIsSubmitting(false);
