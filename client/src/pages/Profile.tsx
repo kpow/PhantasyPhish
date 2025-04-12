@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Loader2, Camera, User } from "lucide-react";
+import { Loader2, Camera, User, ArrowLeft } from "lucide-react";
 
 // Profile update schema
 const profileSchema = z.object({
@@ -249,6 +249,16 @@ export default function Profile() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-background p-4">
       <div className="w-full max-w-4xl">
+        {/* Back Button */}
+        <div className="w-full flex justify-start mb-4">
+          <Link href="/">
+            <Button variant="ghost" size="sm" className="flex items-center gap-1">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Home
+            </Button>
+          </Link>
+        </div>
+        
         <div className="flex flex-col items-center mb-8">
           <div className="relative mb-4">
             <Avatar className="h-24 w-24">
