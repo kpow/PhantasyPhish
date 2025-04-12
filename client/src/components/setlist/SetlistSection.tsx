@@ -44,7 +44,7 @@ export default function SetlistSection({
 }: SetlistSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { triggerScroll, resetTrigger } = useScroll();
-
+  
   // Listen for scroll triggers
   useEffect(() => {
     if (triggerScroll[setType]) {
@@ -52,7 +52,7 @@ export default function SetlistSection({
       resetTrigger(setType);
     }
   }, [triggerScroll, setType, resetTrigger]);
-
+  
   // Setup DnD sensors
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -64,7 +64,7 @@ export default function SetlistSection({
       coordinateGetter: sortableKeyboardCoordinates,
     })
   );
-
+  
   // Function to scroll to bottom of a scroll area
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -76,22 +76,22 @@ export default function SetlistSection({
       }
     }, 50); // Small delay to ensure the DOM has updated
   };
-
+  
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-
+    
     if (over && active.id !== over.id) {
       const oldIndex = parseInt(active.id.toString().split('-')[1]);
       const newIndex = parseInt(over.id.toString().split('-')[1]);
-
+      
       onReorderSongs(setType, oldIndex, newIndex);
     }
   };
-
+  
   const getItemIds = () => {
     return setItems.map((_, index) => `${setType}-${index}`);
   };
-
+  
   const handleSongClick = (position: number) => {
     // With the quick add menu, we now only allow removing songs by clicking on them
     const currentItem = setItems[position];
@@ -100,7 +100,7 @@ export default function SetlistSection({
       onSetSong(setType, position, null);
     }
   };
-
+  
   return (
     <div className="mb-6">
       <h3 className={`font-display text-xl mb-3 ${titleColor}`}>{title}</h3>
@@ -119,7 +119,7 @@ export default function SetlistSection({
                 {setItems.map((item, index) => {
                   const songName = item.song ? item.song.name : 'Use quick add menu to add a song';
                   const textColor = item.song ? 'text-white' : 'text-gray-500';
-
+                  
                   return (
                     <SortableItem
                       key={`${setType}-${index}`}
