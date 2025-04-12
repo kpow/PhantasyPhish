@@ -1,178 +1,194 @@
-import { Router, Request, Response, NextFunction } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import bcrypt from "bcryptjs";
-import crypto from "crypto";
+import { v4 as uuidv4 } from "uuid";
 import { storage } from "../storage";
+import { isAuthenticated } from "./middleware";
+import { upload, getAvatarUrl, deleteAvatar } from "./uploads";
+import { sendPasswordResetEmail } from "./email";
 import { 
+  insertUserSchema, 
   loginSchema, 
   resetPasswordRequestSchema, 
   resetPasswordSchema, 
-  insertUserSchema,
   updateUserSchema,
   updatePasswordSchema
 } from "@shared/schema";
-import { isAuthenticated, handleAuthErrors } from "./middleware";
-import { upload, getAvatarUrl, deleteAvatar } from "./uploads";
-import { sendPasswordResetEmail } from "./email";
 
-const router = Router();
+const router = express.Router();
 
 // Register a new user
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
+    // Validate request body
     const userData = insertUserSchema.parse(req.body);
     
-    // Check if user with this email already exists
+    // Check if user already exists
     const existingUser = await storage.getUserByEmail(userData.email);
     if (existingUser) {
-      return res.status(400).json({ message: "User with this email already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
     
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(userData.password, salt);
     
-    // Create the user with hashed password
+    // Create user
     const user = await storage.createUser({
       ...userData,
-      password: hashedPassword
+      password: hashedPassword,
     });
     
-    // Remove password from response
+    // Return user without password
     const { password, ...userWithoutPassword } = user;
-    
     res.status(201).json(userWithoutPassword);
   } catch (error: any) {
-    console.error("Error registering user:", error);
-    res.status(400).json({ message: error.message });
+    if (error.name === "ZodError") {
+      return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+    }
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Login
+// Login user
 router.post("/login", (req: Request, res: Response, next: NextFunction) => {
   try {
     // Validate request body
-    loginSchema.parse(req.body);
+    const loginData = loginSchema.parse(req.body);
     
-    passport.authenticate("local", (err: Error | null, user: any, info: any) => {
+    passport.authenticate("local", (err: any, user: Express.User, info: any) => {
       if (err) {
         return next(err);
       }
-      
       if (!user) {
-        return res.status(401).json({ message: info.message || "Invalid credentials" });
+        return res.status(401).json({ message: info.message || "Authentication failed" });
       }
       
-      req.logIn(user, (loginErr: Error | null) => {
-        if (loginErr) {
-          return next(loginErr);
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
         }
         
-        // Remove password from response
-        const { password, ...userWithoutPassword } = user;
-        
+        // Return user information
+        const { password, ...userWithoutPassword } = user as any;
         return res.json({
           message: "Login successful",
-          user: userWithoutPassword
+          user: userWithoutPassword,
         });
       });
     })(req, res, next);
   } catch (error: any) {
-    console.error("Error logging in:", error);
-    res.status(400).json({ message: error.message });
+    if (error.name === "ZodError") {
+      return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+    }
+    res.status(500).json({ message: "Server error" });
   }
-}, handleAuthErrors);
+});
 
 // Get current user
 router.get("/me", isAuthenticated, (req: Request, res: Response) => {
-  // Remove password from response
+  // Return authenticated user (passport adds user to request)
   const { password, ...userWithoutPassword } = req.user as any;
-  
   res.json(userWithoutPassword);
 });
 
-// Logout
+// Logout user
 router.post("/logout", (req: Request, res: Response, next: NextFunction) => {
-  req.logout((err: Error | null) => {
+  req.logout((err) => {
     if (err) {
       return next(err);
     }
-    res.json({ message: "Logout successful" });
+    req.session.destroy((err) => {
+      if (err) {
+        return next(err);
+      }
+      res.json({ message: "Logout successful" });
+    });
   });
 });
 
 // Request password reset
 router.post("/reset-password/request", async (req: Request, res: Response) => {
   try {
+    // Validate request
     const { email } = resetPasswordRequestSchema.parse(req.body);
     
-    // Find user with this email
+    // Find user by email
     const user = await storage.getUserByEmail(email);
-    
-    // If user exists, generate reset token
-    if (user) {
-      // Generate random token
-      const token = crypto.randomBytes(32).toString("hex");
-      
-      // Set token expiration (1 hour from now)
-      const expiresAt = new Date();
-      expiresAt.setHours(expiresAt.getHours() + 1);
-      
-      // Save token to database
-      await storage.createPasswordResetToken({
-        user_id: user.id,
-        token,
-        expires_at: expiresAt
-      });
-      
-      // Create reset URL
-      const resetUrl = `${req.protocol}://${req.get("host")}/reset-password/${token}`;
-      
-      // Send email
-      try {
-        await sendPasswordResetEmail(user.email, resetUrl);
-        res.json({ message: "Password reset email sent" });
-      } catch (emailError) {
-        console.error("Failed to send reset email:", emailError);
-        res.status(500).json({ 
-          message: "Failed to send reset email. Please try again later.",
-          debug: process.env.NODE_ENV === "development" ? emailError : undefined
-        });
-      }
-    } else {
-      // Don't reveal that email doesn't exist for security reasons
-      res.json({ message: "If an account with that email exists, a password reset link has been sent" });
+    if (!user) {
+      // Don't reveal that user doesn't exist
+      return res.json({ message: "If your email exists in our system, you will receive a password reset link" });
     }
+    
+    // Generate token
+    const resetToken = uuidv4();
+    const expiresAt = new Date();
+    expiresAt.setHours(expiresAt.getHours() + 1); // Token valid for 1 hour
+    
+    // Store token in database
+    await storage.createPasswordResetToken({
+      user_id: user.id,
+      token: resetToken,
+      expires_at: expiresAt,
+      is_used: false,
+    });
+    
+    // Generate reset URL
+    const resetUrl = `${req.protocol}://${req.get("host")}/reset-password?token=${resetToken}`;
+    
+    // Send email
+    try {
+      await sendPasswordResetEmail(email, resetUrl);
+    } catch (emailError) {
+      console.error("Failed to send password reset email:", emailError);
+      // Continue processing even if email fails
+    }
+    
+    res.json({ message: "If your email exists in our system, you will receive a password reset link" });
   } catch (error: any) {
-    console.error("Error requesting password reset:", error);
-    res.status(400).json({ message: error.message });
+    if (error.name === "ZodError") {
+      return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+    }
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Reset password with token
 router.post("/reset-password", async (req: Request, res: Response) => {
   try {
+    // Validate request
     const { token, password } = resetPasswordSchema.parse(req.body);
     
-    // Find valid token
+    // Find token in database
     const resetToken = await storage.getPasswordResetToken(token);
     
-    if (!resetToken) {
+    // Check if token exists and is valid
+    if (!resetToken || resetToken.is_used || new Date() > new Date(resetToken.expires_at)) {
       return res.status(400).json({ message: "Invalid or expired token" });
     }
     
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Find user
+    const user = await storage.getUser(resetToken.user_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     
-    // Update the user's password
-    await storage.updatePassword(resetToken.user_id, hashedPassword);
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    // Update user password
+    await storage.updatePassword(user.id, hashedPassword);
     
     // Mark token as used
     await storage.markTokenAsUsed(resetToken.id);
     
-    res.json({ message: "Password reset successful" });
+    res.json({ message: "Password has been reset successfully" });
   } catch (error: any) {
-    console.error("Error resetting password:", error);
-    res.status(400).json({ message: error.message });
+    if (error.name === "ZodError") {
+      return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+    }
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -180,73 +196,84 @@ router.post("/reset-password", async (req: Request, res: Response) => {
 router.put("/profile", isAuthenticated, async (req: Request, res: Response) => {
   try {
     const userId = (req.user as any).id;
-    const updateData = updateUserSchema.parse(req.body);
     
-    const updatedUser = await storage.updateUser(userId, updateData);
+    // Validate request body
+    const profileData = updateUserSchema.parse(req.body);
     
-    // Remove password from response
+    // Update user in database
+    const updatedUser = await storage.updateUser(userId, profileData);
+    
+    // Return updated user without password
     const { password, ...userWithoutPassword } = updatedUser;
-    
     res.json(userWithoutPassword);
   } catch (error: any) {
-    console.error("Error updating profile:", error);
-    res.status(400).json({ message: error.message });
+    if (error.name === "ZodError") {
+      return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+    }
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Update password (authenticated)
+// Change password
 router.put("/change-password", isAuthenticated, async (req: Request, res: Response) => {
   try {
     const userId = (req.user as any).id;
+    
+    // Validate request body
     const { password } = updatePasswordSchema.parse(req.body);
     
-    // Hash the new password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     
-    // Update the password
-    await storage.updatePassword(userId, hashedPassword);
+    // Update password in database
+    const updatedUser = await storage.updatePassword(userId, hashedPassword);
     
-    res.json({ message: "Password updated successfully" });
+    // Return user without password
+    const { password: _, ...userWithoutPassword } = updatedUser;
+    res.json(userWithoutPassword);
   } catch (error: any) {
-    console.error("Error changing password:", error);
-    res.status(400).json({ message: error.message });
+    if (error.name === "ZodError") {
+      return res.status(400).json({ message: "Invalid input data", errors: error.errors });
+    }
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Upload avatar
 router.post("/avatar", isAuthenticated, upload.single("avatar"), async (req: Request, res: Response) => {
   try {
+    const userId = (req.user as any).id;
+    
+    // Check if file was uploaded
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
     
-    const userId = (req.user as any).id;
+    // Get avatar URL
+    const avatarUrl = getAvatarUrl(req.file.filename);
+    
+    // Get current user
     const user = await storage.getUser(userId);
     
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    
-    // If user already has an avatar, delete the old one
-    if (user.avatar_path) {
+    // Delete old avatar if exists
+    if (user?.avatar_path) {
       try {
         await deleteAvatar(user.avatar_path);
-      } catch (error) {
-        console.error("Failed to delete old avatar:", error);
+      } catch (deleteError) {
+        console.error("Failed to delete old avatar:", deleteError);
+        // Continue even if deletion fails
       }
     }
     
     // Update user with new avatar path
-    const avatarUrl = getAvatarUrl(req.file.filename);
     const updatedUser = await storage.updateUser(userId, { avatar_path: avatarUrl });
     
-    // Remove password from response
+    // Return updated user without password
     const { password, ...userWithoutPassword } = updatedUser;
-    
-    res.json({ message: "Avatar uploaded successfully", user: userWithoutPassword });
-  } catch (error: any) {
-    console.error("Error uploading avatar:", error);
-    res.status(400).json({ message: error.message });
+    res.json(userWithoutPassword);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 });
 
