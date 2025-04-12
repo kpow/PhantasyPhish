@@ -21,25 +21,23 @@ function ShowCard({ show, onViewSetlist, isLoading }: {
   isLoading: boolean
 }) {
   return (
-    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-white text-base mb-2">{formatShowDate(show.showdate)}</h3>
-        <div className="text-[#E5E5E5] text-sm">
-          <p>{show.venue}</p>
-          <p className="truncate">{typeof show.location === 'string' ? show.location : ''}</p>
-        </div>
-        <div className="mt-3">
-          <Button 
-            variant="secondary" 
-            className="w-full bg-gray-700 hover:bg-gray-600 font-medium py-1 px-3 rounded-lg transition-colors text-sm"
-            onClick={() => onViewSetlist(show.showid)}
-            disabled={isLoading}
-          >
-            View Setlist
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="p-4 bg-[#252525] rounded-lg">
+      <h3 className="font-semibold text-white text-base mb-2">{formatShowDate(show.showdate)}</h3>
+      <div className="text-[#E5E5E5] text-sm">
+        <p>{show.venue}</p>
+        <p className="truncate">{typeof show.location === 'string' ? show.location : ''}</p>
+      </div>
+      <div className="mt-3">
+        <Button 
+          variant="secondary" 
+          className="w-full bg-gray-700 hover:bg-gray-600 font-medium py-1 px-3 rounded-lg transition-colors text-sm"
+          onClick={() => onViewSetlist(show.showid)}
+          disabled={isLoading}
+        >
+          View Setlist
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -71,52 +69,52 @@ export default function RecentShows() {
 
   if (isLoadingRecentShows) {
     return (
-      <div className="w-full mt-6">
-        <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i} className="bg-[#1E1E1E] rounded-xl shadow-lg">
-              <CardContent className="p-4">
+      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
+        <CardContent className="p-5">
+          <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="p-4 bg-[#252525] rounded-lg">
                 <Skeleton className="h-5 w-3/4 mb-2" />
                 <Skeleton className="h-4 w-1/2 mb-1" />
                 <Skeleton className="h-4 w-2/3 mb-3" />
                 <Skeleton className="h-8 w-full rounded-lg" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (!recentShows || recentShows.length === 0) {
     return (
-      <div className="w-full mt-6">
-        <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
-        <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
-          <CardContent className="p-5">
-            <p className="text-[#E5E5E5]">No recent shows found.</p>
-          </CardContent>
-        </Card>
-      </div>
+      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
+        <CardContent className="p-5">
+          <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
+          <p className="text-[#E5E5E5]">No recent shows found.</p>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
     <>
-      <div className="w-full mt-6">
-        <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {recentShows.map((show) => (
-            <ShowCard 
-              key={show.showid}
-              show={show}
-              onViewSetlist={handleViewSetlist}
-              isLoading={isLoading}
-            />
-          ))}
-        </div>
-      </div>
+      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
+        <CardContent className="p-5">
+          <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {recentShows.map((show) => (
+              <ShowCard 
+                key={show.showid}
+                show={show}
+                onViewSetlist={handleViewSetlist}
+                isLoading={isLoading}
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="bg-[#1E1E1E] text-white border-gray-700 max-w-3xl max-h-[90vh]">

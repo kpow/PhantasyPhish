@@ -147,7 +147,7 @@ function MainContent() {
         {/* Title Card */}
         <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
           <CardContent className="p-5">
-            <h2 className="font-display text-2xl mb-2 text-white">Phantasy Phish</h2>
+            <h2 className="font-display text-2xl mb-2 text-white">Whazzup</h2>
             <p className="text-[#E5E5E5]">Predict the setlist and score points based on what Phish actually plays!</p>
           </CardContent>
         </Card>
