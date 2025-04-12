@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Plus } from 'lucide-react';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, addSongToSet, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, addSongToSet, clearSetlist, setSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
 
   const handleSubmitPrediction = async () => {
@@ -150,7 +150,18 @@ export default function SetlistBuilder() {
               variant="outline" 
               size="sm" 
               className="w-full border-dashed border-gray-600 text-gray-400 hover:text-white"
-              onClick={() => addSongToSet('set1')}
+              onClick={() => {
+                // Create a new spot
+                const newPosition = setlist.set1.length;
+                const newSpot = { position: newPosition, song: null };
+                const newSet1 = [...setlist.set1, newSpot];
+                
+                // Update the context with a completely new setlist object
+                setSetlist(prev => ({
+                  ...prev,
+                  set1: newSet1
+                }));
+              }}
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Song

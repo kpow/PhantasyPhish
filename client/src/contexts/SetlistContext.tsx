@@ -12,6 +12,11 @@ interface SetlistContextType {
   setSetlistSpot: (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
   addSongToSet: (set: 'set1' | 'set2' | 'encore') => void;
   clearSetlist: () => void;
+  setSetlist: React.Dispatch<React.SetStateAction<{
+    set1: SetlistItem[];
+    set2: SetlistItem[];
+    encore: SetlistItem[];
+  }>>;
 }
 
 export const SetlistContext = createContext<SetlistContextType>({
@@ -24,7 +29,9 @@ export const SetlistContext = createContext<SetlistContextType>({
   setSelectedSong: () => {},
   setSetlistSpot: () => {},
   addSongToSet: () => {},
-  clearSetlist: () => {}
+  clearSetlist: () => {},
+  // Empty function for the default value of setSetlist
+  setSetlist: () => {}
 });
 
 interface SetlistProviderProps {
@@ -58,20 +65,25 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
   };
 
   const addSongToSet = (set: 'set1' | 'set2' | 'encore') => {
-    setSetlist(prev => {
-      // Only add a new spot if we're under the maximum
-      if (prev[set].length >= MAX_SET_SIZE) {
-        return prev;
-      }
-      
-      // Create a new setlist spot at the next position
-      const newPosition = prev[set].length;
-      const newSpot = { position: newPosition, song: null };
-      
-      return {
-        ...prev,
-        [set]: [...prev[set], newSpot]
-      };
+    // Define maximum size based on the set type
+    const maxSize = set === 'encore' ? 5 : MAX_SET_SIZE;
+    
+    // Check if we're already at the maximum
+    if (setlist[set].length >= maxSize) {
+      return; // Do nothing if we've reached the limit
+    }
+    
+    // Create a new spot object
+    const newPosition = setlist[set].length;
+    const newSpot: SetlistItem = { position: newPosition, song: null };
+    
+    // Create a completely new setlist object to ensure React re-renders
+    const newSetArray = [...setlist[set], newSpot];
+    
+    // Update state with the new setlist
+    setSetlist({
+      ...setlist,
+      [set]: newSetArray
     });
   };
 
@@ -87,7 +99,8 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
       setSelectedSong,
       setSetlistSpot,
       addSongToSet,
-      clearSetlist
+      clearSetlist,
+      setSetlist
     }}>
       {children}
     </SetlistContext.Provider>
