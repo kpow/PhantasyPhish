@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 
 export default function SetlistBuilder() {
-  const { setlist, setSetlistSpot, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, clearSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
 
   const handleSubmitPrediction = async () => {
@@ -25,33 +25,74 @@ export default function SetlistBuilder() {
     }
 
     try {
-      // For now, we'll just save it locally since we don't have user auth
-      const prediction = {
+      // Create the prediction data object
+      const predictionData = {
+        // For simplicity, we'll use a fixed userId. In a real app, this would come from auth
+        userId: 1,
         showId: "upcoming-show", // This would normally come from the selected show
-        setlist: {
-          set1: setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
-          set2: setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
-          encore: setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
-        },
-        created: new Date()
+        set1: JSON.stringify(
+          setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
+        ),
+        set2: JSON.stringify(
+          setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
+        ),
+        encore: JSON.stringify(
+          setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
+        ),
+        score: 0, // Initial score before the show happens
+        created: new Date().toISOString()
       };
 
-      localStorage.setItem('savedPrediction', JSON.stringify(prediction));
+      // Save to both API and localStorage for backup
+      const response = await fetch('/api/predictions', {
+        method: 'POST',
+        body: JSON.stringify(predictionData),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save prediction to server');
+      }
+
+      // Also save to localStorage as a backup
+      localStorage.setItem('savedPrediction', JSON.stringify(predictionData));
 
       toast({
         title: "Prediction Saved!",
-        description: "Your setlist prediction has been saved.",
+        description: "Your setlist prediction has been saved for the upcoming show."
       });
 
       // Clear the form
       clearSetlist();
     } catch (error) {
       console.error('Error saving prediction:', error);
-      toast({
-        title: "Failed to save prediction",
-        description: "There was an error saving your prediction. Please try again.",
-        variant: "destructive"
-      });
+      
+      // Check if we can save to localStorage as a fallback
+      try {
+        const fallbackData = {
+          showId: "upcoming-show",
+          setlist: {
+            set1: setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
+            set2: setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
+            encore: setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
+          },
+          created: new Date().toISOString()
+        };
+        localStorage.setItem('savedPrediction', JSON.stringify(fallbackData));
+        
+        toast({
+          title: "Partially Saved",
+          description: "Couldn't save to server, but your prediction is saved locally."
+        });
+      } catch (localError) {
+        toast({
+          title: "Failed to save prediction",
+          description: "There was an error saving your prediction. Please try again.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
@@ -60,16 +101,23 @@ export default function SetlistBuilder() {
     const songName = currentItem.song ? currentItem.song.name : 'Click to add a song';
     const textColor = currentItem.song ? 'text-white' : 'text-gray-500';
     
+    const handleClick = () => {
+      // If there's a selected song, add it here
+      if (selectedSong) {
+        setSetlistSpot(set, position, selectedSong);
+      } else if (currentItem.song) {
+        // If clicking on a song that's already set, remove it
+        setSetlistSpot(set, position, null);
+      }
+    };
+    
     return (
       <div 
-        className={`flex-1 border border-gray-700 rounded-lg p-3 ${textColor} hover:bg-[rgba(255,255,255,0.1)] transition-colors cursor-pointer`}
-        onClick={() => {
-          // If there's already a selected song in context, add it here
-          const { selectedSong } = useContext(SetlistContext);
-          if (selectedSong) {
-            setSetlistSpot(set, position, selectedSong);
-          }
-        }}
+        className={`flex-1 border border-gray-700 rounded-lg p-3 ${textColor} 
+        ${selectedSong ? 'hover:bg-green-900/30' : 'hover:bg-[rgba(255,255,255,0.1)]'} 
+        ${currentItem.song ? 'border-primary/50' : 'border-gray-700'}
+        transition-colors cursor-pointer`}
+        onClick={handleClick}
       >
         {songName}
       </div>
