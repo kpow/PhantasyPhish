@@ -1,329 +1,5 @@
 [
   {
-    "id": 311,
-    "name": "Jam",
-    "slug": "jam",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 673,
-    "name": "Wild Child",
-    "slug": "wild-child",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " > ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 54,
-    "name": "Bertha",
-    "slug": "bertha",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 101,
-    "name": "Can't You Hear Me Knocking",
-    "slug": "cant-you-hear-me-knocking",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 100,
-    "name": "Camel Walk",
-    "slug": "camel-walk",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 303,
-    "name": "In the Midnight Hour",
-    "slug": "in-the-midnight-hour",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 489,
-    "name": "Scarlet Begonias",
-    "slug": "scarlet-begonias",
-    "times_played": 4,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " > ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 199,
-    "name": "Fire",
-    "slug": "fire",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "First known Phish performance.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " > ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 200,
-    "name": "Fire on the Mountain",
-    "slug": "fire-on-the-mountain",
-    "times_played": 4,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " > ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 359,
-    "name": "Makisupa Policeman",
-    "slug": "makisupa-policeman",
-    "times_played": 2,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "-> in from \"Fire On The Mountain\" (\"FOTM\"), and some \"FOTM\" jamming continues in the first part, until finally everyone is playing \"Makisupa\". The jam has a nice reggae feel and some fun banter. The playing is very standard, however; this mostly sounds like some very talented college kids goofing off, but the version is worth hearing for precisely that reason.",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 512,
-    "name": "Slave to the Traffic Light",
-    "slug": "slave-to-the-traffic-light",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "First known performance. It's all guitar in the jam section, as this was the pre-Page era.",
-    "footnote": "First known performance.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 524,
-    "name": "Spanish Flea",
-    "slug": "spanish-flea",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "First known Phish performance.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 169,
-    "name": "Don't Want You No More",
-    "slug": "dont-want-you-no-more",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "First known Phish performance; missing final lyrics.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " -> ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 119,
-    "name": "Cities",
-    "slug": "cities",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "Debut at Nectar's in Burlington, VT.",
-    "footnote": "First known Phish performance.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " -> ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 787,
-    "name": "Drums",
-    "slug": "drums",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "Marc Daubert.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": " -> ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 511,
-    "name": "Skippy the Wondermouse",
-    "slug": "skippy-the-wondermouse",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "First known Phish performance; Dude of Life on vocals.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": ", ",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 208,
-    "name": "Fluffhead",
-    "slug": "fluffhead",
-    "times_played": 5,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "First known performance; Dude of Life on vocals.",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": "",
-      "set_name": "1"
-    }
-  },
-  {
-    "id": 190,
-    "name": "Eyes of the World",
-    "slug": "eyes-of-the-world",
-    "times_played": 1,
-    "artist_name": "Phish",
-    "artist_slug": "phish",
-    "is_cover": false,
-    "jam_chart": false,
-    "jamchart_description": "",
-    "footnote": "",
-    "meta": {
-      "tour_name": "1984 Tour",
-      "is_soundcheck": false,
-      "transition_mark": "",
-      "set_name": "e"
-    }
-  },
-  {
     "id": 48,
     "name": "Bathtub Gin",
     "slug": "bathtub-gin",
@@ -624,6 +300,690 @@
     "footnote": "",
     "meta": {
       "tour_name": "2025 Mexico",
+      "is_soundcheck": false,
+      "transition_mark": "",
+      "set_name": "e"
+    }
+  },
+  {
+    "id": 8,
+    "name": "AC/DC Bag",
+    "slug": "acdc-bag",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 151,
+    "name": "Dear Mrs. Reagan",
+    "slug": "dear-mrs-reagan",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 441,
+    "name": "Prep School Hippie",
+    "slug": "prep-school-hippie",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 452,
+    "name": "Quinn the Eskimo (The Mighty Quinn)",
+    "slug": "quinn-the-eskimo-the-mighty-quinn",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " -> ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 512,
+    "name": "Slave to the Traffic Light",
+    "slug": "slave-to-the-traffic-light",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 359,
+    "name": "Makisupa Policeman",
+    "slug": "makisupa-policeman",
+    "times_played": 8,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 251,
+    "name": "Have Mercy",
+    "slug": "have-mercy",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 17,
+    "name": "All Blues",
+    "slug": "all-blues",
+    "times_played": 38,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance; approximately one minute long.",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 164,
+    "name": "Dog Log",
+    "slug": "dog-log",
+    "times_played": 10,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 440,
+    "name": "Possum",
+    "slug": "possum",
+    "times_played": 10,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 690,
+    "name": "You Enjoy Myself",
+    "slug": "you-enjoy-myself",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 29,
+    "name": "Anarchy",
+    "slug": "anarchy",
+    "times_played": 12,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 100,
+    "name": "Camel Walk",
+    "slug": "camel-walk",
+    "times_played": 12,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " -> ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 22,
+    "name": "Alumni Blues",
+    "slug": "alumni-blues",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 335,
+    "name": "Letter to Jimmy Page",
+    "slug": "letter-to-jimmy-page",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "Not Part of a Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 250,
+    "name": "Harry Hood",
+    "slug": "harry-hood",
+    "times_played": 9,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 595,
+    "name": "The Pendulum",
+    "slug": "the-pendulum",
+    "times_played": 4,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "With ZenzilÃ© Madikinea. Madikinea recited revolutionary poetry.",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " -> ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 147,
+    "name": "Dave's Energy Guide",
+    "slug": "daves-energy-guide",
+    "times_played": 4,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 296,
+    "name": "Icculus",
+    "slug": "icculus",
+    "times_played": 36,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known performance.",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 257,
+    "name": "Help on the Way",
+    "slug": "help-on-the-way",
+    "times_played": 37,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance.",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "2"
+    }
+  },
+  {
+    "id": 515,
+    "name": "Slipknot!",
+    "slug": "slipknot",
+    "times_played": 37,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance.",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "2"
+    }
+  },
+  {
+    "id": 365,
+    "name": "McGrupp and the Watchful Hosemasters",
+    "slug": "mcgrupp-and-the-watchful-hosemasters",
+    "times_played": 11,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "Trey speaks the lyrics in a &quot;Dylan-esque&quot; manner, while the jam portion features a soaring Trey guitar solo.",
+    "footnote": "Spoken in Dylan-esque fashion.",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "2"
+    }
+  },
+  {
+    "id": 413,
+    "name": "Not Fade Away",
+    "slug": "not-fade-away",
+    "times_played": 37,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance;  with The Joneses.",
+    "meta": {
+      "tour_name": "1986 Tour",
+      "is_soundcheck": false,
+      "transition_mark": "",
+      "set_name": "e"
+    }
+  },
+  {
+    "id": 311,
+    "name": "Jam",
+    "slug": "jam",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 673,
+    "name": "Wild Child",
+    "slug": "wild-child",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 54,
+    "name": "Bertha",
+    "slug": "bertha",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 101,
+    "name": "Can't You Hear Me Knocking",
+    "slug": "cant-you-hear-me-knocking",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 303,
+    "name": "In the Midnight Hour",
+    "slug": "in-the-midnight-hour",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 489,
+    "name": "Scarlet Begonias",
+    "slug": "scarlet-begonias",
+    "times_played": 4,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 199,
+    "name": "Fire",
+    "slug": "fire",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 200,
+    "name": "Fire on the Mountain",
+    "slug": "fire-on-the-mountain",
+    "times_played": 4,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " > ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 524,
+    "name": "Spanish Flea",
+    "slug": "spanish-flea",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 169,
+    "name": "Don't Want You No More",
+    "slug": "dont-want-you-no-more",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance; missing final lyrics.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " -> ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 119,
+    "name": "Cities",
+    "slug": "cities",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "Debut at Nectar's in Burlington, VT.",
+    "footnote": "First known Phish performance.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " -> ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 787,
+    "name": "Drums",
+    "slug": "drums",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "Marc Daubert.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": " -> ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 511,
+    "name": "Skippy the Wondermouse",
+    "slug": "skippy-the-wondermouse",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known Phish performance; Dude of Life on vocals.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": ", ",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 208,
+    "name": "Fluffhead",
+    "slug": "fluffhead",
+    "times_played": 5,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "First known performance; Dude of Life on vocals.",
+    "meta": {
+      "tour_name": "1984 Tour",
+      "is_soundcheck": false,
+      "transition_mark": "",
+      "set_name": "1"
+    }
+  },
+  {
+    "id": 190,
+    "name": "Eyes of the World",
+    "slug": "eyes-of-the-world",
+    "times_played": 1,
+    "artist_name": "Phish",
+    "artist_slug": "phish",
+    "is_cover": false,
+    "jam_chart": false,
+    "jamchart_description": "",
+    "footnote": "",
+    "meta": {
+      "tour_name": "1984 Tour",
       "is_soundcheck": false,
       "transition_mark": "",
       "set_name": "e"

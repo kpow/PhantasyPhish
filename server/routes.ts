@@ -178,75 +178,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (songs.length === 0) {
           console.log("No cached songs found, fetching from setlists API...");
           
-          // We'll collect shows from different eras to get a more comprehensive song list
-          console.log("Fetching shows from multiple eras to extract setlists...");
-          const currentDate = new Date().toISOString().split('T')[0];
-          
-          // Array to hold all the show IDs we'll fetch
-          let showIds: string[] = [];
-          
-          // Function to fetch shows from a specific year
-          async function fetchShowsFromYear(year: string) {
-            console.log(`Fetching shows from ${year}...`);
-            const yearShows = await fetchPhishData("/shows/artist/phish.json", {
-              order_by: "showdate",
-              username: "phishnet",
-              year: year,
-              limit: "75" // Get a good number of shows per year
-            });
-            
-            // Filter to only past shows
-            const pastShows = yearShows.filter((show: any) => show.showdate < currentDate);
-            
-            // Select a sample of shows from this year (every 5th show to get variety)
-            const sampledShows = pastShows.filter((_: any, index: number) => index % 5 === 0);
-            
-            console.log(`Found ${pastShows.length} shows from ${year}, sampling ${sampledShows.length}`);
-            
-            // Extract and return the show IDs
-            return sampledShows.map((show: any) => show.showid);
-          }
-          
-          // Collect shows from important eras in Phish history to get diverse song selection
-          // 1.0 era
-          const shows1994 = await fetchShowsFromYear("1994");
-          const shows1997 = await fetchShowsFromYear("1997");
-          
-          // 2.0 era
-          const shows2003 = await fetchShowsFromYear("2003");
-          
-          // 3.0 era
-          const shows2009 = await fetchShowsFromYear("2009");
-          const shows2013 = await fetchShowsFromYear("2013");
-          const shows2018 = await fetchShowsFromYear("2018");
-          
-          // 4.0 era (post-COVID)
-          const shows2021 = await fetchShowsFromYear("2021");
-          const shows2023 = await fetchShowsFromYear("2023");
-          
-          // Combine all the show IDs, limiting to a reasonable number per era
-          showIds = [
-            ...shows1994.slice(0, 5),
-            ...shows1997.slice(0, 5),
-            ...shows2003.slice(0, 5),
-            ...shows2009.slice(0, 5),
-            ...shows2013.slice(0, 5),
-            ...shows2018.slice(0, 5),
-            ...shows2021.slice(0, 5),
-            ...shows2023.slice(0, 5)
-          ];
-          
-          // Add our known good show if it's not already included
-          if (!showIds.includes("1718730981")) {
-            showIds.push("1718730981");
-          }
-          
-          console.log(`Collected ${showIds.length} shows spanning from 1994 to 2023`);
-          
-          console.log(`Fetching setlists for ${showIds.length} specific shows across different eras...`);
+          // Use a more direct approach to fetch songs
+          console.log("Fetching comprehensive song catalog directly...");
           
           // Create a Map to store unique songs by ID
           const uniqueSongs = new Map();
+          
+          // First, try to get all songs directly (most reliable method)
+          try {
+            console.log("Fetching complete song catalog from /songs...");
+            const allSongs = await fetchPhishData("/songs/artist/phish.json", {
+              username: "phishnet"
+            });
+            
+            if (Array.isArray(allSongs) && allSongs.length > 0) {
+              console.log(`Successfully retrieved ${allSongs.length} songs from song catalog`);
+              
+              // Convert to our song format
+              allSongs.forEach((song: any) => {
+                if (song.songid && !uniqueSongs.has(song.songid)) {
+                  uniqueSongs.set(song.songid, {
+                    id: song.songid,
+                    name: song.song || song.name || "Unknown Song",
+                    slug: song.slug || slugifySongName(song.song || song.name || "Unknown Song"),
+                    times_played: parseInt(song.times_played || "0"),
+                    artist_name: song.artist_name || "Phish",
+                    artist_slug: song.artist_slug,
+                    is_cover: song.is_cover === "1" || song.is_original === "0",
+                    debut_date: song.debut_date,
+                    last_played_date: song.last_played_date,
+                    jam_chart: false, // We'll set this later if we have data
+                    meta: {
+                      tour_name: "",
+                      is_soundcheck: false,
+                      transition_mark: "",
+                      set_name: ""
+                    }
+                  });
+                }
+              });
+              
+              console.log(`Processed ${uniqueSongs.size} songs from catalog`);
+            }
+          } catch (err) {
+            console.error("Error fetching song catalog:", err);
+          }
+          
+          // Also get some known-good shows to ensure quality data
+          // These show IDs are confirmed to have good setlist data
+          const showIds = [
+            "1718730981", // Cancun 2025-02-01
+            "1476840558", // 2018-07-28 The Forum
+            "1252184007", // 2019-06-16 Alpine Valley
+            "1448304043", // 2022-08-07 Atlantic City
+            "1493338318", // 2023-08-13 Hershey
+            "1493337854", // 2023-07-15 PNC Bank
+            "1251262498", // Good Vegas show
+            "1387728661", // 2021-10-28 Vegas
+            "1300051480", // 2016-06-22 
+            "1300052438"  // Another known good show
+          ];
+          
+          console.log(`Fetching setlists for ${showIds.length} specific shows across different eras...`);
           
           // Fetch setlists for each show and extract songs
           for (const showId of showIds) {
