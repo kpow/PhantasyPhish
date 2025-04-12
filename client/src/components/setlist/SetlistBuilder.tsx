@@ -6,11 +6,8 @@ import SetlistSection from './SetlistSection';
 import { SetlistContext } from '@/contexts/SetlistContext';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, reorderSongs, clearSetlist, addSongToSet } = useContext(SetlistContext);
+  const { setlist, selectedSong, setSetlistSpot, reorderSongs, clearSetlist } = useContext(SetlistContext);
   const { toast } = useToast();
-  
-  // Log the content of the setlist to see if encore has any items
-  console.log("SetlistBuilder - setlist content:", setlist);
 
   const handleSubmitPrediction = async () => {
     const hasAnySongs = setlist.set1.some(item => item.song) || 
