@@ -111,48 +111,58 @@ export default function SetlistBuilder() {
           )}
         </div>
 
-        {selectedShow && (
+        {selectedShow ? (
           <div className="mb-4 p-3 bg-[#252525] rounded-md text-gray-300">
             <p className="font-semibold">{selectedShow.venue}</p>
             <p className="text-sm">{selectedShow.location}</p>
+            <div className="mt-2 text-xs text-gray-400 italic">
+              <p>Tip: Click on any song in your setlist to remove it</p>
+            </div>
+          </div>
+        ) : (
+          <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200">
+            <p className="font-semibold">No show selected</p>
+            <p className="text-sm">Please select an upcoming show to build a setlist</p>
           </div>
         )}
 
-        <SetlistSection 
-          title="Set 1"
-          setType="set1"
-          setItems={setlist.set1}
-          titleColor="text-primary"
-          borderColor="border-primary"
-          height="h-[240px]"
-          onSetSong={setSetlistSpot}
-          onReorderSongs={reorderSongs}
-          selectedSong={selectedSong}
-        />
+        <div className={!selectedShow ? "opacity-50 pointer-events-none" : ""}>
+          <SetlistSection 
+            title="Set 1"
+            setType="set1"
+            setItems={setlist.set1}
+            titleColor="text-primary"
+            borderColor="border-primary"
+            height="h-[240px]"
+            onSetSong={setSetlistSpot}
+            onReorderSongs={reorderSongs}
+            selectedSong={selectedSong}
+          />
 
-        <SetlistSection 
-          title="Set 2"
-          setType="set2"
-          setItems={setlist.set2}
-          titleColor="text-orange-500"
-          borderColor="border-orange-500"
-          height="h-[240px]"
-          onSetSong={setSetlistSpot}
-          onReorderSongs={reorderSongs}
-          selectedSong={selectedSong}
-        />
+          <SetlistSection 
+            title="Set 2"
+            setType="set2"
+            setItems={setlist.set2}
+            titleColor="text-orange-500"
+            borderColor="border-orange-500"
+            height="h-[240px]"
+            onSetSong={setSetlistSpot}
+            onReorderSongs={reorderSongs}
+            selectedSong={selectedSong}
+          />
 
-        <SetlistSection 
-          title="Encore"
-          setType="encore"
-          setItems={setlist.encore}
-          titleColor="text-green-500"
-          borderColor="border-green-500"
-          height="h-[120px]"
-          onSetSong={setSetlistSpot}
-          onReorderSongs={reorderSongs}
-          selectedSong={selectedSong}
-        />
+          <SetlistSection 
+            title="Encore"
+            setType="encore"
+            setItems={setlist.encore}
+            titleColor="text-green-500"
+            borderColor="border-green-500"
+            height="h-[120px]"
+            onSetSong={setSetlistSpot}
+            onReorderSongs={reorderSongs}
+            selectedSong={selectedSong}
+          />
+        </div>
 
         <div className="mt-6 flex gap-2">
           <Button 

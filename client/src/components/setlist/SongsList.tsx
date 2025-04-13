@@ -16,7 +16,8 @@ export default function SongsList() {
     setlist,
     setSetlistSpot,
     addSongToSet,
-    setSetlist
+    setSetlist,
+    selectedShow
   } = useContext(SetlistContext);
   const { scrollToSet } = useScroll();
   const [searchTerm, setSearchTerm] = useState('');
@@ -131,7 +132,12 @@ export default function SongsList() {
 
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg h-full">
-      <CardContent className="p-5">
+      <CardContent className={`p-5 ${!selectedShow ? "opacity-50 pointer-events-none" : ""}`}>
+        {!selectedShow && (
+          <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200">
+            <p className="text-sm">Please select a show before adding songs</p>
+          </div>
+        )}
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-display text-2xl text-white">songs</h2>
           <div className="flex space-x-2">
