@@ -229,12 +229,14 @@ export default function SongsList() {
                         >
                           S2 ({setlist['set2'].length}/15)
                         </Button>
+                        {/* Debug Log */}
+                        {console.log('Encore length:', setlist['encore'].length)}
                         <Button 
                           size="sm"
                           variant="outline"
                           className="bg-red-800 hover:bg-red-700 text-white border-red-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={setlist['encore'].length >= 3} // Disable when we have 3 songs
+                          disabled={false} // Never disable the button for testing
                         >
                           E ({setlist['encore'].length}/3)
                         </Button>
