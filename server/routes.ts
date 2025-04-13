@@ -51,7 +51,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get most recent show (singular) - kept for backward compatibility
+  // Get details for a specific show by ID
+  app.get("/api/shows/details/:showId", async (req, res) => {
+    try {
+      const { showId } = req.params;
+      const showsData = await fetchPhishData("/shows/artist/phish.json", {
+        order_by: "showdate",
+        username: "phishnet"
+      });
+      
+      const show = showsData.find((s: any) => s.showid === showId);
+      
+      if (show) {
+        res.json({
+          showid: show.showid,
+          showdate: show.showdate,
+          venue: show.venue,
+          location: `${show.city}, ${show.state}`,
+          country: show.country
+        });
+      } else {
+        res.status(404).json({ message: "Show not found" });
+      }
+    } catch (error) {
+      console.error("Error fetching show details:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+
+// Get most recent show (singular) - kept for backward compatibility
   app.get("/api/shows/recent", async (_req, res) => {
     try {
       const currentDate = new Date().toISOString().split('T')[0];

@@ -12,6 +12,7 @@ import ResetPassword from "@/pages/ResetPassword";
 import VerifyEmail from "@/pages/VerifyEmail";
 import ResendVerification from "@/pages/ResendVerification";
 import Profile from "@/pages/Profile";
+import MyPredictions from "@/pages/MyPredictions";
 import { SetlistProvider } from "./contexts/SetlistContext";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -45,6 +46,9 @@ function Router() {
       <Route path="/resend-verification" component={ResendVerification} />
       <Route path="/profile">
         <ProtectedRoute component={Profile} />
+      </Route>
+      <Route path="/my-predictions">
+        <ProtectedRoute component={MyPredictions} />
       </Route>
       <Route component={NotFound} />
     </Switch>

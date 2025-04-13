@@ -1,13 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePhishData } from "@/hooks/usePhishData";
 import { formatShowDate } from "@/hooks/usePhishData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PhishShow } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import SetlistSubmitModal from "@/components/setlist/SetlistSubmitModal";
+
+interface ShowCardProps {
+  show: PhishShow;
+  onPickSetlist: (show: PhishShow) => void;
+}
 
 // Main upcoming show component
-function MainUpcomingShow({ show }: { show: PhishShow }) {
+function MainUpcomingShow({ show, onPickSetlist }: ShowCardProps) {
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <div className="text-[#E5E5E5]">
@@ -16,7 +24,10 @@ function MainUpcomingShow({ show }: { show: PhishShow }) {
         <p>{typeof show.location === "string" ? show.location : ""}</p>
       </div>
       <div className="mt-4 text-center">
-        <Button className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors">
+        <Button 
+          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors"
+          onClick={() => onPickSetlist(show)}
+        >
           pick a setlist
         </Button>
       </div>
@@ -25,7 +36,7 @@ function MainUpcomingShow({ show }: { show: PhishShow }) {
 }
 
 // Additional upcoming show component (smaller card)
-function AdditionalUpcomingShow({ show }: { show: PhishShow }) {
+function AdditionalUpcomingShow({ show, onPickSetlist }: ShowCardProps) {
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <h3 className="font-semibold text-white text-base mb-2">
@@ -38,7 +49,10 @@ function AdditionalUpcomingShow({ show }: { show: PhishShow }) {
         </p>
       </div>
       <div className="mt-3 text-center">
-        <Button className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors">
+        <Button 
+          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors"
+          onClick={() => onPickSetlist(show)}
+        >
           pick a setlist
         </Button>
       </div>
@@ -48,6 +62,24 @@ function AdditionalUpcomingShow({ show }: { show: PhishShow }) {
 
 export default function UpcomingShow() {
   const { upcomingShows, isLoadingUpcomingShow } = usePhishData();
+  const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedShow, setSelectedShow] = useState<PhishShow | null>(null);
+
+  const handlePickSetlist = (show: PhishShow) => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Login Required",
+        description: "Please log in to submit a setlist prediction.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setSelectedShow(show);
+    setIsModalOpen(true);
+  };
 
   if (isLoadingUpcomingShow) {
     return (
@@ -91,19 +123,32 @@ export default function UpcomingShow() {
   }
 
   return (
-    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
-      <CardContent className="p-5">
-        <h2 className="font-display text-xl mb-3 text-white">next shows</h2>
-        <div className="space-y-4">
-          {/* Main upcoming show */}
-          <MainUpcomingShow show={upcomingShows[0]} />
+    <>
+      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
+        <CardContent className="p-5">
+          <h2 className="font-display text-xl mb-3 text-white">next shows</h2>
+          <div className="space-y-4">
+            {/* Main upcoming show */}
+            <MainUpcomingShow show={upcomingShows[0]} onPickSetlist={handlePickSetlist} />
 
-          {/* Additional upcoming shows */}
-          {upcomingShows.slice(1, 4).map((show) => (
-            <AdditionalUpcomingShow key={show.showid} show={show} />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+            {/* Additional upcoming shows */}
+            {upcomingShows.slice(1, 4).map((show) => (
+              <AdditionalUpcomingShow 
+                key={show.showid} 
+                show={show} 
+                onPickSetlist={handlePickSetlist} 
+              />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Modal for selecting songs for the setlist */}
+      <SetlistSubmitModal 
+        show={selectedShow}
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
+    </>
   );
 }
