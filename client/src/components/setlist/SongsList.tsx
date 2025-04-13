@@ -218,7 +218,7 @@ export default function SongsList() {
                           onClick={() => addSongToFirstEmptySpot(song, 'set1')}
                           disabled={setlist['set1'].length >= 15} // Only disable if at max length
                         >
-                          S1
+                          S1 ({setlist['set1'].length}/15)
                         </Button>
                         <Button 
                           size="sm"
@@ -227,14 +227,14 @@ export default function SongsList() {
                           onClick={() => addSongToFirstEmptySpot(song, 'set2')}
                           disabled={setlist['set2'].length >= 15} // Only disable if at max length
                         >
-                          S2
+                          S2 ({setlist['set2'].length}/15)
                         </Button>
                         <Button 
                           size="sm"
                           variant="outline"
                           className="bg-red-800 hover:bg-red-700 text-white border-red-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={false} // Debug: Never disable the button
+                          disabled={setlist['encore'].length >= 3} // Disable when we have 3 songs
                         >
                           E ({setlist['encore'].length}/3)
                         </Button>
