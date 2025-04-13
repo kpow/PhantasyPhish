@@ -223,4 +223,19 @@ export class DatabaseStorage implements IStorage {
     
     return result[0];
   }
+
+  async deletePredictionByUserAndShow(userId: number, showId: string): Promise<boolean> {
+    const result = await db
+      .delete(predictions)
+      .where(
+        and(
+          eq(predictions.user_id, userId),
+          eq(predictions.show_id, showId)
+        )
+      )
+      .returning();
+    
+    // Return true if any rows were deleted
+    return result.length > 0;
+  }
 }

@@ -275,15 +275,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let savedPrediction;
       
       if (existingPrediction) {
-        // Delete the existing prediction first 
-        // (We need this explicitly since our schema has a unique constraint)
+        // Delete the existing prediction first using the storage method
         try {
           // Delete old prediction
-          await db.delete(predictions)
-            .where(and(
-              eq(predictions.user_id, userId),
-              eq(predictions.show_id, show_id)
-            ));
+          const deleted = await storage.deletePredictionByUserAndShow(userId, show_id);
+          
+          if (!deleted) {
+            console.warn(`No prediction found to delete for user ${userId} and show ${show_id}`);
+          }
           
           // Create a new one with updated setlist
           savedPrediction = await storage.createPrediction({
@@ -299,7 +298,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             updated: true
           });
         } catch (error) {
-          console.error("Error deleting existing prediction:", error);
+          console.error("Error updating prediction:", error);
           return res.status(500).json({ message: "Failed to update prediction" });
         }
       } else {

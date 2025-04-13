@@ -60,6 +60,7 @@ export interface IStorage {
   getShowPredictions(showId: string): Promise<Prediction[]>;
   createPrediction(prediction: InsertPrediction): Promise<Prediction>;
   updatePredictionScore(id: number, score: number): Promise<Prediction>;
+  deletePredictionByUserAndShow(userId: number, showId: string): Promise<boolean>;
 }
 
 // Export the database implementation of the storage interface
