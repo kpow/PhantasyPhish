@@ -74,7 +74,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     set2: Array(5)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
-    encore: Array(2)
+    encore: Array(3)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
   };
@@ -108,7 +108,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
 
   const addSongToSet = (set: "set1" | "set2" | "encore") => {
     // Define maximum size based on the set type
-    const maxSize = set === "encore" ? 5 : MAX_SET_SIZE;
+    const maxSize = set === "encore" ? 3 : MAX_SET_SIZE;
 
     // Check if we're already at the maximum
     if (setlist[set].length >= maxSize) {
