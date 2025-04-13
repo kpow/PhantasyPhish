@@ -109,8 +109,11 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     // Define maximum size based on the set type
     const maxSize = set === "encore" ? 3 : 10;
 
+    // Count actual songs (not empty slots)
+    const actualSongCount = setlist[set].filter(spot => spot.song !== null).length;
+    
     // Check if we're already at the maximum
-    if (setlist[set].length >= maxSize) {
+    if (actualSongCount >= maxSize) {
       return; // Do nothing if we've reached the limit
     }
 

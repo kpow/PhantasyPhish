@@ -90,7 +90,10 @@ export default function SongsList() {
       // If no empty spots and not at max capacity, add a new slot with the song
       const maxSize = setType === 'encore' ? 3 : 10;
       
-      if (setlist[setType].length < maxSize) {
+      // Count actual songs (not empty slots)
+      const actualSongCount = setlist[setType].filter(spot => spot.song !== null).length;
+      
+      if (actualSongCount < maxSize) {
         // Create a deep copy of the current setlist
         const updatedSetlist = { 
           set1: [...setlist.set1],
@@ -211,34 +214,45 @@ export default function SongsList() {
                       className="overflow-hidden bg-gray-800 rounded-b-lg"
                     >
                       <div className="p-2 flex justify-center space-x-4">
-                        <Button 
-                          size="sm"
-                          variant="outline"
-                          className="bg-blue-800 hover:bg-blue-700 text-white border-blue-700"
-                          onClick={() => addSongToFirstEmptySpot(song, 'set1')}
-                          disabled={setlist['set1'].length >= 10} // 10 song limit
-                        >
-                          S1 ({setlist['set1'].length}/10)
-                        </Button>
-                        <Button 
-                          size="sm"
-                          variant="outline"
-                          className="bg-purple-800 hover:bg-purple-700 text-white border-purple-700"
-                          onClick={() => addSongToFirstEmptySpot(song, 'set2')}
-                          disabled={setlist['set2'].length >= 10} // 10 song limit
-                        >
-                          S2 ({setlist['set2'].length}/10)
-                        </Button>
-                        {/* Debug Log removed */}
-                        <Button 
-                          size="sm"
-                          variant="outline"
-                          className="bg-red-800 hover:bg-red-700 text-white border-red-700"
-                          onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={setlist['encore'].length >= 3} // Disable when we have 3 songs
-                        >
-                          E ({setlist['encore'].length}/3)
-                        </Button>
+                        {/* Count only non-empty slots for each set */}
+                        {(() => {
+                          // Count actual songs in each set
+                          const set1Songs = setlist['set1'].filter(spot => spot.song !== null).length;
+                          const set2Songs = setlist['set2'].filter(spot => spot.song !== null).length;
+                          const encoreSongs = setlist['encore'].filter(spot => spot.song !== null).length;
+                          
+                          return (
+                            <>
+                              <Button 
+                                size="sm"
+                                variant="outline"
+                                className="bg-blue-800 hover:bg-blue-700 text-white border-blue-700"
+                                onClick={() => addSongToFirstEmptySpot(song, 'set1')}
+                                disabled={set1Songs >= 10} // 10 song limit
+                              >
+                                S1 ({set1Songs}/10)
+                              </Button>
+                              <Button 
+                                size="sm"
+                                variant="outline"
+                                className="bg-purple-800 hover:bg-purple-700 text-white border-purple-700"
+                                onClick={() => addSongToFirstEmptySpot(song, 'set2')}
+                                disabled={set2Songs >= 10} // 10 song limit
+                              >
+                                S2 ({set2Songs}/10)
+                              </Button>
+                              <Button 
+                                size="sm"
+                                variant="outline"
+                                className="bg-red-800 hover:bg-red-700 text-white border-red-700"
+                                onClick={() => addSongToFirstEmptySpot(song, 'encore')}
+                                disabled={encoreSongs >= 3} // Disable when we have 3 songs
+                              >
+                                E ({encoreSongs}/3)
+                              </Button>
+                            </>
+                          );
+                        })()}
                       </div>
                     </motion.div>
                   )}
