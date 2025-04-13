@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row justify-between">
 
           {/* About Column */}
-          <div className="max-w-[400px] ml-8">
+          <div className="max-w-[400px] ml-2">
             <h3 className="font-display text-xl text-primary mb-4">Phantasy Phish</h3>
             <p className="text-gray-300">
               A fun side project for Phish fans to predict setlists for upcoming shows.
@@ -18,9 +18,9 @@ export default function Footer() {
           
           
           {/* Tech Stack Column */}
-          <div className="mr-6 max-w-[400px]">
-            <h3 className="font-display text-xl text-primary mb-4">Tech Stack</h3>
-            <p className="space-y-2 text-gray-300">
+          <div className="mr-2 max-w-[400px]">
+            <h3 className="font-display text-xl text-primary mb-4 text-right">Tech Stack</h3>
+            <p className="space-y-2 text-gray-300 text-right">
               Love using awesome technologies like{' '}
               <a href="https://react.dev" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary transition-colors"><strong>React</strong></a>,{' '}
               <a href="https://www.typescriptlang.org" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary transition-colors"><strong>TypeScript</strong></a>,{' '}

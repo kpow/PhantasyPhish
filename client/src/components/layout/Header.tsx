@@ -53,7 +53,7 @@ export default function Header() {
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <img src="/src/components/layout/fish.svg" alt="Fish Logo" className="w-14 h-14 mr-3 invert" />
+          <img src="/src/components/layout/fish.svg" alt="Fish Logo" className="w-20 h-20 mr-0 invert" />
           <h1 className="font-display text-3xl md:text-4xl text-primary">Phantasy Phish</h1>
         </div>
         
@@ -64,7 +64,7 @@ export default function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-16 w-16 border-[3px] border-primary">
+                  <Avatar className="h-14 w-14 border-[3px] border-primary">
                     {user?.avatar_path ? (
                       <AvatarImage src={user.avatar_path} alt={user.display_name || "User"} />
                     ) : null}
