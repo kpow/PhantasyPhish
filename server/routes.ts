@@ -254,9 +254,47 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Save a prediction
   app.post("/api/predictions", async (req, res) => {
     try {
-      const predictionData = insertPredictionSchema.parse(req.body);
-      const savedPrediction = await storage.createPrediction(predictionData);
-      res.status(201).json(savedPrediction);
+      // Make sure user is authenticated
+      if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = (req.user as { id: number }).id;
+      const { show_id, setlist } = req.body;
+      
+      if (!show_id || !setlist) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      // Check if this user already has a prediction for this show
+      const userPredictions = await storage.getUserPredictions(userId);
+      const existingPrediction = userPredictions.find(p => p.show_id === show_id);
+      
+      let savedPrediction;
+      
+      if (existingPrediction) {
+        // For now, we'll just create a new one
+        // A better approach would be to update the existing one
+        savedPrediction = await storage.createPrediction({
+          user_id: userId,
+          show_id: show_id,
+          setlist: setlist,
+          score: null // Score will be calculated after the show
+        });
+      } else {
+        // Create a new prediction
+        savedPrediction = await storage.createPrediction({
+          user_id: userId,
+          show_id: show_id,
+          setlist: setlist,
+          score: null // Score will be calculated after the show
+        });
+      }
+      
+      res.status(201).json({ 
+        message: "Prediction saved successfully", 
+        prediction: savedPrediction 
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({ message: "Invalid prediction data", errors: error.errors });
@@ -275,6 +313,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ predictions });
     } catch (error) {
       console.error("Error fetching user predictions:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get prediction for current user and specific show
+  app.get("/api/users/current/predictions/:showId", async (req, res) => {
+    try {
+      // Make sure user is authenticated
+      if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = (req.user as { id: number }).id;
+      const { showId } = req.params;
+      
+      // Get all user predictions
+      const predictions = await storage.getUserPredictions(userId);
+      
+      // Find prediction for this specific show
+      const prediction = predictions.find(p => p.show_id === showId);
+      
+      if (prediction) {
+        res.json({ prediction });
+      } else {
+        res.json({ prediction: null });
+      }
+    } catch (error) {
+      console.error("Error fetching prediction for show:", error);
       res.status(500).json({ message: (error as Error).message });
     }
   });

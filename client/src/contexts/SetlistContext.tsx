@@ -1,5 +1,5 @@
 import React, { createContext, useState, ReactNode, useContext } from 'react';
-import { PhishSong, SetlistItem } from '@/types';
+import { PhishSong, SetlistItem, PhishShow } from '@/types';
 
 interface SetlistContextType {
   setlist: {
@@ -8,11 +8,15 @@ interface SetlistContextType {
     encore: SetlistItem[];
   };
   selectedSong: PhishSong | null;
+  selectedShow: PhishShow | null;
   setSelectedSong: (song: PhishSong | null) => void;
+  setSelectedShow: (show: PhishShow | null) => void;
   setSetlistSpot: (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
   addSongToSet: (set: 'set1' | 'set2' | 'encore') => void;
   reorderSongs: (set: 'set1' | 'set2' | 'encore', oldIndex: number, newIndex: number) => void;
   clearSetlist: () => void;
+  resetSetlistAndShow: () => void; 
+  loadPredictionForShow: (showId: string) => Promise<boolean>;
   setSetlist: React.Dispatch<React.SetStateAction<{
     set1: SetlistItem[];
     set2: SetlistItem[];
@@ -27,11 +31,15 @@ export const SetlistContext = createContext<SetlistContextType>({
     encore: []
   },
   selectedSong: null,
+  selectedShow: null,
   setSelectedSong: () => {},
+  setSelectedShow: () => {},
   setSetlistSpot: () => {},
   addSongToSet: () => {},
   reorderSongs: () => {},
   clearSetlist: () => {},
+  resetSetlistAndShow: () => {},
+  loadPredictionForShow: async () => false,
   // Empty function for the default value of setSetlist
   setSetlist: () => {}
 });
@@ -61,6 +69,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     encore: SetlistItem[];
   }>(initialSetlist);
   const [selectedSong, setSelectedSong] = useState<PhishSong | null>(null);
+  const [selectedShow, setSelectedShow] = useState<PhishShow | null>(null);
 
   // Maximum number of songs allowed per set
   const MAX_SET_SIZE = 15;
@@ -129,15 +138,107 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     setSelectedSong(null);
   };
 
+  const resetSetlistAndShow = () => {
+    setSetlist(initialSetlist);
+    setSelectedSong(null);
+    setSelectedShow(null);
+  };
+
+  // Load prediction for a specific show
+  const loadPredictionForShow = async (showId: string): Promise<boolean> => {
+    try {
+      // First check if we have a prediction for this show
+      const response = await fetch(`/api/users/current/predictions/${showId}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.prediction) {
+          // Format the prediction data to match our setlist format
+          const predictionSetlist = {
+            set1: Array(5).fill(0).map((_, i) => ({ 
+              position: i, 
+              song: null as PhishSong | null 
+            })),
+            set2: Array(5).fill(0).map((_, i) => ({ 
+              position: i, 
+              song: null as PhishSong | null 
+            })),
+            encore: Array(2).fill(0).map((_, i) => ({ 
+              position: i, 
+              song: null as PhishSong | null 
+            }))
+          };
+          
+          // Parse the JSON string stored in the database
+          const setlistData = data.prediction.setlist;
+          
+          // Map the songs into the right format
+          if (setlistData.set1 && Array.isArray(setlistData.set1)) {
+            predictionSetlist.set1 = setlistData.set1.map((songData: any, index: number) => ({
+              position: index,
+              song: songData ? {
+                id: songData.id,
+                name: songData.name,
+                slug: '', // We may not have this info
+                times_played: 0 // We may not have this info
+              } : null
+            }));
+          }
+          
+          if (setlistData.set2 && Array.isArray(setlistData.set2)) {
+            predictionSetlist.set2 = setlistData.set2.map((songData: any, index: number) => ({
+              position: index,
+              song: songData ? {
+                id: songData.id,
+                name: songData.name,
+                slug: '', // We may not have this info
+                times_played: 0 // We may not have this info
+              } : null
+            }));
+          }
+          
+          if (setlistData.encore && Array.isArray(setlistData.encore)) {
+            predictionSetlist.encore = setlistData.encore.map((songData: any, index: number) => ({
+              position: index,
+              song: songData ? {
+                id: songData.id,
+                name: songData.name,
+                slug: '', // We may not have this info
+                times_played: 0 // We may not have this info
+              } : null
+            }));
+          }
+          
+          // Update the setlist
+          setSetlist(predictionSetlist);
+          return true;
+        }
+      }
+      
+      // If we don't have a prediction or there was an error, start fresh
+      clearSetlist();
+      return false;
+    } catch (error) {
+      console.error('Error loading prediction for show:', error);
+      clearSetlist();
+      return false;
+    }
+  };
+
   return (
     <SetlistContext.Provider value={{
       setlist,
       selectedSong,
+      selectedShow,
       setSelectedSong,
+      setSelectedShow,
       setSetlistSpot,
       addSongToSet,
       reorderSongs,
       clearSetlist,
+      resetSetlistAndShow,
+      loadPredictionForShow,
       setSetlist
     }}>
       {children}

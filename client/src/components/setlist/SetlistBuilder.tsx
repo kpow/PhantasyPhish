@@ -1,15 +1,28 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
-import { SetlistContext } from '@/contexts/SetlistContext';
+import { useSetlist } from '@/contexts/SetlistContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { formatShowDate } from '@/hooks/usePhishData';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, setSetlistSpot, reorderSongs, clearSetlist } = useContext(SetlistContext);
+  const { setlist, selectedSong, selectedShow, setSetlistSpot, reorderSongs, clearSetlist, resetSetlistAndShow } = useSetlist();
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const handleSubmitPrediction = async () => {
+    // Check if we have a selected show
+    if (!selectedShow) {
+      toast({
+        title: "No show selected",
+        description: "Please select a show from the upcoming shows section.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const hasAnySongs = setlist.set1.some(item => item.song) || 
                         setlist.set2.some(item => item.song) || 
                         setlist.encore.some(item => item.song);
@@ -25,19 +38,13 @@ export default function SetlistBuilder() {
 
     try {
       const predictionData = {
-        userId: 1, 
-        showId: "upcoming-show", 
-        set1: JSON.stringify(
-          setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
-        ),
-        set2: JSON.stringify(
-          setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
-        ),
-        encore: JSON.stringify(
-          setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
-        ),
-        score: 0, 
-        created: new Date().toISOString()
+        user_id: user?.id, 
+        show_id: selectedShow.showid, 
+        setlist: {
+          set1: setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
+          set2: setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
+          encore: setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
+        }
       };
 
       const response = await fetch('/api/predictions', {
@@ -52,53 +59,49 @@ export default function SetlistBuilder() {
         throw new Error('Failed to save prediction to server');
       }
 
-      localStorage.setItem('savedPrediction', JSON.stringify(predictionData));
-
       toast({
         title: "Prediction Saved!",
-        description: "Your setlist prediction has been saved for the upcoming show."
+        description: `Your setlist prediction has been saved for ${selectedShow.venue} on ${formatShowDate(selectedShow.showdate)}.`
       });
 
-      clearSetlist();
+      resetSetlistAndShow();
     } catch (error) {
-      console.error('Error saving prediction:', error);
-
-      try {
-        const fallbackData = {
-          showId: "upcoming-show",
-          setlist: {
-            set1: setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
-            set2: setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
-            encore: setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
-          },
-          created: new Date().toISOString()
-        };
-        localStorage.setItem('savedPrediction', JSON.stringify(fallbackData));
-
-        toast({
-          title: "Partially Saved",
-          description: "Couldn't save to server, but your prediction is saved locally."
-        });
-      } catch (localError) {
-        toast({
-          title: "Failed to save prediction",
-          description: "There was an error saving your prediction. Please try again.",
-          variant: "destructive"
-        });
-      }
+      console.error('Error submitting prediction:', error);
+      toast({
+        title: "Failed to save prediction",
+        description: "There was an error saving your prediction. Please try again.",
+        variant: "destructive"
+      });
     }
   };
 
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg h-full">
       <CardContent className="p-5">
-        <h2 className="font-display text-2xl mb-4 text-white">build-a-setlist</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-display text-2xl text-white">build-a-setlist</h2>
+          {selectedShow && (
+            <div className="text-sm text-gray-300">
+              <span className="bg-gray-800 py-1 px-2 rounded-md">
+                {formatShowDate(selectedShow.showdate)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {selectedShow && (
+          <div className="mb-4 p-3 bg-[#252525] rounded-md text-gray-300">
+            <p className="font-semibold">{selectedShow.venue}</p>
+            <p className="text-sm">{selectedShow.location}</p>
+          </div>
+        )}
 
         <SetlistSection 
           title="Set 1"
           setType="set1"
           setItems={setlist.set1}
           titleColor="text-primary"
+          borderColor="border-primary"
           height="h-[240px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -110,6 +113,7 @@ export default function SetlistBuilder() {
           setType="set2"
           setItems={setlist.set2}
           titleColor="text-orange-500"
+          borderColor="border-orange-500"
           height="h-[240px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -121,6 +125,7 @@ export default function SetlistBuilder() {
           setType="encore"
           setItems={setlist.encore}
           titleColor="text-green-500"
+          borderColor="border-green-500"
           height="h-[120px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -131,13 +136,14 @@ export default function SetlistBuilder() {
           <Button 
             className="w-full bg-primary hover:bg-blue-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
             onClick={handleSubmitPrediction}
+            disabled={!selectedShow}
           >
-            submit setlist
+            {selectedShow ? "submit setlist" : "select a show first"}
           </Button>
           <Button 
             variant="outline"
             className="bg-transparent text-white border-white hover:bg-gray-800"
-            onClick={clearSetlist}
+            onClick={resetSetlistAndShow}
           >
             Clear
           </Button>

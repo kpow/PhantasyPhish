@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePhishData } from "@/hooks/usePhishData";
@@ -7,7 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PhishShow } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import SetlistSubmitModal from "@/components/setlist/SetlistSubmitModal";
+import { useSetlist } from "@/contexts/SetlistContext";
+import { useScroll } from "@/contexts/ScrollContext";
 
 interface ShowCardProps {
   show: PhishShow;
@@ -64,10 +65,10 @@ export default function UpcomingShow() {
   const { upcomingShows, isLoadingUpcomingShow } = usePhishData();
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedShow, setSelectedShow] = useState<PhishShow | null>(null);
+  const { setSelectedShow, loadPredictionForShow } = useSetlist();
+  const { scrollToSet } = useScroll();
 
-  const handlePickSetlist = (show: PhishShow) => {
+  const handlePickSetlist = async (show: PhishShow) => {
     if (!isAuthenticated) {
       toast({
         title: "Login Required",
@@ -77,8 +78,19 @@ export default function UpcomingShow() {
       return;
     }
     
+    // Set the selected show in the context
     setSelectedShow(show);
-    setIsModalOpen(true);
+    
+    // Try to load any existing prediction for this show
+    await loadPredictionForShow(show.showid);
+    
+    // Scroll to the setlist builder
+    scrollToSet('set1');
+    
+    toast({
+      title: "Show Selected",
+      description: `Now build your setlist prediction for ${formatShowDate(show.showdate)}.`
+    });
   };
 
   if (isLoadingUpcomingShow) {
@@ -123,35 +135,26 @@ export default function UpcomingShow() {
   }
 
   return (
-    <>
-      <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
-        <CardContent className="p-5">
-          <h2 className="font-display text-xl mb-3 text-white">next shows</h2>
-          <div className="space-y-4">
-            {/* Main upcoming show */}
-            <MainUpcomingShow 
-              show={upcomingShows[0]} 
+    <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
+      <CardContent className="p-5">
+        <h2 className="font-display text-xl mb-3 text-white">next shows</h2>
+        <div className="space-y-4">
+          {/* Main upcoming show */}
+          <MainUpcomingShow 
+            show={upcomingShows[0]} 
+            onPickSetlist={handlePickSetlist} 
+          />
+
+          {/* Additional upcoming shows */}
+          {upcomingShows.slice(1, 4).map((show) => (
+            <AdditionalUpcomingShow 
+              key={show.showid} 
+              show={show} 
               onPickSetlist={handlePickSetlist} 
             />
-
-            {/* Additional upcoming shows */}
-            {upcomingShows.slice(1, 4).map((show) => (
-              <AdditionalUpcomingShow 
-                key={show.showid} 
-                show={show} 
-                onPickSetlist={handlePickSetlist} 
-              />
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Modal for selecting songs for the setlist */}
-      <SetlistSubmitModal 
-        show={selectedShow}
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-      />
-    </>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
