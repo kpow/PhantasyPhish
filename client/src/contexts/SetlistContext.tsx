@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode, useContext } from 'react';
 import { PhishSong, SetlistItem } from '@/types';
 
 interface SetlistContextType {
@@ -35,6 +35,9 @@ export const SetlistContext = createContext<SetlistContextType>({
   // Empty function for the default value of setSetlist
   setSetlist: () => {}
 });
+
+// Helper hook to use the setlist context
+export const useSetlist = () => useContext(SetlistContext);
 
 interface SetlistProviderProps {
   children: ReactNode;
