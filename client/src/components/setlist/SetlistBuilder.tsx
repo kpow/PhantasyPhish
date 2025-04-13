@@ -8,7 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { formatShowDate } from '@/hooks/usePhishData';
 
 export default function SetlistBuilder() {
-  const { setlist, selectedSong, selectedShow, setSetlistSpot, reorderSongs, clearSetlist, resetSetlistAndShow } = useSetlist();
+  const { setlist, selectedSong, selectedShow, setSetlistSpot, reorderSongs, clearSetlist, resetSetlistAndShow, loadPredictionForShow } = useSetlist();
   const { user } = useAuth();
   const { toast } = useToast();
 
@@ -83,8 +83,8 @@ export default function SetlistBuilder() {
         });
       }
 
-      // Reset the form
-      resetSetlistAndShow();
+      // Don't reset - just leave the current setlist displayed
+      // This will let the user continue working with their saved setlist
     } catch (error) {
       console.error('Error submitting prediction:', error);
       toast({

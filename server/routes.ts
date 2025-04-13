@@ -269,9 +269,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Clean up the setlist by removing null entries
       if (setlist) {
         // Filter out any null entries in each set
-        setlist.set1 = setlist.set1.filter(song => song !== null);
-        setlist.set2 = setlist.set2.filter(song => song !== null);
-        setlist.encore = setlist.encore.filter(song => song !== null);
+        setlist.set1 = setlist.set1.filter((song: any) => song !== null);
+        setlist.set2 = setlist.set2.filter((song: any) => song !== null);
+        setlist.encore = setlist.encore.filter((song: any) => song !== null);
       }
       
       // Check if this user already has a prediction for this show
