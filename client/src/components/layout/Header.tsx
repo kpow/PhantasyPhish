@@ -53,7 +53,7 @@ export default function Header() {
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <img src="/assets/fish.svg" alt="Fish Logo" className="w-20 h-20 mr-0 invert" />
+          <img src="/client/public/assets/fish.svg" alt="Fish Logo" className="w-20 h-20 mr-0 invert" />
           <h1 className="font-display text-3xl md:text-4xl text-primary">Phantasy Phish</h1>
         </div>
         
