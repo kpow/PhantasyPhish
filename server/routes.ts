@@ -267,8 +267,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Check if this user already has a prediction for this show
+      console.log(`Looking for predictions for user ${userId} and show ${show_id}`);
       const userPredictions = await storage.getUserPredictions(userId);
+      console.log(`Found ${userPredictions.length} predictions for user ${userId}`);
+      console.log(`User predictions:`, userPredictions.map(p => ({ id: p.id, show_id: p.show_id })));
+      
       const existingPrediction = userPredictions.find(p => p.show_id === show_id);
+      console.log(`Existing prediction found:`, existingPrediction ? true : false);
       
       let savedPrediction;
       

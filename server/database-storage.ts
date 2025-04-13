@@ -226,17 +226,26 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deletePredictionByUserAndShow(userId: number, showId: string): Promise<boolean> {
-    const result = await db
-      .delete(predictions)
-      .where(
-        and(
-          eq(predictions.user_id, userId),
-          eq(predictions.show_id, showId)
-        )
-      )
-      .returning();
+    console.log(`Attempting to delete prediction for user ${userId} and show ${showId}`);
     
-    // Return true if any rows were deleted
-    return result.length > 0;
+    try {
+      const result = await db
+        .delete(predictions)
+        .where(
+          and(
+            eq(predictions.user_id, userId),
+            eq(predictions.show_id, showId)
+          )
+        )
+        .returning();
+      
+      console.log(`Delete operation returned ${result.length} rows`);
+      
+      // Return true if any rows were deleted
+      return result.length > 0;
+    } catch (error) {
+      console.error("Error in deletePredictionByUserAndShow:", error);
+      throw error;
+    }
   }
 }
