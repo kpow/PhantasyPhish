@@ -229,6 +229,19 @@ export class DatabaseStorage implements IStorage {
     console.log(`Attempting to delete prediction for user ${userId} and show ${showId}`);
     
     try {
+      // First find the prediction to make sure we get exact match
+      const toDelete = await db
+        .select()
+        .from(predictions)
+        .where(
+          and(
+            eq(predictions.user_id, userId),
+            eq(predictions.show_id, showId)
+          )
+        );
+        
+      console.log(`Found predictions to delete:`, toDelete.map(p => ({ id: p.id, show_id: p.show_id })));
+        
       const result = await db
         .delete(predictions)
         .where(

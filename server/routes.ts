@@ -272,7 +272,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.log(`Found ${userPredictions.length} predictions for user ${userId}`);
       console.log(`User predictions:`, userPredictions.map(p => ({ id: p.id, show_id: p.show_id })));
       
-      const existingPrediction = userPredictions.find(p => p.show_id === show_id);
+      console.log(`Looking for show_id type: ${typeof show_id}, value: '${show_id}'`);
+      console.log(`User prediction show_ids:`, userPredictions.map(p => `${typeof p.show_id}, value: '${p.show_id}'`));
+      
+      // Ensure string comparison by converting both to strings
+      const existingPrediction = userPredictions.find(p => String(p.show_id) === String(show_id));
       console.log(`Existing prediction found:`, existingPrediction ? true : false);
       
       let savedPrediction;
@@ -353,8 +357,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Get all user predictions
       const predictions = await storage.getUserPredictions(userId);
       
-      // Find prediction for this specific show
-      const prediction = predictions.find(p => p.show_id === showId);
+      // Find prediction for this specific show - ensure string comparison
+      const prediction = predictions.find(p => String(p.show_id) === String(showId));
       
       if (prediction) {
         res.json({ prediction });
