@@ -378,6 +378,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: (error as Error).message });
     }
   });
+  
+  // Delete a prediction for current user and specific show
+  app.delete("/api/users/current/predictions/:showId", async (req, res) => {
+    try {
+      // Make sure user is authenticated
+      if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const userId = (req.user as { id: number }).id;
+      const { showId } = req.params;
+      
+      // Delete the prediction
+      const deleted = await storage.deletePredictionByUserAndShow(userId, showId);
+      
+      if (deleted) {
+        res.json({ success: true, message: "Prediction successfully deleted" });
+      } else {
+        res.status(404).json({ success: false, message: "No prediction found to delete" });
+      }
+    } catch (error) {
+      console.error("Error deleting prediction:", error);
+      res.status(500).json({ success: false, message: (error as Error).message });
+    }
+  });
 
   // Initialize data from local file (admin)
   app.post("/api/admin/seed", async (_req, res) => {

@@ -25,6 +25,7 @@ interface SetlistContextType {
   clearSetlist: () => void;
   resetSetlistAndShow: () => void;
   loadPredictionForShow: (showId: string) => Promise<boolean>;
+  deletePredictionForShow: (showId: string) => Promise<boolean>;
   setSetlist: React.Dispatch<
     React.SetStateAction<{
       set1: SetlistItem[];
@@ -50,6 +51,7 @@ export const SetlistContext = createContext<SetlistContextType>({
   clearSetlist: () => {},
   resetSetlistAndShow: () => {},
   loadPredictionForShow: async () => false,
+  deletePredictionForShow: async () => false,
   // Empty function for the default value of setSetlist
   setSetlist: () => {},
 });
@@ -272,6 +274,29 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
       return false;
     }
   };
+  
+  // Delete prediction for a specific show
+  const deletePredictionForShow = async (showId: string): Promise<boolean> => {
+    try {
+      const response = await fetch(`/api/users/current/predictions/${showId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Reset the setlist to initial empty state
+        clearSetlist();
+        return true;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error("Error deleting prediction for show:", error);
+      return false;
+    }
+  };
 
   return (
     <SetlistContext.Provider
@@ -287,6 +312,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         clearSetlist,
         resetSetlistAndShow,
         loadPredictionForShow,
+        deletePredictionForShow,
         setSetlist,
       }}
     >

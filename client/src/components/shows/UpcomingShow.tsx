@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { usePhishData } from "@/hooks/usePhishData";
@@ -10,6 +10,10 @@ import { useToast } from "@/hooks/use-toast";
 import { useSetlist } from "@/contexts/SetlistContext";
 import { useScroll } from "@/contexts/ScrollContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { 
+  Trash2, 
+  Music 
+} from "lucide-react";
 import {
   Carousel,
   CarouselContent,
