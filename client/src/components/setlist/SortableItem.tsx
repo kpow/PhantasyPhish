@@ -47,7 +47,7 @@ export function SortableItem({
     <div ref={setNodeRef} style={style} className="flex items-center mb-2">
       <span className={`font-display text-lg mr-3 ${titleColor} w-6 text-center`}>{index + 1}</span>
       <div 
-        className={`flex-1 border rounded-lg p-3 ${textColor} 
+        className={`flex-1 border rounded-lg p-1 pl-4 ${textColor} 
           ${hasSong
             ? `hover:bg-[rgba(255,255,255,0.1)] cursor-pointer` 
             : 'border-gray-700 cursor-default'
