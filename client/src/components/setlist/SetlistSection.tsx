@@ -1,11 +1,8 @@
 import React, { useRef, useEffect } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import { SetlistItem, PhishSong } from '@/types';
 import { SortableItem } from './SortableItem';
 import { useScroll } from '@/contexts/ScrollContext';
-import { useSetlist } from '@/contexts/SetlistContext';
 import { 
   DndContext, 
   closestCenter,
@@ -47,7 +44,6 @@ export default function SetlistSection({
 }: SetlistSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const { triggerScroll, resetTrigger } = useScroll();
-  const { addSongToSet, selectedShow } = useSetlist(); // Get the selectedShow status
   
   // Listen for scroll triggers
   useEffect(() => {
@@ -143,39 +139,6 @@ export default function SetlistSection({
             </DndContext>
           </div>
         </ScrollArea>
-      </div>
-      
-      {/* Add song button - show this below the setlist */}
-      <div className="mt-2 flex justify-center">
-        {/* Calculate non-empty songs count */}
-        {(() => {
-          const nonEmptySongsCount = setItems.filter(item => item.song !== null).length;
-          const maxSongs = setType === 'encore' ? 3 : 10;
-          const isAtMax = nonEmptySongsCount >= maxSongs;
-          
-          return (
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={() => addSongToSet(setType)}
-              disabled={!selectedShow || isAtMax}
-              className={`${isAtMax ? 'opacity-50' : 'opacity-100'} ${
-                setType === 'set1' 
-                  ? 'text-blue-400 border-blue-400 hover:bg-blue-950' 
-                  : setType === 'set2' 
-                    ? 'text-purple-400 border-purple-400 hover:bg-purple-950'
-                    : 'text-red-400 border-red-400 hover:bg-red-950'
-              }`}
-            >
-              <Plus className="h-4 w-4 mr-1" />
-              {isAtMax ? (
-                <span>Max of {maxSongs} songs</span>
-              ) : (
-                <span>Add spot ({nonEmptySongsCount}/{maxSongs})</span>
-              )}
-            </Button>
-          );
-        })()}
       </div>
     </div>
   );
