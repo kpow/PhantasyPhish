@@ -53,10 +53,7 @@ export default function Header() {
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mr-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" stroke="#3B82F6" fill="#1E1E1E"/>
-            <path d="M12 6v6l4 2" stroke="#3B82F6"/>
-          </svg>
+          <img src="/src/components/layout/fish.svg" alt="Fish Logo" className="w-10 h-10 mr-3" />
           <h1 className="font-display text-3xl md:text-4xl text-primary">Phantasy Phish</h1>
         </div>
         
