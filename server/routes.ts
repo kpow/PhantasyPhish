@@ -2,11 +2,13 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { fetchPhishData, slugifySongName } from "./utils/api-utils";
-import { insertSongSchema, insertShowSchema, insertPredictionSchema } from "@shared/schema";
+import { insertSongSchema, insertShowSchema, insertPredictionSchema, predictions } from "@shared/schema";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
 import authRoutes from "./auth/routes";
+import { db } from "./database";
+import { and, eq } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register authentication routes
@@ -273,23 +275,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let savedPrediction;
       
       if (existingPrediction) {
-        // Delete the existing prediction
-        // This is a simple approach to ensure only one prediction per show
-        // In a production environment, you would create a proper update endpoint
-        
-        // Create a new one with updated setlist
-        savedPrediction = await storage.createPrediction({
-          user_id: userId,
-          show_id: show_id,
-          setlist: setlist
-        });
-        
-        // Return different message to indicate update
-        return res.status(200).json({ 
-          message: "Prediction updated successfully", 
-          prediction: savedPrediction,
-          updated: true
-        });
+        // Delete the existing prediction first 
+        // (We need this explicitly since our schema has a unique constraint)
+        try {
+          // Delete old prediction
+          await db.delete(predictions)
+            .where(and(
+              eq(predictions.user_id, userId),
+              eq(predictions.show_id, show_id)
+            ));
+          
+          // Create a new one with updated setlist
+          savedPrediction = await storage.createPrediction({
+            user_id: userId,
+            show_id: show_id,
+            setlist: setlist
+          });
+          
+          // Return different message to indicate update
+          return res.status(200).json({ 
+            message: "Prediction updated successfully", 
+            prediction: savedPrediction,
+            updated: true
+          });
+        } catch (error) {
+          console.error("Error deleting existing prediction:", error);
+          return res.status(500).json({ message: "Failed to update prediction" });
+        }
       } else {
         // Create a new prediction
         savedPrediction = await storage.createPrediction({
