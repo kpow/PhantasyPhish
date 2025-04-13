@@ -16,20 +16,9 @@ export default function Home() {
     isLoadingSongs || isLoadingUpcomingShow || isLoadingRecentShows;
 
   return (
-    <div
-      className="min-h-screen bg-dark text-white"
-      style={{
-        backgroundImage:
-          "radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
-        backgroundSize: "20px 20px",
-        backgroundColor: "#121212",
-      }}
-    >
-      <div className="container mx-auto px-4 py-8">
-        <Header />
-
-        {isLoading ? <LoadingState /> : <MainContent />}
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <Header />
+      {isLoading ? <LoadingState /> : <MainContent />}
     </div>
   );
 }

@@ -16,6 +16,7 @@ import MyPredictions from "@/pages/MyPredictions";
 import { SetlistProvider } from "./contexts/SetlistContext";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import Layout from "@/components/layout/Layout";
 
 // Protected route component
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -61,7 +62,9 @@ function App() {
       <AuthProvider>
         <SetlistProvider>
           <ScrollProvider>
-            <Router />
+            <Layout>
+              <Router />
+            </Layout>
             <Toaster />
           </ScrollProvider>
         </SetlistProvider>
