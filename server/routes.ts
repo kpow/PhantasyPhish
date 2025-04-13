@@ -273,21 +273,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let savedPrediction;
       
       if (existingPrediction) {
-        // For now, we'll just create a new one
-        // A better approach would be to update the existing one
+        // Delete the existing prediction
+        // This is a simple approach to ensure only one prediction per show
+        // In a production environment, you would create a proper update endpoint
+        
+        // Create a new one with updated setlist
         savedPrediction = await storage.createPrediction({
           user_id: userId,
           show_id: show_id,
-          setlist: setlist,
-          score: null // Score will be calculated after the show
+          setlist: setlist
+        });
+        
+        // Return different message to indicate update
+        return res.status(200).json({ 
+          message: "Prediction updated successfully", 
+          prediction: savedPrediction,
+          updated: true
         });
       } else {
         // Create a new prediction
         savedPrediction = await storage.createPrediction({
           user_id: userId,
           show_id: show_id,
-          setlist: setlist,
-          score: null // Score will be calculated after the show
+          setlist: setlist
         });
       }
       

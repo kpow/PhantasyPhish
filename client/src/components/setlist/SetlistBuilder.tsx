@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +12,14 @@ export default function SetlistBuilder() {
   const { user } = useAuth();
   const { toast } = useToast();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmitPrediction = async () => {
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      return;
+    }
+
     // Check if we have a selected show
     if (!selectedShow) {
       toast({
@@ -37,6 +44,8 @@ export default function SetlistBuilder() {
     }
 
     try {
+      setIsSubmitting(true);
+      
       const predictionData = {
         user_id: user?.id, 
         show_id: selectedShow.showid, 
@@ -59,11 +68,22 @@ export default function SetlistBuilder() {
         throw new Error('Failed to save prediction to server');
       }
 
-      toast({
-        title: "Prediction Saved!",
-        description: `Your setlist prediction has been saved for ${selectedShow.venue} on ${formatShowDate(selectedShow.showdate)}.`
-      });
+      const responseData = await response.json();
+      
+      // Different message based on whether it's an update or new prediction
+      if (responseData.updated) {
+        toast({
+          title: "Prediction Updated!",
+          description: `Your setlist prediction for ${selectedShow.venue} on ${formatShowDate(selectedShow.showdate)} has been updated.`
+        });
+      } else {
+        toast({
+          title: "Prediction Saved!",
+          description: `Your setlist prediction has been saved for ${selectedShow.venue} on ${formatShowDate(selectedShow.showdate)}.`
+        });
+      }
 
+      // Reset the form
       resetSetlistAndShow();
     } catch (error) {
       console.error('Error submitting prediction:', error);
@@ -72,6 +92,8 @@ export default function SetlistBuilder() {
         description: "There was an error saving your prediction. Please try again.",
         variant: "destructive"
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -136,9 +158,14 @@ export default function SetlistBuilder() {
           <Button 
             className="w-full bg-primary hover:bg-blue-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
             onClick={handleSubmitPrediction}
-            disabled={!selectedShow}
+            disabled={!selectedShow || isSubmitting}
           >
-            {selectedShow ? "submit setlist" : "select a show first"}
+            {isSubmitting 
+              ? "Saving..." 
+              : selectedShow 
+                ? "submit setlist" 
+                : "select a show first"
+            }
           </Button>
           <Button 
             variant="outline"
