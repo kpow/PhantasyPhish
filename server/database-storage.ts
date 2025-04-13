@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm';
+import { and } from 'drizzle-orm/expressions';
 import { db } from './database';
 import { IStorage } from './storage';
 import { 

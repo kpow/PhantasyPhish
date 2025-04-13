@@ -2,13 +2,11 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { fetchPhishData, slugifySongName } from "./utils/api-utils";
-import { insertSongSchema, insertShowSchema, insertPredictionSchema, predictions } from "@shared/schema";
+import { insertSongSchema, insertShowSchema, insertPredictionSchema } from "@shared/schema";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
 import authRoutes from "./auth/routes";
-import { db } from "./database";
-import { and, eq } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register authentication routes
