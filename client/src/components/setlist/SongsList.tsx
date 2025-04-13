@@ -234,9 +234,9 @@ export default function SongsList() {
                           variant="outline"
                           className="bg-red-800 hover:bg-red-700 text-white border-red-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={setlist['encore'].length >= 5} // Increased max length to 5
+                          disabled={false} // Never disable encore button
                         >
-                          E
+                          E ({setlist['encore'].length})
                         </Button>
                       </div>
                     </motion.div>
