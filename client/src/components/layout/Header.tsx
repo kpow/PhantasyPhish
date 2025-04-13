@@ -48,38 +48,40 @@ export default function Header() {
   };
 
   return (
-    <header className="mb-8">
-      <nav className="flex justify-between items-center mb-6">
+    <header className="mb-4 md:mb-8 px-4 py-2 md:py-4">
+      <nav className="flex justify-between items-center mb-2 md:mb-6 max-w-7xl mx-auto">
         <div 
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <FishIcon className="w-20 h-20 mr-0 text-primary-foreground" />
-          <h1 className="font-display text-3xl md:text-4xl text-primary">Phantasy Phish</h1>
+          <FishIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mr-2 text-primary-foreground" />
+          <h1 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary truncate">
+            Phantasy Phish
+          </h1>
         </div>
         
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           {isLoading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : isAuthenticated ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-14 w-14 border-[3px] border-primary">
+                <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
+                  <Avatar className="h-10 w-10 md:h-14 md:w-14 border-2 md:border-[3px] border-primary">
                     {user?.avatar_path ? (
                       <AvatarImage src={user.avatar_path} alt={user.display_name || "User"} />
                     ) : null}
-                    <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs md:text-sm">
                       {getUserInitials()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-48 md:w-56" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">{user?.display_name || "User"}</p>
-                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                    <p className="text-sm font-medium leading-none truncate">{user?.display_name || "User"}</p>
+                    <p className="text-xs leading-none text-muted-foreground truncate">{user?.email}</p>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -103,11 +105,11 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center space-x-2">
-              <Button variant="ghost" size="sm" onClick={() => setLocation("/login")}>
+            <div className="flex items-center space-x-1 md:space-x-2">
+              <Button variant="ghost" size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => setLocation("/login")}>
                 Log in
               </Button>
-              <Button size="sm" onClick={() => setLocation("/register")}>
+              <Button size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => setLocation("/register")}>
                 Register
               </Button>
             </div>
