@@ -5,6 +5,7 @@ import { usePhishData } from '@/hooks/usePhishData';
 import { formatShowDate } from '@/hooks/usePhishData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   Dialog,
   DialogContent,
@@ -12,6 +13,13 @@ import {
   DialogTitle,
   DialogDescription
 } from '@/components/ui/dialog';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { Setlist, PhishShow } from '@/types';
 
 // Component for a single show card in the row
@@ -48,6 +56,7 @@ export default function RecentShows() {
   const [currentSetlist, setCurrentSetlist] = useState<Setlist | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [currentShowIndex, setCurrentShowIndex] = useState<number>(0);
+  const isMobile = useIsMobile();
   
   // Load a setlist for a specific show
   const loadSetlist = async (showId: string) => {
@@ -106,16 +115,40 @@ export default function RecentShows() {
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
         <CardContent className="p-5">
           <h2 className="font-display text-xl mb-3 text-white">recent shows</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="p-4 bg-[#252525] rounded-lg">
-                <Skeleton className="h-5 w-3/4 mb-2" />
-                <Skeleton className="h-4 w-1/2 mb-1" />
-                <Skeleton className="h-4 w-2/3 mb-3" />
-                <Skeleton className="h-8 w-full rounded-lg" />
-              </div>
-            ))}
-          </div>
+          
+          {isMobile ? (
+            <div className="relative px-4">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {[...Array(4)].map((_, i) => (
+                    <CarouselItem key={i} className="basis-full">
+                      <div className="p-4 bg-[#252525] rounded-lg">
+                        <Skeleton className="h-5 w-3/4 mb-2" />
+                        <Skeleton className="h-4 w-1/2 mb-1" />
+                        <Skeleton className="h-4 w-2/3 mb-3" />
+                        <Skeleton className="h-8 w-full rounded-lg" />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
+                  <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                  <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                </div>
+              </Carousel>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="p-4 bg-[#252525] rounded-lg">
+                  <Skeleton className="h-5 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2 mb-1" />
+                  <Skeleton className="h-4 w-2/3 mb-3" />
+                  <Skeleton className="h-8 w-full rounded-lg" />
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     );
@@ -137,16 +170,45 @@ export default function RecentShows() {
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-0">
         <CardContent className="p-5">
           <h2 className="font-display text-xl mb-3 text-white">recent shows</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {recentShows.map((show) => (
-              <ShowCard 
-                key={show.showid}
-                show={show}
-                onViewSetlist={handleViewSetlist}
-                isLoading={isLoading}
-              />
-            ))}
-          </div>
+          
+          {isMobile ? (
+            <div className="relative px-4">
+              <Carousel
+                opts={{
+                  align: "start",
+                  loop: true,
+                }}
+                className="w-full"
+              >
+                <CarouselContent>
+                  {recentShows.map((show) => (
+                    <CarouselItem key={show.showid} className="basis-full md:basis-1/2 lg:basis-1/4">
+                      <ShowCard 
+                        show={show}
+                        onViewSetlist={handleViewSetlist}
+                        isLoading={isLoading}
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
+                  <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                  <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                </div>
+              </Carousel>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {recentShows.map((show) => (
+                <ShowCard 
+                  key={show.showid}
+                  show={show}
+                  onViewSetlist={handleViewSetlist}
+                  isLoading={isLoading}
+                />
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
