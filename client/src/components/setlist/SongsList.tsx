@@ -88,7 +88,7 @@ export default function SongsList() {
       }
     } else {
       // If no empty spots and not at max capacity, add a new slot with the song
-      const maxSize = setType === 'encore' ? 5 : 15;
+      const maxSize = setType === 'encore' ? 3 : 15;
       
       if (setlist[setType].length < maxSize) {
         // Create a deep copy of the current setlist
@@ -234,9 +234,9 @@ export default function SongsList() {
                           variant="outline"
                           className="bg-red-800 hover:bg-red-700 text-white border-red-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={false} // Never disable encore button
+                          disabled={setlist['encore'].length >= 3} // Limit to 3 songs
                         >
-                          E ({setlist['encore'].length})
+                          E
                         </Button>
                       </div>
                     </motion.div>
