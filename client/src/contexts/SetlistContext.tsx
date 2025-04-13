@@ -87,8 +87,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
   const [selectedSong, setSelectedSong] = useState<PhishSong | null>(null);
   const [selectedShow, setSelectedShow] = useState<PhishShow | null>(null);
 
-  // Maximum number of songs allowed per set
-  const MAX_SET_SIZE = 10;
+
 
   const setSetlistSpot = (
     set: "set1" | "set2" | "encore",
@@ -108,7 +107,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
 
   const addSongToSet = (set: "set1" | "set2" | "encore") => {
     // Define maximum size based on the set type
-    const maxSize = set === "encore" ? 3 : MAX_SET_SIZE;
+    const maxSize = set === "encore" ? 3 : 10;
 
     // Check if we're already at the maximum
     if (setlist[set].length >= maxSize) {
