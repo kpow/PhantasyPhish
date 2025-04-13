@@ -67,7 +67,7 @@ export default function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-16 w-16">
+                  <Avatar className="h-16 w-16 border-[3px] border-primary">
                     {user?.avatar_path ? (
                       <AvatarImage src={user.avatar_path} alt={user.display_name || "User"} />
                     ) : null}

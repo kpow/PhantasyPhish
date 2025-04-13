@@ -130,7 +130,7 @@ export default function SongsList() {
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg h-full">
       <CardContent className="p-5">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-display text-2xl text-white">Song List</h2>
+          <h2 className="font-display text-2xl text-white">songs</h2>
           <div className="flex space-x-2">
             <Button 
               size="sm"

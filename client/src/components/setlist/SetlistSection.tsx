@@ -107,7 +107,7 @@ export default function SetlistSection({
     <div className="mb-6">
       <h3 className={`font-display text-xl mb-3 ${titleColor}`}>{title}</h3>
       <div className="border border-gray-800 rounded-lg overflow-hidden">
-        <ScrollArea className={`${height} pr-4`} ref={scrollRef}>
+        <ScrollArea className={`${height} pr-2`} ref={scrollRef}>
           <div className="p-2">
             <DndContext 
               sensors={sensors}
@@ -119,7 +119,7 @@ export default function SetlistSection({
                 strategy={verticalListSortingStrategy}
               >
                 {setItems.map((item, index) => {
-                  const songName = item.song ? item.song.name : 'Use quick add menu to add a song';
+                  const songName = item.song ? item.song.name : '?';
                   const textColor = item.song ? 'text-white' : 'text-gray-500';
                   
                   return (

@@ -1,37 +1,34 @@
-import React from 'react';
-import Header from '@/components/layout/Header';
-import UpcomingShow from '@/components/shows/UpcomingShow';
-import RecentShows from '@/components/shows/RecentShows';
-import SetlistBuilder from '@/components/setlist/SetlistBuilder';
-import SongsList from '@/components/setlist/SongsList';
-import { usePhishData } from '@/hooks/usePhishData';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import React from "react";
+import Header from "@/components/layout/Header";
+import UpcomingShow from "@/components/shows/UpcomingShow";
+import RecentShows from "@/components/shows/RecentShows";
+import SetlistBuilder from "@/components/setlist/SetlistBuilder";
+import SongsList from "@/components/setlist/SongsList";
+import { usePhishData } from "@/hooks/usePhishData";
+import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const { 
-    isLoadingSongs, 
-    isLoadingUpcomingShow, 
-    isLoadingRecentShows
-  } = usePhishData();
+  const { isLoadingSongs, isLoadingUpcomingShow, isLoadingRecentShows } =
+    usePhishData();
 
-  const isLoading = isLoadingSongs || isLoadingUpcomingShow || isLoadingRecentShows;
+  const isLoading =
+    isLoadingSongs || isLoadingUpcomingShow || isLoadingRecentShows;
 
   return (
-    <div className="min-h-screen bg-dark text-white" 
-         style={{
-           backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
-           backgroundSize: '20px 20px',
-           backgroundColor: '#121212'
-         }}>
+    <div
+      className="min-h-screen bg-dark text-white"
+      style={{
+        backgroundImage:
+          "radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px)",
+        backgroundSize: "20px 20px",
+        backgroundColor: "#121212",
+      }}
+    >
       <div className="container mx-auto px-4 py-8">
         <Header />
 
-        {isLoading ? (
-          <LoadingState />
-        ) : (
-          <MainContent />
-        )}
+        {isLoading ? <LoadingState /> : <MainContent />}
       </div>
     </div>
   );
@@ -49,7 +46,7 @@ function LoadingState() {
             <Skeleton className="h-4 w-5/6" />
           </CardContent>
         </Card>
-        
+
         {/* Upcoming Shows Loading */}
         <div>
           <Card className="bg-cardBg shadow-lg">
@@ -61,7 +58,7 @@ function LoadingState() {
               <Skeleton className="h-10 w-full" />
             </CardContent>
           </Card>
-          
+
           {[...Array(2)].map((_, i) => (
             <Card key={i} className="bg-cardBg shadow-lg mt-4">
               <CardContent className="p-4">
@@ -74,7 +71,7 @@ function LoadingState() {
           ))}
         </div>
       </div>
-      
+
       {/* Middle Column */}
       <div className="lg:col-span-5">
         <Card className="bg-cardBg shadow-lg">
@@ -97,7 +94,7 @@ function LoadingState() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Right Column */}
       <div className="lg:col-span-4">
         <Card className="bg-cardBg shadow-lg">
@@ -118,7 +115,7 @@ function LoadingState() {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Recent Shows Row (Full Width) */}
       <div className="lg:col-span-12 mt-4">
         <Skeleton className="h-8 w-1/6 mb-4" />
@@ -147,25 +144,28 @@ function MainContent() {
         {/* Title Card */}
         <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
           <CardContent className="p-5">
-            <h2 className="font-display text-2xl mb-2 text-white">Whazzup</h2>
-            <p className="text-[#E5E5E5]">Predict the setlist and score points based on what Phish actually plays!</p>
+            <h2 className="font-display text-2xl mb-2 text-white">whazzup</h2>
+            <p className="text-[#E5E5E5]">
+              pick the setlist and score points based on what Phish actually
+              plays!
+            </p>
           </CardContent>
         </Card>
 
         {/* Upcoming Shows Cards */}
         <UpcomingShow />
       </div>
-      
+
       {/* Middle Column - Build a Setlist */}
       <div className="lg:col-span-5">
         <SetlistBuilder />
       </div>
-      
+
       {/* Right Column - Song List */}
       <div className="lg:col-span-4">
         <SongsList />
       </div>
-      
+
       {/* Recent Shows Row (Full Width) */}
       <div className="lg:col-span-12">
         <RecentShows />

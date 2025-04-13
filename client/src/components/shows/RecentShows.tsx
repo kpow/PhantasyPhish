@@ -105,7 +105,7 @@ export default function RecentShows() {
     return (
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-6">
         <CardContent className="p-5">
-          <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
+          <h2 className="font-display text-xl mb-3 text-white">recent shows</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="p-4 bg-[#252525] rounded-lg">
@@ -125,7 +125,7 @@ export default function RecentShows() {
     return (
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-0">
         <CardContent className="p-5">
-          <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
+          <h2 className="font-display text-xl mb-3 text-white">recent shows</h2>
           <p className="text-[#E5E5E5]">No recent shows found.</p>
         </CardContent>
       </Card>
@@ -136,7 +136,7 @@ export default function RecentShows() {
     <>
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden w-full mt-0">
         <CardContent className="p-5">
-          <h2 className="font-display text-xl mb-3 text-white">Recent Shows</h2>
+          <h2 className="font-display text-xl mb-3 text-white">recent shows</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {recentShows.map((show) => (
               <ShowCard 
@@ -163,7 +163,7 @@ export default function RecentShows() {
                 </DialogDescription>
               </div>
               
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 mr-6">
                 <Button 
                   variant="outline" 
                   size="icon" 

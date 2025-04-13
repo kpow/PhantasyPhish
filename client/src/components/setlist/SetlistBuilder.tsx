@@ -92,14 +92,13 @@ export default function SetlistBuilder() {
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg h-full">
       <CardContent className="p-5">
-        <h2 className="font-display text-2xl mb-4 text-white">Build a Setlist</h2>
+        <h2 className="font-display text-2xl mb-4 text-white">build-a-setlist</h2>
 
         <SetlistSection 
           title="Set 1"
           setType="set1"
           setItems={setlist.set1}
           titleColor="text-primary"
-          borderColor="border-primary" 
           height="h-[240px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -111,7 +110,6 @@ export default function SetlistBuilder() {
           setType="set2"
           setItems={setlist.set2}
           titleColor="text-orange-500"
-          borderColor="border-orange-500"
           height="h-[240px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -123,7 +121,6 @@ export default function SetlistBuilder() {
           setType="encore"
           setItems={setlist.encore}
           titleColor="text-green-500"
-          borderColor="border-green-500"
           height="h-[120px]"
           onSetSong={setSetlistSpot}
           onReorderSongs={reorderSongs}
@@ -135,7 +132,7 @@ export default function SetlistBuilder() {
             className="w-full bg-primary hover:bg-blue-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
             onClick={handleSubmitPrediction}
           >
-            Submit Prediction
+            submit setlist
           </Button>
           <Button 
             variant="outline"
