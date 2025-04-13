@@ -1,5 +1,5 @@
-import React, { createContext, useState, ReactNode, useContext } from 'react';
-import { PhishSong, SetlistItem, PhishShow } from '@/types';
+import React, { createContext, useState, ReactNode, useContext } from "react";
+import { PhishSong, SetlistItem, PhishShow } from "@/types";
 
 interface SetlistContextType {
   setlist: {
@@ -11,24 +11,34 @@ interface SetlistContextType {
   selectedShow: PhishShow | null;
   setSelectedSong: (song: PhishSong | null) => void;
   setSelectedShow: (show: PhishShow | null) => void;
-  setSetlistSpot: (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => void;
-  addSongToSet: (set: 'set1' | 'set2' | 'encore') => void;
-  reorderSongs: (set: 'set1' | 'set2' | 'encore', oldIndex: number, newIndex: number) => void;
+  setSetlistSpot: (
+    set: "set1" | "set2" | "encore",
+    position: number,
+    song: PhishSong | null,
+  ) => void;
+  addSongToSet: (set: "set1" | "set2" | "encore") => void;
+  reorderSongs: (
+    set: "set1" | "set2" | "encore",
+    oldIndex: number,
+    newIndex: number,
+  ) => void;
   clearSetlist: () => void;
-  resetSetlistAndShow: () => void; 
+  resetSetlistAndShow: () => void;
   loadPredictionForShow: (showId: string) => Promise<boolean>;
-  setSetlist: React.Dispatch<React.SetStateAction<{
-    set1: SetlistItem[];
-    set2: SetlistItem[];
-    encore: SetlistItem[];
-  }>>;
+  setSetlist: React.Dispatch<
+    React.SetStateAction<{
+      set1: SetlistItem[];
+      set2: SetlistItem[];
+      encore: SetlistItem[];
+    }>
+  >;
 }
 
 export const SetlistContext = createContext<SetlistContextType>({
   setlist: {
     set1: [],
     set2: [],
-    encore: []
+    encore: [],
   },
   selectedSong: null,
   selectedShow: null,
@@ -41,7 +51,7 @@ export const SetlistContext = createContext<SetlistContextType>({
   resetSetlistAndShow: () => {},
   loadPredictionForShow: async () => false,
   // Empty function for the default value of setSetlist
-  setSetlist: () => {}
+  setSetlist: () => {},
 });
 
 // Helper hook to use the setlist context
@@ -58,9 +68,15 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     set2: SetlistItem[];
     encore: SetlistItem[];
   } = {
-    set1: Array(5).fill(0).map((_, i) => ({ position: i, song: null as PhishSong | null })),
-    set2: Array(5).fill(0).map((_, i) => ({ position: i, song: null as PhishSong | null })),
-    encore: Array(2).fill(0).map((_, i) => ({ position: i, song: null as PhishSong | null }))
+    set1: Array(5)
+      .fill(0)
+      .map((_, i) => ({ position: i, song: null as PhishSong | null })),
+    set2: Array(5)
+      .fill(0)
+      .map((_, i) => ({ position: i, song: null as PhishSong | null })),
+    encore: Array(2)
+      .fill(0)
+      .map((_, i) => ({ position: i, song: null as PhishSong | null })),
   };
 
   const [setlist, setSetlist] = useState<{
@@ -72,64 +88,75 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
   const [selectedShow, setSelectedShow] = useState<PhishShow | null>(null);
 
   // Maximum number of songs allowed per set
-  const MAX_SET_SIZE = 15;
+  const MAX_SET_SIZE = 10;
 
-  const setSetlistSpot = (set: 'set1' | 'set2' | 'encore', position: number, song: PhishSong | null) => {
-    setSetlist(prev => ({
+  const setSetlistSpot = (
+    set: "set1" | "set2" | "encore",
+    position: number,
+    song: PhishSong | null,
+  ) => {
+    setSetlist((prev) => ({
       ...prev,
-      [set]: prev[set].map(item => 
-        item.position === position ? { ...item, song } : item
-      )
+      [set]: prev[set].map((item) =>
+        item.position === position ? { ...item, song } : item,
+      ),
     }));
-    
+
     // Clear the selected song after adding it
     setSelectedSong(null);
   };
 
-  const addSongToSet = (set: 'set1' | 'set2' | 'encore') => {
+  const addSongToSet = (set: "set1" | "set2" | "encore") => {
     // Define maximum size based on the set type
-    const maxSize = set === 'encore' ? 5 : MAX_SET_SIZE;
-    
+    const maxSize = set === "encore" ? 5 : MAX_SET_SIZE;
+
     // Check if we're already at the maximum
     if (setlist[set].length >= maxSize) {
       return; // Do nothing if we've reached the limit
     }
-    
+
     // Create a new spot object
     const newPosition = setlist[set].length;
-    const newSpot: SetlistItem = { position: newPosition, song: null as PhishSong | null };
-    
+    const newSpot: SetlistItem = {
+      position: newPosition,
+      song: null as PhishSong | null,
+    };
+
     // Create a completely new setlist object to ensure React re-renders
     const newSetArray = [...setlist[set], newSpot];
-    
+
     // Update state with the new setlist
     setSetlist({
       ...setlist,
-      [set]: newSetArray
+      [set]: newSetArray,
     });
   };
 
   // Function to reorder songs within a set
-  const reorderSongs = (set: 'set1' | 'set2' | 'encore', oldIndex: number, newIndex: number) => {
+  const reorderSongs = (
+    set: "set1" | "set2" | "encore",
+    oldIndex: number,
+    newIndex: number,
+  ) => {
     // Create a new array for the specific set
     const items = [...setlist[set]];
-    
+
     // Remove the item from its old position
     const [removedItem] = items.splice(oldIndex, 1);
-    
+
     // Add the item at its new position
     items.splice(newIndex, 0, removedItem);
-    
+
     // Update the position property of each item
     const updatedItems = items.map((item, index) => ({
       ...item,
-      position: index
+      position: index,
     }));
-    
+
     // Update the setlist
     setSetlist({
       ...setlist,
-      [set]: updatedItems
+      [set]: updatedItems,
     });
   };
 
@@ -149,98 +176,118 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     try {
       // First check if we have a prediction for this show
       const response = await fetch(`/api/users/current/predictions/${showId}`);
-      
+
       if (response.ok) {
         const data = await response.json();
-        
+
         if (data.prediction) {
           // Format the prediction data to match our setlist format
           const predictionSetlist = {
-            set1: Array(5).fill(0).map((_, i) => ({ 
-              position: i, 
-              song: null as PhishSong | null 
-            })),
-            set2: Array(5).fill(0).map((_, i) => ({ 
-              position: i, 
-              song: null as PhishSong | null 
-            })),
-            encore: Array(2).fill(0).map((_, i) => ({ 
-              position: i, 
-              song: null as PhishSong | null 
-            }))
+            set1: Array(5)
+              .fill(0)
+              .map((_, i) => ({
+                position: i,
+                song: null as PhishSong | null,
+              })),
+            set2: Array(5)
+              .fill(0)
+              .map((_, i) => ({
+                position: i,
+                song: null as PhishSong | null,
+              })),
+            encore: Array(2)
+              .fill(0)
+              .map((_, i) => ({
+                position: i,
+                song: null as PhishSong | null,
+              })),
           };
-          
+
           // Parse the JSON string stored in the database
           const setlistData = data.prediction.setlist;
-          
+
           // Map the songs into the right format
           if (setlistData.set1 && Array.isArray(setlistData.set1)) {
-            predictionSetlist.set1 = setlistData.set1.map((songData: any, index: number) => ({
-              position: index,
-              song: songData ? {
-                id: songData.id,
-                name: songData.name,
-                slug: '', // We may not have this info
-                times_played: 0 // We may not have this info
-              } : null
-            }));
+            predictionSetlist.set1 = setlistData.set1.map(
+              (songData: any, index: number) => ({
+                position: index,
+                song: songData
+                  ? {
+                      id: songData.id,
+                      name: songData.name,
+                      slug: "", // We may not have this info
+                      times_played: 0, // We may not have this info
+                    }
+                  : null,
+              }),
+            );
           }
-          
+
           if (setlistData.set2 && Array.isArray(setlistData.set2)) {
-            predictionSetlist.set2 = setlistData.set2.map((songData: any, index: number) => ({
-              position: index,
-              song: songData ? {
-                id: songData.id,
-                name: songData.name,
-                slug: '', // We may not have this info
-                times_played: 0 // We may not have this info
-              } : null
-            }));
+            predictionSetlist.set2 = setlistData.set2.map(
+              (songData: any, index: number) => ({
+                position: index,
+                song: songData
+                  ? {
+                      id: songData.id,
+                      name: songData.name,
+                      slug: "", // We may not have this info
+                      times_played: 0, // We may not have this info
+                    }
+                  : null,
+              }),
+            );
           }
-          
+
           if (setlistData.encore && Array.isArray(setlistData.encore)) {
-            predictionSetlist.encore = setlistData.encore.map((songData: any, index: number) => ({
-              position: index,
-              song: songData ? {
-                id: songData.id,
-                name: songData.name,
-                slug: '', // We may not have this info
-                times_played: 0 // We may not have this info
-              } : null
-            }));
+            predictionSetlist.encore = setlistData.encore.map(
+              (songData: any, index: number) => ({
+                position: index,
+                song: songData
+                  ? {
+                      id: songData.id,
+                      name: songData.name,
+                      slug: "", // We may not have this info
+                      times_played: 0, // We may not have this info
+                    }
+                  : null,
+              }),
+            );
           }
-          
+
           // Update the setlist
           setSetlist(predictionSetlist);
           return true;
         }
       }
-      
+
       // If we don't have a prediction or there was an error, start fresh
       clearSetlist();
       return false;
     } catch (error) {
-      console.error('Error loading prediction for show:', error);
+      console.error("Error loading prediction for show:", error);
       clearSetlist();
       return false;
     }
   };
 
   return (
-    <SetlistContext.Provider value={{
-      setlist,
-      selectedSong,
-      selectedShow,
-      setSelectedSong,
-      setSelectedShow,
-      setSetlistSpot,
-      addSongToSet,
-      reorderSongs,
-      clearSetlist,
-      resetSetlistAndShow,
-      loadPredictionForShow,
-      setSetlist
-    }}>
+    <SetlistContext.Provider
+      value={{
+        setlist,
+        selectedSong,
+        selectedShow,
+        setSelectedSong,
+        setSelectedShow,
+        setSetlistSpot,
+        addSongToSet,
+        reorderSongs,
+        clearSetlist,
+        resetSetlistAndShow,
+        loadPredictionForShow,
+        setSetlist,
+      }}
+    >
       {children}
     </SetlistContext.Provider>
   );
