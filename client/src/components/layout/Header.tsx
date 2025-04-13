@@ -48,14 +48,18 @@ export default function Header() {
   };
 
   return (
-    <header className="mb-4 md:mb-8 px-4 py-2 md:py-4">
+    <header className="mb-4 md:mb-8 px-4 py-3 md:py-4">
       <nav className="flex justify-between items-center mb-2 md:mb-6 max-w-7xl mx-auto">
         <div 
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <FishIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mr-2 text-primary-foreground" />
-          <h1 className="font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl text-primary truncate">
+          <FishIcon className="w-16 h-16 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
+          <div className="sm:hidden flex flex-col items-start justify-center">
+            <h1 className="font-display text-2xl leading-tight text-primary font-bold">Phantasy</h1>
+            <h1 className="font-display text-2xl leading-tight text-primary font-bold -mt-1">Phish</h1>
+          </div>
+          <h1 className="hidden sm:block font-display text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-primary truncate font-bold">
             Phantasy Phish
           </h1>
         </div>
