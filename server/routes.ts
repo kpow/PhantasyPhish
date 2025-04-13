@@ -260,10 +260,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const userId = (req.user as { id: number }).id;
-      const { show_id, setlist } = req.body;
+      let { show_id, setlist } = req.body;
       
       if (!show_id || !setlist) {
         return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      // Clean up the setlist by removing null entries
+      if (setlist) {
+        // Filter out any null entries in each set
+        setlist.set1 = setlist.set1.filter(song => song !== null);
+        setlist.set2 = setlist.set2.filter(song => song !== null);
+        setlist.encore = setlist.encore.filter(song => song !== null);
       }
       
       // Check if this user already has a prediction for this show

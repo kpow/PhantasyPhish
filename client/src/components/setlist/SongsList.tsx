@@ -234,7 +234,7 @@ export default function SongsList() {
                           variant="outline"
                           className="bg-red-800 hover:bg-red-700 text-white border-red-700"
                           onClick={() => addSongToFirstEmptySpot(song, 'encore')}
-                          disabled={setlist['encore'].length >= 3} // Only disable if at max length
+                          disabled={setlist['encore'].length >= 5} // Increased max length to 5
                         >
                           E
                         </Button>
