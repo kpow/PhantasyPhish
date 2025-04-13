@@ -61,9 +61,9 @@ export default function SetlistSubmitModal({
         user_id: user.id,
         show_id: show.showid,
         setlist: {
-          set1: setlist.set1.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
-          set2: setlist.set2.map(item => item.song ? { id: item.song.id, name: item.song.name } : null),
-          encore: setlist.encore.map(item => item.song ? { id: item.song.id, name: item.song.name } : null)
+          set1: setlist.set1.map((item) => item.song ? { id: item.song.id, name: item.song.name } : null),
+          set2: setlist.set2.map((item) => item.song ? { id: item.song.id, name: item.song.name } : null),
+          encore: setlist.encore.map((item) => item.song ? { id: item.song.id, name: item.song.name } : null)
         }
       };
 
@@ -112,10 +112,12 @@ export default function SetlistSubmitModal({
           <div>
             <h3 className="text-primary font-semibold mb-2">Set 1</h3>
             <div className="bg-[#252525] p-3 rounded-md">
-              {setlist.set1.some(item => item.song) ? (
+              {setlist.set1.some((item) => item.song) ? (
                 <ul>
-                  {setlist.set1.map((item, i) => item.song && (
-                    <li key={`set1-${i}`} className="mb-1">{item.song.name}</li>
+                  {setlist.set1.map((item, i) => (
+                    item.song && (
+                      <li key={`set1-${i}`} className="mb-1">{item.song.name}</li>
+                    )
                   ))}
                 </ul>
               ) : (
@@ -127,10 +129,12 @@ export default function SetlistSubmitModal({
           <div>
             <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
             <div className="bg-[#252525] p-3 rounded-md">
-              {setlist.set2.some(item => item.song) ? (
+              {setlist.set2.some((item) => item.song) ? (
                 <ul>
-                  {setlist.set2.map((item, i) => item.song && (
-                    <li key={`set2-${i}`} className="mb-1">{item.song.name}</li>
+                  {setlist.set2.map((item, i) => (
+                    item.song && (
+                      <li key={`set2-${i}`} className="mb-1">{item.song.name}</li>
+                    )
                   ))}
                 </ul>
               ) : (
@@ -142,10 +146,12 @@ export default function SetlistSubmitModal({
           <div>
             <h3 className="text-green-500 font-semibold mb-2">Encore</h3>
             <div className="bg-[#252525] p-3 rounded-md">
-              {setlist.encore.some(item => item.song) ? (
+              {setlist.encore.some((item) => item.song) ? (
                 <ul>
-                  {setlist.encore.map((item, i) => item.song && (
-                    <li key={`encore-${i}`} className="mb-1">{item.song.name}</li>
+                  {setlist.encore.map((item, i) => (
+                    item.song && (
+                      <li key={`encore-${i}`} className="mb-1">{item.song.name}</li>
+                    )
                   ))}
                 </ul>
               ) : (

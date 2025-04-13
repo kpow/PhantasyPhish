@@ -129,7 +129,10 @@ export default function UpcomingShow() {
           <h2 className="font-display text-xl mb-3 text-white">next shows</h2>
           <div className="space-y-4">
             {/* Main upcoming show */}
-            <MainUpcomingShow show={upcomingShows[0]} onPickSetlist={handlePickSetlist} />
+            <MainUpcomingShow 
+              show={upcomingShows[0]} 
+              onPickSetlist={handlePickSetlist} 
+            />
 
             {/* Additional upcoming shows */}
             {upcomingShows.slice(1, 4).map((show) => (
