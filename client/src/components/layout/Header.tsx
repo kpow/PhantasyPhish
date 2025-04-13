@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User, LogOut } from "lucide-react";
-// Import fish SVG directly from the assets directory
-import fishLogo from '@/assets/fish.svg';
 
 export default function Header() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -55,7 +53,7 @@ export default function Header() {
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <img src={fishLogo} alt="Fish Logo" className="w-20 h-20 mr-0 invert" />
+          <img src="/assets/fish.svg" alt="Fish Logo" className="w-20 h-20 mr-0 invert" />
           <h1 className="font-display text-3xl md:text-4xl text-primary">Phantasy Phish</h1>
         </div>
         
