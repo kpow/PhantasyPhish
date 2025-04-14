@@ -31,6 +31,10 @@ interface ShowCardProps {
 
 // Main upcoming show component
 function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPrediction }: ShowCardProps) {
+  // Add a console.log for debugging
+  console.log('Show date in MainUpcomingShow:', show.showdate);
+  console.log('Formatted date:', formatShowDate(show.showdate));
+  
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <div className="text-[#E5E5E5]">
@@ -64,6 +68,10 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
 
 // Additional upcoming show component (smaller card)
 function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPrediction }: ShowCardProps) {
+  // Add logging for debugging
+  console.log('Show date in AdditionalUpcomingShow:', show.showdate);
+  console.log('Formatted date:', formatShowDate(show.showdate));
+  
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <h3 className="font-semibold text-white text-base mb-2">

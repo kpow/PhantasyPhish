@@ -2,11 +2,21 @@ import { useQuery } from '@tanstack/react-query';
 import { PhishShow, PhishSong, Setlist } from '@/types';
 
 export function formatShowDate(dateString: string): string {
-  const date = new Date(dateString);
+  // Create a UTC date to prevent timezone offset issues
+  // Format: YYYY-MM-DD to ensure we get the exact date specified
+  const parts = dateString.split('-');
+  const year = parseInt(parts[0], 10);
+  const month = parseInt(parts[1], 10) - 1; // Months are 0-indexed in JS
+  const day = parseInt(parts[2], 10);
+  
+  // Create date with UTC time to avoid timezone shifts
+  const date = new Date(Date.UTC(year, month, day));
+  
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC' // This ensures timezone doesn't affect the date
   });
 }
 
