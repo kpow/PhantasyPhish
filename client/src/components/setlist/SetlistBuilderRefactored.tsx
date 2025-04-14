@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
 import ScoreCard from './ScoreCard';
-import { useSetlist } from '@/contexts/SetlistContext';
+import { useSetlist } from '@/contexts/SetlistContextRefactored';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatShowDate } from '@/hooks/usePhishData';
 import { useQuery } from '@tanstack/react-query';
@@ -24,6 +24,7 @@ export default function SetlistBuilder() {
     loadPredictionForShow,
     exitScoringMode,
     enterScoringMode,
+    navigateToShow,
     setScoringData
   } = useSetlist();
   const { user } = useAuth();
@@ -51,43 +52,6 @@ export default function SetlistBuilder() {
     }
   }, [selectedShow, isInScoringMode]);
   
-  // Effect to load prediction data from URL params on component mount
-  useEffect(() => {
-    const fetchPredictionFromURL = async () => {
-      // Check if we're on a prediction URL with a showId param
-      if (match && params.showId) {
-        // Load the prediction for this show
-        const success = await loadPredictionForShow(params.showId);
-        if (!success) {
-          toast({
-            title: "Prediction Not Found",
-            description: "Could not find a prediction for this show ID.",
-            variant: "destructive"
-          });
-        }
-      }
-      // Check if we're on a scoring URL with a showId param
-      else if (scoringMatch && scoringParams.showId) {
-        // Load the prediction for scoring
-        const success = await loadPredictionForShow(scoringParams.showId);
-        if (success) {
-          // Enable scoring mode
-          if (!scoringMode) {
-            toggleScoringMode();
-          }
-        } else {
-          toast({
-            title: "Prediction Not Found",
-            description: "Could not find a prediction for this show ID to score.",
-            variant: "destructive"
-          });
-        }
-      }
-    };
-    
-    fetchPredictionFromURL();
-  }, [match, params, scoringMatch, scoringParams, loadPredictionForShow, toggleScoringMode, scoringMode]);
-
   // Function to test the scoring functionality
   const handleTestScoring = async () => {
     if (!selectedShow || isTesting) return;
@@ -230,12 +194,9 @@ export default function SetlistBuilder() {
       // Update scoring data in context
       setScoringData(newScoringData);
       
-      // Enable scoring mode to display the score card
-      toggleScoringMode();
-      
-      // Update URL to reflect we're in scoring mode
-      if (selectedShow && location !== `/prediction/${selectedShow.showid}/score`) {
-        setLocation(`/prediction/${selectedShow.showid}/score`);
+      // Navigate to scoring mode using the navigateToShow function
+      if (selectedShow) {
+        navigateToShow(selectedShow.showid, true);
       }
       
       toast({
@@ -332,13 +293,9 @@ export default function SetlistBuilder() {
         });
       }
 
-      // Don't reset - just leave the current setlist displayed
-      // This will let the user continue working with their saved setlist
-      
-      // Update the URL to reflect the prediction being edited
-      // Only update if we're not already on that URL
-      if (location !== `/prediction/${selectedShow.showid}`) {
-        setLocation(`/prediction/${selectedShow.showid}`);
+      // Navigate to the show's edit page
+      if (selectedShow) {
+        navigateToShow(selectedShow.showid);
       }
     } catch (error) {
       console.error('Error submitting prediction:', error);
@@ -417,19 +374,14 @@ export default function SetlistBuilder() {
     onReorderSongs={reorderSongs}
     selectedSong={selectedSong}
   />
-  
-  {/* We no longer need the scorecard overlay - it's shown in the third column */}
 </div>
 
         <div className="mt-6 flex gap-2">
-          {scoringMode ? (
+          {isInScoringMode ? (
             <>
               <Button 
                 className="w-full bg-green-500 hover:bg-green-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
-                onClick={() => {
-                  // The toggleScoringMode function now handles URL updates directly
-                  toggleScoringMode();
-                }}
+                onClick={exitScoringMode}
               >
                 Back to Setlist
               </Button>

@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
-import SetlistBuilder from "@/components/setlist/SetlistBuilder";
+import SetlistBuilder from "@/components/setlist/SetlistBuilderRefactored";
 import SongsList from "@/components/setlist/SongsList";
 import ScoreCard from "@/components/setlist/ScoreCard";
 import { usePhishData } from "@/hooks/usePhishData";

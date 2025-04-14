@@ -13,7 +13,7 @@ import VerifyEmail from "@/pages/VerifyEmail";
 import ResendVerification from "@/pages/ResendVerification";
 import Profile from "@/pages/Profile";
 import MyPredictions from "@/pages/MyPredictions";
-import { SetlistProvider } from "./contexts/SetlistContext";
+import { SetlistProvider } from "./contexts/SetlistContextRefactored";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import Layout from "@/components/layout/Layout";
