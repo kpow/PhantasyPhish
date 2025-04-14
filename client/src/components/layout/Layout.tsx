@@ -10,8 +10,6 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   
-  // Always show header, regardless of route
-  const showHeader = true;
   
   return (
     <div 
@@ -22,8 +20,9 @@ export default function Layout({ children }: LayoutProps) {
         backgroundColor: "#121212",
       }}
     >
-      {showHeader && <Header />}
+       
       <div className="flex-grow">
+        <Header />
         {children}
       </div>
       <Footer />
