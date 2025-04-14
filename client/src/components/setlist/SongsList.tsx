@@ -234,18 +234,18 @@ export default function SongsList() {
                                 variant="outline"
                                 className="bg-blue-800 hover:bg-blue-700 text-white border-blue-700"
                                 onClick={() => addSongToFirstEmptySpot(song, 'set1')}
-                                disabled={set1Songs >= 10} // 10 song limit
+                                disabled={set1Songs >= 8} // 8 song limit
                               >
-                                S1 ({set1Songs}/10)
+                                S1 ({set1Songs}/8)
                               </Button>
                               <Button 
                                 size="sm"
                                 variant="outline"
                                 className="bg-purple-800 hover:bg-purple-700 text-white border-purple-700"
                                 onClick={() => addSongToFirstEmptySpot(song, 'set2')}
-                                disabled={set2Songs >= 10} // 10 song limit
+                                disabled={set2Songs >= 8} // 8 song limit
                               >
-                                S2 ({set2Songs}/10)
+                                S2 ({set2Songs}/8)
                               </Button>
                               <Button 
                                 size="sm"

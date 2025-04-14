@@ -237,7 +237,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
 
   const addSongToSet = (set: "set1" | "set2" | "encore") => {
     // Define maximum size based on the set type
-    const maxSize = set === "encore" ? 3 : 10;
+    const maxSize = set === "encore" ? 3 : 8;
 
     // Count total items (including empty slots)
     const totalItems = setlist[set].length;
