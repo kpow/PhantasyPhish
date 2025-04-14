@@ -1,0 +1,2259 @@
+1
+10
+100
+102
+103
+106
+107
+108
+109
+11
+110
+112
+113
+116
+117
+118
+119
+12
+121
+123
+125
+128
+129
+13
+131
+133
+134
+135
+138
+14
+141
+146
+148
+15
+150
+151
+154
+156
+157
+16
+160
+164
+167
+17
+171
+173
+174
+176
+178
+18
+180
+186
+19
+191
+196
+1983-12-02
+1984-10-23
+1984-11-03
+1984-12-01
+1985-03-04
+1985-03-08
+1985-03-16
+1985-04-06
+1985-05-03
+1985-09-27
+1985-10-17
+1985-10-30
+1985-11-14
+1985-11-23
+1986-02-03
+1986-04-01
+1986-04-25
+1986-05-17
+1986-10-12
+1986-10-15
+1986-10-31
+1986-12-06
+1987-02-13
+1987-02-21
+1987-03-06
+1987-03-23
+1987-04-24
+1987-04-29
+1987-05-11
+1987-08-09
+1987-08-10
+1987-08-21
+1987-09-02
+1987-09-21
+1987-10-10
+1987-10-14
+1987-10-31
+1987-11-18
+1987-11-19
+1988-01-27
+1988-02-03
+1988-02-07
+1988-02-24
+1988-02-26
+1988-03-11
+1988-03-12
+1988-05-22
+1988-06-15
+1988-06-20
+1988-06-24
+1988-07-07
+1988-07-12
+1988-07-23
+1988-07-30
+1988-08-03
+1988-08-04
+1988-09-08
+1988-09-12
+1988-09-13
+1988-10-29
+1989-01-18
+1989-02-06
+1989-02-17
+1989-02-23
+1989-03-01
+1989-03-12
+1989-03-30
+1989-04-13
+1989-04-20
+1989-05-09
+1989-05-21
+1989-05-26
+1989-05-28
+1989-07-01
+1989-08-12
+1989-08-17
+1989-08-26
+1989-09-09
+1989-10-01
+1989-10-14
+1989-10-20
+1989-10-26
+1989-10-31
+1989-11-03
+1989-11-10
+1989-11-11
+1989-11-30
+1989-12-07
+1989-12-16
+1989-12-30
+1990-01-20
+1990-01-25
+1990-02-25
+1990-03-10
+1990-03-17
+1990-03-28
+1990-04-18
+1990-04-21
+1990-05-04
+1990-05-06
+1990-05-24
+1990-06-07
+1990-06-09
+1990-09-13
+1990-09-14
+1990-09-15
+1990-09-22
+1990-09-28
+1990-09-30
+1990-10-03
+1990-10-06
+1990-10-20
+1990-10-27
+1990-11-04
+1990-11-17
+1990-11-26
+1990-12-07
+1990-12-28
+1991-02-01
+1991-02-04
+1991-02-16
+1991-03-22
+1991-04-11
+1991-04-15
+1991-04-16
+1991-04-20
+1991-04-27
+1991-05-17
+1991-07-11
+1991-07-12
+1991-07-27
+1991-08-03
+1991-09-25
+1991-09-27
+1991-10-31
+1991-11-01
+1991-11-08
+1991-11-14
+1991-11-15
+1992-03-06
+1992-03-07
+1992-03-11
+1992-03-28
+1992-03-30
+1992-04-17
+1992-04-18
+1992-04-21
+1992-05-02
+1992-05-14
+1992-05-18
+1992-07-16
+1992-08-17
+1992-11-19
+1992-11-20
+1992-11-21
+1992-11-22
+1992-11-23
+1992-12-01
+1992-12-29
+1992-12-31
+1993-02-03
+1993-02-04
+1993-02-19
+1993-02-20
+1993-02-21
+1993-02-23
+1993-03-02
+1993-03-09
+1993-03-14
+1993-03-16
+1993-03-24
+1993-03-28
+1993-03-30
+1993-03-31
+1993-04-10
+1993-04-12
+1993-04-24
+1993-04-30
+1993-05-06
+1993-05-08
+1993-05-29
+1993-07-15
+1993-07-16
+1993-07-25
+1993-07-28
+1993-07-31
+1993-08-06
+1993-08-09
+1993-08-11
+1993-08-25
+1993-08-26
+1993-08-28
+1993-12-31
+1994-04-04
+1994-04-08
+1994-04-09
+1994-04-13
+1994-04-14
+1994-04-16
+1994-04-21
+1994-04-22
+1994-04-23
+1994-04-24
+1994-04-26
+1994-05-07
+1994-05-17
+1994-05-27
+1994-06-10
+1994-06-22
+1994-06-25
+1994-06-26
+1994-06-30
+1994-07-06
+1994-07-15
+1994-10-07
+1994-10-12
+1994-10-15
+1994-10-20
+1994-10-26
+1994-10-31
+1994-11-16
+1994-11-17
+1994-11-18
+1994-11-19
+1994-11-20
+1994-11-22
+1994-11-30
+1994-12-03
+1994-12-09
+1994-12-10
+1994-12-31
+1995-05-16
+1995-06-07
+1995-06-08
+1995-06-10
+1995-06-17
+1995-06-28
+1995-09-27
+1995-09-28
+1995-09-29
+1995-09-30
+1995-10-02
+1995-10-13
+1995-10-17
+1995-10-24
+1995-10-25
+1995-10-31
+1995-11-14
+1995-11-16
+1995-11-18
+1995-11-21
+1995-11-25
+1995-11-28
+1995-11-29
+1995-12-02
+1995-12-08
+1995-12-15
+1995-12-29
+1995-12-31
+1996-06-06
+1996-07-21
+1996-08-04
+1996-08-05
+1996-08-07
+1996-08-16
+1996-10-16
+1996-10-17
+1996-10-22
+1996-10-31
+1996-11-15
+1996-11-16
+1996-11-19
+1996-11-23
+1996-11-27
+1996-12-06
+1996-12-29
+1996-12-31
+1997-02-13
+1997-02-16
+1997-02-17
+1997-02-23
+1997-02-25
+1997-03-18
+1997-06-13
+1997-06-14
+1997-06-16
+1997-06-20
+1997-06-21
+1997-06-24
+1997-06-25
+1997-07-02
+1997-07-09
+1997-07-10
+1997-07-23
+1997-07-26
+1997-08-03
+1997-08-08
+1997-08-09
+1997-08-10
+1997-08-13
+1997-08-14
+1997-08-17
+1997-11-13
+1997-11-16
+1997-11-21
+1997-11-30
+1997-12-11
+1997-12-29
+1997-12-30
+1997-12-31
+1998-04-02
+1998-04-05
+1998-06-30
+1998-07-02
+1998-07-08
+1998-07-15
+1998-07-20
+1998-07-21
+1998-07-26
+1998-07-29
+1998-08-01
+1998-08-02
+1998-08-03
+1998-08-06
+1998-08-08
+1998-08-09
+1998-08-11
+1998-08-12
+1998-08-15
+1998-08-16
+1998-10-03
+1998-10-17
+1998-10-18
+1998-10-29
+1998-10-30
+1998-10-31
+1998-11-02
+1998-11-09
+1998-11-14
+1998-11-18
+1998-11-20
+1998-11-21
+1998-11-25
+1998-11-27
+1998-11-28
+1998-11-29
+1998-12-30
+1998-12-31
+1999
+1999-06-30
+1999-07-01
+1999-07-03
+1999-07-04
+1999-07-12
+1999-07-13
+1999-07-16
+1999-07-17
+1999-07-18
+1999-07-20
+1999-07-21
+1999-07-24
+1999-07-25
+1999-07-26
+1999-09-09
+1999-09-10
+1999-09-11
+1999-09-17
+1999-09-21
+1999-09-26
+1999-09-29
+1999-10-03
+1999-10-08
+1999-10-10
+1999-12-05
+1999-12-30
+1999-12-31
+2
+20
+2000-06-22
+2000-07-11
+2000-09-08
+2000-09-11
+2000-09-15
+2000-09-23
+2000-09-24
+2000-09-25
+2000-09-29
+2000-10-01
+2000-10-05
+2000-10-06
+2001
+2002-12-31
+2003-01-02
+2003-01-03
+2003-01-04
+2003-02-14
+2003-02-16
+2003-02-18
+2003-02-24
+2003-02-26
+2003-03-01
+2003-07-07
+2003-07-08
+2003-07-10
+2003-07-12
+2003-07-15
+2003-07-18
+2003-07-22
+2003-07-29
+2003-07-30
+2003-08-02
+2003-08-03
+2003-11-28
+2003-12-01
+2003-12-30
+2003-12-31
+2004-04-15
+2004-04-16
+2004-06-17
+2004-06-18
+2004-06-26
+2004-08-11
+2004-08-15
+2009-03-06
+2009-03-07
+2009-03-08
+2009-05-31
+2009-06-02
+2009-06-05
+2009-06-06
+2009-06-07
+2009-06-09
+2009-06-14
+2009-06-19
+2009-08-02
+2009-08-08
+2009-08-11
+2009-08-13
+2009-08-14
+2009-08-15
+2009-08-16
+2009-10-31
+2009-11-01
+2009-11-27
+2009-11-29
+2009-12-30
+2009-12-31
+2010-06-11
+2010-06-12
+2010-06-15
+2010-06-18
+2010-06-19
+2010-06-22
+2010-06-24
+2010-06-25
+2010-06-26
+2010-06-27
+2010-06-29
+2010-07-04
+2010-10-10
+2010-10-11
+2010-10-12
+2010-10-15
+2010-10-22
+2010-10-26
+2010-10-30
+2010-10-31
+2010-12-27
+2010-12-28
+2010-12-31
+2011-06-01
+2011-06-04
+2011-06-07
+2011-06-18
+2011-06-19
+2011-07-02
+2011-07-03
+2011-08-06
+2011-08-08
+2011-08-09
+2011-08-10
+2011-08-15
+2011-09-04
+2012-06-10
+2012-06-24
+2012-06-29
+2012-06-30
+2012-07-03
+2012-07-04
+2012-07-06
+2012-07-07
+2012-07-08
+2012-12-31
+2013-07-05
+2013-07-06
+2013-07-16
+2013-07-17
+2013-07-27
+2013-07-31
+2013-08-02
+2013-08-30
+2013-08-31
+2013-09-01
+2013-10-20
+2013-10-23
+2013-10-26
+2013-10-31
+2014-07-27
+2014-10-17
+2014-10-27
+2014-10-29
+2014-10-31
+2014-12-31
+2015-07-21
+2015-07-22
+2015-08-05
+2015-08-22
+2015-09-06
+2015-12-30
+2016-01-17
+2016-06-22
+2016-06-24
+2016-06-26
+2016-06-28
+2016-06-29
+2016-07-01
+2016-07-10
+2016-07-15
+2016-07-16
+2016-07-20
+2016-07-22
+2016-10-14
+2016-10-15
+2016-10-18
+2016-10-19
+2016-10-21
+2016-10-24
+2016-10-25
+2016-10-28
+2016-10-31
+2016-12-28
+2016-12-29
+2016-12-30
+2016-12-31
+2017-07-14
+2017-07-15
+2017-07-16
+2017-07-18
+2017-07-19
+2017-07-21
+2017-07-22
+2017-07-23
+2017-07-25
+2017-07-26
+2017-07-28
+2017-07-30
+2017-08-01
+2017-08-02
+2017-08-04
+2017-08-05
+2017-08-06
+2017-12-31
+2018-07-20
+2018-07-21
+2018-07-22
+2018-07-24
+2018-07-25
+2018-07-28
+2018-08-07
+2018-09-02
+2018-10-19
+2018-10-21
+2018-10-31
+2018-11-02
+2018-12-30
+2019-02-21
+2019-02-22
+2019-06-11
+2019-06-12
+2019-06-18
+2019-06-19
+2019-06-22
+2019-06-23
+2019-06-25
+2019-06-28
+2019-06-29
+2019-07-02
+2019-07-06
+2019-07-09
+2019-07-14
+2019-08-30
+2019-09-01
+2019-11-29
+2019-11-30
+2019-12-03
+2019-12-04
+2019-12-06
+2019-12-08
+2019-12-28
+2019-12-30
+2019-12-31
+202
+2020-02-20
+2020-02-21
+2020-02-22
+20-20 Vision
+2021-07-28
+2021-08-03
+2021-08-04
+2021-08-07
+2021-08-08
+2021-08-11
+2021-08-27
+2021-08-28
+2021-08-29
+2021-08-31
+2021-09-05
+2021-10-15
+2021-10-19
+2021-10-20
+2021-10-23
+2021-10-24
+2021-10-26
+2021-10-28
+2021-10-30
+2021-10-31
+2021-12-31
+2022-02-24
+2022-02-25
+2022-02-27
+2022-04-21
+2022-05-27
+2022-05-28
+2022-07-14
+2022-07-15
+2022-07-16
+2022-07-19
+2022-07-24
+2022-07-26
+2022-07-27
+2022-07-29
+2022-07-30
+2022-07-31
+2022-08-02
+2022-08-10
+2022-08-13
+2022-08-14
+2022-09-03
+2022-12-29
+2022-12-31
+2023-04-17
+2023-04-18
+2023-04-19
+2023-07-11
+2023-07-12
+2023-07-14
+2023-07-16
+2023-07-18
+2023-07-21
+2023-07-22
+2023-07-23
+2023-07-25
+2023-07-26
+2023-07-28
+2023-07-29
+2023-07-30
+2023-08-01
+2023-08-02
+2023-08-04
+2023-08-31
+2023-09-01
+2023-09-02
+2023-10-06
+2023-10-08
+2023-10-10
+2023-10-11
+2023-10-13
+2023-10-14
+2023-10-15
+2023-12-31
+2024-02-21
+2024-02-23
+2024-02-24
+2024-07-19
+2024-07-20
+2024-07-21
+2024-07-23
+2024-07-24
+2024-07-26
+2024-07-27
+2024-07-28
+2024-07-30
+2024-07-31
+2024-08-02
+2024-08-03
+2024-08-04
+2024-08-06
+2024-08-07
+2024-08-09
+2024-08-10
+2024-08-11
+2024-08-15
+2024-08-16
+2024-08-17
+2024-08-18
+2024-08-29
+2024-08-30
+2024-08-31
+2024-09-01
+2024-10-25
+2024-10-26
+2024-10-27
+2024-12-28
+2024-12-29
+2024-12-30
+2024-12-31
+2025-01-29
+2025-01-30
+2025-01-31
+2025-02-01
+203
+204
+205
+206
+21
+211
+214
+22
+220
+221
+229
+23
+232
+233
+236
+24
+240
+249
+25
+253
+254
+263
+265
+27
+28
+282
+286
+287
+29
+297
+3
+30
+308
+31
+310
+311
+312
+315
+319
+32
+321
+328
+33
+333
+334
+34
+342
+346
+349
+35
+353
+35 Minute Jam
+36
+37
+371
+38
+39
+4
+40
+404
+406
+408
+41
+42
+426
+43
+438
+449
+45
+450
+46
+46 Days
+47
+473
+478
+479
+48
+482
+49
+490
+5
+50
+509
+50 Ways to Leave Your Lover
+51
+513
+5:15
+53
+535
+54
+55
+555
+56
+568
+57
+58
+59
+6
+60
+61
+615
+62
+64
+65
+66
+67
+68
+7
+71
+73
+74
+75
+76
+77
+78
+79
+8
+80
+81
+82
+83
+84
+87
+88
+89
+9
+90
+91
+92
+93
+95
+96
+97
+99
+99 Problems
+A Apolitical Blues
+About to Run
+Access Me
+AC/DC
+AC/DC Bag
+Acoustic Army
+A Day in the Life
+ADITL
+Adolphe Adam
+Aerosmith
+Aftermath
+After Midnight
+Ain't Love Funny
+Alaska
+Albert
+Albuquerque
+Alexander Courage
+Al Green
+A Life Beyond The Dream
+All Along the Watchtower
+All Blues
+All Down the Line
+Allen Toussaint
+All of These Dreams
+All That You Dream
+All the Pain Through the Years
+All Things Reconsidered
+Also Sprach Zarathustra
+Alumni Blues
+Amazing Grace
+Ambient Jam
+American Woman
+Amfibian
+Amidst the Peals of Laughter
+Amoreena
+Anarchy
+...And Flew Away
+And It Stoned Me
+And So To Bed
+Andy's Chest
+Another One Bites the Dust
+Antelope
+Any Colour You Like
+Anything But Me
+Arc
+Architect
+Argent
+Army of One
+Arnold Corns
+Arrival
+Artie Shaw
+Art Jam
+ASIHTOS
+A Song I Heard the Ocean Sing
+Ass Handed
+ATR
+Auld Lang Syne
+Autumn Leaves
+Avenu Malcanu
+Avenu Malkenu
+A Wave of Hope
+Axilla
+Axilla (Part II)
+Baby Elephant Walk
+Baby Gramps
+Baby Lemonade
+Babylon Baby
+Babylon is Burning
+Bachman-Turner Overdrive
+Back at the Chicken Shack
+Back in the Bubble
+Back in the U.S.S.R.
+Back on the Train
+Back Porch Boogie Blues
+Backwards Down the Number Line
+Bake and Boil
+BÃ©la Fleck and the Flecktones
+Band/Crew Football Theme Song
+Band of Gypsys
+Bathtub Gin
+BBFCFM
+B.B. King
+Beastie Boys
+Beaumont Rag
+Beauty of a Broken Heart
+Beauty of My Dreams
+Been Caught Stealing
+Bell Boy
+Ben Bernie
+Beneath a Sea of Stars Part 1
+Bertha
+Bette Midler
+Big Alligator
+Big Ball Jam
+Big Balls
+Big Black Furry Creature from Mars
+Big Leg Emma
+Big Pimpin'
+Bike
+Bill Bailey, Won't You Please Come Home?
+Billie Jean
+Bill Monroe
+Billy Breathes
+Billy Joe Shaver
+Billy Preston
+Birds of a Feather
+Birthday
+Birthday Boys
+Bitchin' Again
+Bittersweet Motel
+Black and Tan Fantasy
+Blackberry Blossom
+Blackbird
+Blackburn and Suessdorf
+Black-Eyed Katy
+Black Sabbath
+Blaze On
+Blind Lemon Jefferson
+Bliss
+Blister in the Sun
+Blue Bayou
+Blue Bossa
+Blue Monk
+Blue Moon
+Blue Over Yellow
+Blues Image
+Blue Skies
+Blue Sky
+Bobby Jean
+Bob Dylan
+Bob Marley and The Wailers
+Bob Seger
+Bohemian Rhapsody
+Bold As Love
+Bonnie Raitt
+Boogie On Reggae Woman
+Booker T. & the M.G.'s
+Born to Run
+Born Under Punches (The Heat Goes On)
+Boston
+BOTT
+Bouncing Around the Room
+Box of Rain
+Brain Damage
+Breath and Burning
+Breathe
+Breathe Reprise
+Brian and Robert
+Brian Eno
+Bring It On Home
+Broken Heart Attack
+Broken Into Pieces
+Brother
+Brotherhood of Man
+Brown Eyed Girl
+Bruce Springsteen
+Bruce Sunpie Barnes and the Louisiana Sunspots
+Bubble Wrap
+Buddy Miles
+Buffalo Bill
+Bug
+Bukka White
+Bundle of Joy
+Buried Alive
+Burning Down the House
+Burn That Bridge
+Bye Bye Foot
+California Love
+Calixa Lavallee
+Call It Stormy Monday (But Tuesday Is Just As Bad)
+Camel Walk
+Cannonball
+Can't Always Listen
+Can't Come Back
+Can't You Hear Me Knocking
+Caravan
+Carefree
+Carini
+Carolina
+Carolina in the Morning
+Cars Trucks Buses
+Casino Boogie
+Casual Enlightenment
+Catapult
+Cathy's Clown
+Cat Stevens
+Cavern
+Cecilia
+Chalk Dust Torture
+Chalk Dust Torture Reprise
+Champagne Supernova
+Character Zero
+Chariots of Fire
+Charles Mingus
+Charlie Parker
+Charlie Parker Septet
+Cheech and Chong
+Che Hun Ta Mo
+Chic
+Chief Jim Billie
+Chocolate Rain
+Choo Choo Ch' Boogie
+Chuck Berry
+Chumbawamba
+Cinnamon Girl
+Cities
+Clear Your Mind
+Clifton Chenier
+Clod
+Clone
+Cocaine
+Coconut
+Cold as Ice
+Cold Rain and Snow
+Cold Water
+Collective Soul
+Colonel Forbin's Ascent
+Come on Baby Let's Go Downtown
+Come On (Let the Good Times Roll)
+Come On (Part One)
+Come Together
+Communication Breakdown
+Con Conrad and Billy Rose
+Contact
+Cool Amber and Mercury
+Cool It Down
+Cool Jerk
+Corinna
+Corona
+Costume Contest
+Couch Lady
+Cracklin' Rosie
+Crazy Horse
+Crazy Sometimes
+Creedence Clearwater Revival
+Crimes of the Mind
+Crosby, Stills, Nash, and Young
+Crosseyed and Painless
+Crossroads
+Crowd Control
+Cry Baby Cry
+Cryin'
+Curtis Mayfield
+Cut My Hair
+Cyril Ferguson
+Dahlia
+Dale Hawkins
+Daniel Lanois
+Daniel Saw the Stone
+Dave Abrahams
+Dave Holland
+Dave Matthews
+Dave's Energy Guide
+David Bowie
+Day or Night
+Day-O (The Banana Boat Song)
+Dazed and Confused
+Dear Mrs. Reagan
+Dear Prudence
+Death Don't Hurt Very Long
+Dec 1661
+Deep Purple
+Demand
+Dem Bones
+Den of Iniquity
+Derek and the Dominoes
+Destiny Unbound
+Devotion To a Dream
+Diamond Girl
+Digital Delay Loop Jam
+Dinah Washington
+Dinner and a Movie
+"Dirk Diggler," "Reed Rothchild"
+Dirt
+Discern
+Divided Sky
+Dixie Cannonball
+Dixie Chicken
+Dizzy Gillespie
+DMCA
+Doctor Jimmy
+Dog Faced Boy
+Dog Gone Dog
+Dog Log
+Dogs Stole Things
+Doin' My Time
+Done Me Wrong
+Donna Lee
+Don't Bogart That Joint
+Don't Doubt Me
+Don't Get Me Wrong
+Don't Pass Me By
+Don't Want You No More
+Don't You Want To Go?
+Doobie Brothers
+Dooley
+Doomsday
+Down By the River
+Down with Disease
+Dr. Gabel
+Dr. Hook
+Drifting
+Drift While You're Sleeping
+Drive-In Jam
+Driver
+Drowned
+Drums
+Duke Ellington
+Dust in the Wind
+Earache My Eye
+Earl King
+Easy To Slip
+Eclipse
+Edward Meeker
+Egg in a Hole
+Eliza
+Ella Fitzgerald
+El Paso
+Elton John
+Elvin Bishop
+Elvis Presley
+Emotional Rescue
+End of Session
+Energy
+Eric Clapton
+Ernie Stires
+Esther
+Ether Edge
+Evening Song
+Everybody's Got Something to Hide Except Me and My Monkey
+Everyday I Have the Blues
+Everything In Its Right Place
+Everything is Hollow
+Everything's Right
+Evolve
+Eyes of the World
+Faht
+Family Picture
+Farmhouse
+Fast Enough for You
+Fat Man in the Bathtub
+Feats Don't Fail Me Now
+Fee
+Feel the Heat
+Fikus
+Final Flight
+Fire
+Fire on the Mountain
+Fire Up the Ganja
+First Tube
+Fish Bass
+Fishman's Gull Poem
+Five Years
+Fixin' to Die
+Flatbed Truck Jam
+Flat Fee
+Flatt and Scruggs
+Fleet Foxes
+Flip
+Fluffhead
+Fluff's Travels
+Fly Famous Mockingbird
+Fly Like an Eagle
+Foam
+Foggy Mountain Breakdown
+Fooled Around and Fell in Love
+Fooled by Images
+Foreigner
+Foreplay/Long Time
+Four
+Four Strong Winds
+Francis Scott Key
+Frankenstein
+Frankie Says
+Frank Zappa
+Fraternity of Man
+Free
+Freebird
+Free Bird
+Free Man in Paris
+Freeworld
+Friday
+Friend
+Friends
+Frost
+Fuckerpants
+Fuck Your Face
+Fuego
+Funky Bitch
+Funky (Breakdown)
+Gabor Szabo
+Garden Party
+Gary Davis
+Gary Glitter
+Gatekeeper
+Gaul Swerves and the Rest is Everything Else
+Gene Autry
+George Jones
+George Martin Lane
+Get Back on the Train
+Get More Down
+Gettin' Jiggy Wit' It
+Ghost
+Ghosts of the Forest
+Gillian Welch
+Ginseng Sullivan
+Girls Girls Girls
+Glass Onion
+Glide
+Glide II
+Gloria
+Glory Days
+Glynis Johns
+Goin' Down Slow
+Golden Age
+Golden Lady
+Gold Soundz
+Golgi Apparatus
+Gone
+Good Times Bad Times
+Got My Mojo Working
+Gotta Jibboo
+Grand Funk Railroad
+Grateful Dead
+Green Onions
+Gregory Isaacs
+Grind
+GTBT
+Guantanamo Strut
+Guelah Papyrus
+Gumbo
+Gus Cannon
+Guy Forget
+Guyute
+Gypsy Queen
+Ha Ha Ha
+Halfway Home
+Halfway to the Moon
+Halley's Comet
+Hall in Solace
+Hamilton and Lewis
+Hang On to Yourself
+Hank Williams
+Happiness Is a Warm Gun
+Happy
+Happy Birthday to You
+Harpua
+Harry Hood
+Harry Nilsson
+Have Mercy
+Head Held High
+Heartache
+Heart and Soul
+Heartbreaker
+Heavy Rotation
+Heavy Things
+He Ent to the Bog
+Hello My Baby
+Hell's Bells
+Helpless
+Helpless Dancer
+Help Me
+Help on the Way
+Helter Skelter
+Henry Mancini
+Herb Alpert and the Tijuana Brass
+Herbert Spencer and Earle Hagen
+Herbie Hancock
+Hey Stranger
+High-Heel Sneakers
+Highway to Hell
+Hold to a Dream
+Hold Whatcha Got
+Hold Your Head Up
+Home
+Honey Pie
+Honky Tonk Women
+Hoochie Coochie Man
+Horn
+Hot Chocolate
+Hot Rize
+Houses in Motion
+Howard and Emerson
+How High the Moon
+Howlin' Wolf
+How Many People Are You
+Hughie Cannon
+Human Nature
+Hurricane
+HYHU
+I Always Wanted It This Way
+I Am Hydrogen
+I Am in Miami
+I Am the Sea
+I Am the Walrus
+Ian & Sylvia
+I Been Around
+I Been to Georgia on a Fast Train
+(I Can't Get No) Satisfaction
+I Can't Turn You Loose
+Icculus
+Idea
+I Didn't Know
+I Don't Care
+If 6 Was 9
+If I Could
+If I Don't Be There By Morning
+If I Only Had a Brain
+If I Told You
+I Found a Reason
+If You Need a Fool
+I Get a Kick Out of You
+I Just Want To See His Face
+I Kissed a Girl
+I Know a Little
+I'll Come Running
+I'm Blue, I'm Lonesome
+I'm Gonna Be (500 Miles)
+Immigrant Song
+I'm One
+I'm So Tired
+In a Hole
+In a Mellow Tone
+In a Misty Glade
+In an Intensive Care Unit
+I Never Left Home
+I Never Needed You Like This Before
+Infinite
+Ingest
+Insects
+Instant Karma!
+In the Aeroplane Over the Sea
+In The Good Old Summer Time
+In the Midnight Hour
+Intro
+Invisible
+Iron Man
+I Shall Be Released
+Is It In My Head?
+Is This What You Wanted
+It Ain't Easy
+I Told You So
+It's All Right
+It's Ice
+I've Had Enough
+I've Turned Bad
+I Walk the Line
+I Wan'na Be Like You
+I Want To Be a Cowboy's Sweetheart
+I Will
+I Will Set You Free
+I Wish
+Izabella
+Jägermeister Song
+Jam
+James Brown
+James Weldon Johnson
+Jane's Addiction
+Jay-Z
+Jefferson Airplane
+Jeff Mosier
+Jennifer Dances
+Jerry Reed
+Jessica
+Jessi Colter
+Jesus Just Left Chicago
+Jimi Hendrix Experience
+Jimmie Dale Gilmore
+Jimmie Davis
+Jimmie Rodgers
+Jimmie Skinner
+Jimmy Martin and His Sunny Mountain Boys
+Jimmy Smith
+Jim Stafford
+J.J. Cale
+Joe Henderson
+Joe Tex
+Joe Walsh
+John Coltrane
+John Fox
+John Hardy
+John Lennon
+Johnny B. Goode
+Johnny Cash
+Join the Band
+Joni Mitchell
+Josh White
+Josh White and Sam Gary
+Jo Stafford
+Joy
+Judy Garland
+Julia
+Julius
+Jumpin' Jack Flash
+Jump Monk
+Jungle Boogie
+Junior Senior
+Junior Wells
+Kansas
+Katherine Davis, Henry Onorati & Harry Simeone
+Katy Perry
+Keeping It Real
+Kenny Rogers
+Keyboard Army
+Keyboard Cavalry
+Kill Devil Falls
+Killer Joe
+Killing in the Name
+Kiss
+Knuckle Bone Broth Avenue
+Kool and the Gang
+Kung
+Lady Stardust
+La Grange
+Larry Clinton Orchestra
+Last Victor Jam
+Laura Branigan
+Lawn Boy
+L.A. Woman
+Layla
+Lazy and Red
+Leaves
+Led Zeppelin
+Lee Dorsey
+Le Freak
+Legal
+Legalize It
+Lengthwise
+Leo Kotke/Mike Gordon
+Leonard Cohen
+Leprechaun
+Let It Loose
+Let Me Lie
+Let's Go
+Letter to Jimmy Page
+Lifeboy
+Life on Mars?
+Life Saving Gun
+Light
+Light Up Or Leave Me Alone
+Limb By Limb
+Liquid Time
+Listening Wind
+Lit O Bit
+Little Feat
+Little Red Rooster
+Little Tiny Butter Biscuits
+Lively Up Yourself
+Liza Minnelli
+Llama
+Lonely Trip
+Lonesome Cowboy Bill
+Long Cool Woman in a Black Dress
+Long Long Long
+Look Out Cleveland
+Los Lobos
+Louis Jordan
+Louis Prima
+Loup Garou
+Lou Reed
+Love Is What We Are
+Love Me
+Love Me Like a Man
+Love, Reign O'er Me
+Love You
+Loving Cup
+Low Rider
+Lucky Seven
+Lucy Had A Lumpy Head
+Lullaby of Birdland
+Lushington
+Lynyrd Skynyrd
+Mack Rice
+Maggie's Revenge
+Magilla
+Maiden Voyage
+Makisupa Policeman
+Mallory
+Manteca
+Maple Leaf Rag
+Marijuana Hot Chocolate
+Marissa
+Martha My Dear
+Martian Monster
+Marty Robbins
+Marvin Gaye
+Mary Martin & Patricia Neway
+Max Creek
+Maybe
+Maze
+McGrupp and the Watchful Hosemasters
+Mean Mr. Mustard
+Meat
+Meatstick
+Mellow Mood
+Melt
+Melt the Guns
+Memories
+Memphis Slim
+Mercenary Territory
+Mercury
+Mercy
+Merry Pranksters Jam
+Messin' with The Kid
+Metal Bagel Death
+Mexican Cousin
+Michael Jackson
+Middle of the Road
+Midnight Moonlight
+Midnight on the Highway
+Midnight Rider
+Mike Gordon
+Mike Gordon and Leo Kottke
+Mike's Song
+Miles Davis
+Mind Left Body Jam
+Minestrone
+Minkin
+Minute by Minute
+Mirror in the Bathroom
+Miss You
+Mist
+Misty Mountain Hop
+MMGAMOIO
+MmmBop
+Mo' Better Blues
+Moby Dick
+Mock Song
+Money
+Monkey Man
+Monsters
+Montana
+Moonage Daydream
+Moonlight in Vermont
+Moose the Mooche
+More
+Most Events Aren't Planned
+Mother Nature's Son
+Mound
+Mountains in the Mist
+Mozambique
+Mr. Completely
+Mr. P.C.
+Muddy Waters
+Mull
+Mustang Sally
+My Bloody Valentine
+My Favorite Things
+My Friend, My Friend
+My Generation
+My Left Toe
+My Life As a Pez
+My Long Journey Home
+My Mind's Got a Mind of its Own
+My Problem Right There
+My Soul
+My Sweet One
+N2O
+Naomi Shemer
+Neil Diamond
+Neil Young
+Nellie Kane
+Neutral Milk Hotel
+Never
+New Age
+New York!
+NICU
+Night and Day
+Night Moves
+Night Nurse
+Ninety-Nine Years (and One Dark Day)
+Ninja Custodian
+Nirvana
+NO2
+No Dogs Allowed
+No Good Trying
+No Men In No Man's Land
+No Quarter
+Norman Blake
+Norwegian Wood (This Bird Has Flown)
+Not Fade Away
+Nothin' But A Nothin'
+Nothing
+Nowhere Fast
+Oasis
+Ob-La-Di, Ob-La-Da
+Oblivion
+Oblivious Fool
+O Canada
+Ocelot
+Oh Atlanta
+O Holy Night
+Oh! Sweet Nuthin'
+Old Folks Boogie
+Olivia's Pool
+O Mio Babbino Caro
+Once in a Lifetime
+One Meatball
+On Green Dolphin Street
+Only a Dream
+Only Shallow
+On My Knees
+On the Road Again
+On The Run
+On Your Way Down
+Osborne Brothers
+Otis Redding
+Over the Rainbow
+Oye Como Va
+Oysterhead
+Page Mcconnell
+Page McConnell
+Parliament-Funkadelic
+Party Time
+Passing Through
+Pat Metheny Group
+Patsy Montana
+Paul and Silas
+Paul Kantner, Grace Slick, and David Freiberg
+Paul Simon
+Pavement
+Peaches en Regalia
+Pebbles and Marbles
+Peter Rowan
+Peter Tosh
+Petrichor
+P-Funk Medley
+Phase Dance
+Piano Duet
+Piggies
+Pig in a Pen
+Pigtail
+Pillow Jets
+Pink Floyd
+Piper
+Plasma
+Play by Play
+Playing in the Band
+Poor Heart
+Pork Tornado
+Possum
+Powderfinger
+Prep School Hippie
+Prince
+Prince Caspian
+Proud Mary
+Psycho Killer
+Puccini/Forzano
+Punch Me in the Eye
+Punch You in the Eye
+Purple Hugh
+Purple Rain
+Pusherman
+PYITE
+Quadrophenia
+Quadrophonic Toppling
+Queen
+Quinn the Eskimo (The Mighty Quinn)
+Radiohead
+Rage Against the Machine
+Ramble On
+Rapper's Delight
+Ray Bolger (as “The Scarecrow”)
+Reba
+Rescue Squad
+"Reverend" Jeff Mosier
+Revival
+Revolution
+Revolution 1
+Revolution 9
+Revolution's Over
+Rhinoceros
+Rhombus Narration
+Rhymes
+Ricky Nelson
+Ride Captain Ride
+Rift
+Riker's Mailbox
+Rip This Joint
+Rise/Come Together
+Rita Clarke and the Naturals
+Roadhouse Blues
+Roadrunner
+Robert Johnson
+Rock and Roll
+Rock and Roll All Nite
+Rock and Roll Part Two
+Rock A William
+Rocket in My Pocket
+Rocket Man
+Rocketsled's Funky Main Man Meets Big Joe on Church Street
+Rock Me Baby
+Rock 'n' Roll Suicide
+Rocks Off
+Rocky Mountain Way
+Rocky Raccoon
+Rocky Top
+Rodgers and Hart
+Roggae
+Roll in My Sweet Baby's Arms
+Roll Like a Cantaloupe
+Ron Davies
+Roses Are Free
+Rotation Jam
+Round Room
+Roy Acuff & The Smoky Mountain Boys
+Roy Hawkins
+Roy Orbison
+Ruby Waves
+Rufus with Chaka Khan
+Runaway Jim
+Run Like an Antelope
+Running Out of Time
+Runnin' with the Devil
+Sabotage
+Sad Lisa
+Sailin' Shoes
+Sam and Dave
+Sam Hopkins
+Sample in a Jar
+Samson and Delilah
+Samson Variation
+Sand
+Sanity
+Satin Doll
+Savoy Truffle
+Saw It Again
+Say It To Me S.A.N.T.O.S.
+Say Something
+Scabbard
+Scarlet Begonias
+Scent of a Mule
+Scents and Subtle Sounds
+Scents and Subtle Sounds (Intro)
+Scott Joplin
+Sea and Sand
+Seals and Crofts
+Secret Language Instructions
+Secret Smile
+Seen and Not Seen
+See That My Grave Is Kept Clean
+Self
+Send in the Clowns
+Seth Yacovone
+Setting Sail
+Set Your Soul Free
+Seven Below
+Sexual Healing
+Sexy Sadie
+Shade
+Shafty
+Shaggy Dog
+Shake Your Coconuts
+Shake Your Hips
+She Caught the Katy and Left Me a Mule to Ride
+She's So Cold
+She Thinks I Still Care
+Shine
+Shine a Light
+Shipwreck
+Show of Life
+Shrine
+Shuggie Otis
+Sightless Escape
+Sigma Oasis
+Silent in the Morning
+Simon & Garfunkel
+Simple
+Sing Monica
+Sixteen Candles
+Skin It Back
+Skippy the Wondermouse
+Sky Train Wand
+Slave to the Traffic Light
+Sleep
+Sleep Again
+Sleeping Monkey
+Sleepwalk
+Slim Harpo
+Slipknot!
+Sly and the Family Stone
+Smashing Pumpkins
+Smells Like Teen Spirit
+Smoke on the Water
+Smokey Robinson & The Miracles
+Sneakin' Sally Through the Alley
+Snow
+SOAM
+So Damn Lucky
+So Lonely
+Somantin
+Something
+Something Living Here
+Sonny Boy Williamson
+Sonny Rollins
+Son Seals
+Soul Love
+Soul Planet
+Soul Shakedown Party
+Soul Survivor
+Space Oddity
+Spanish Flea
+Spanish Moon
+Sparkle
+Sparks
+Speak to Me
+Spencer Davis Group
+Spices
+Splinters of Hail
+Split Open and Melt
+Spock's Brain
+Spooky
+Spread It 'Round
+Squeeze Box
+Stairway to Heaven
+Stand!
+Star
+Starman
+Stash
+Stealing Time From the Faulty Plan
+Steam
+Steep
+Steve Miller Band
+Steve Reich
+Stevie Wonder
+Stir It Up
+"St. Louis Jimmy" Oden
+Stop Breaking Down
+Storage Jam
+Strange Design
+Strauss, as interpreted by Deodato
+Strawberry Fields Forever
+Strawberry Letter 23
+Stray Dog
+St. Stephen
+St. Thomas
+Suffragette City
+Sugar Shack
+Summer of '89
+Sunday Morning
+Sun Ra
+Sunshine of Your Feeling
+Susie Q
+Suspicious Minds
+Susskind Hotel
+Suzy Greenberg
+Sweet Adeline
+Sweet Black Angel
+Sweet Emotion
+Sweet Georgia Brown
+Sweet Jane
+Sweet Virginia
+Swept Away
+Swing Low, Sweet Chariot
+Syd Barrett
+Sympathy for the Devil
+Taj Mahal
+Take Me Out to the Ballgame
+Take Me to the River
+Take the 'A' Train
+Takin' Care of Business
+Talk
+Talking Heads
+Taste
+Taste That Surrounds
+Tay Zonday
+T-Bone Walker
+Tela
+Tell Me Something Good
+Tennessee Waltz
+Terence Blanchard
+Terms Of Use
+Terrapin
+Terrapin Station
+Thanksgiving
+Thank You
+That's Alright Mama
+The 9th Cube
+The Allman Brothers Band
+The Apples in Stereo
+The Asse Festival
+The Ballad of Curtis Loew
+The Band
+The Beatles
+The Birds
+The Birdwatcher
+The Breeders
+The Capitols
+The Cars
+The Cataract Song
+The Chase
+The Chicken
+The Chinese Water Torture
+The Classics IV
+The Connection
+The Continuing Story of Bungalow Bill
+The Cover of 'Rolling Stone'
+The Crests
+The Crickets
+The Curtain
+The Curtain With
+The Del McCoury Band
+The Dickie Scotland Song
+The Dillards
+The Dirty Jobs
+The Divided Sky
+The Dogs
+The Doors
+The Dude of Life (with Phish)
+The Edgar Winter Group
+The English Beat
+The Everly Brothers
+The Final Hurrah
+The Fishin' Hole
+The Fog That Surrounds
+The Gambler
+The Great Curve
+The Great Gig in the Sky
+The Guess Who
+The Happy Whip and Dung Song
+The Haunted House
+The Hollies
+The Horse
+The Howling
+The Inlaw Josie Wales
+The Inner Reaches of Outer
+The James Gang
+The Landlady
+The Last Step
+The Line
+The Lion Sleeps Tonight
+The Little Drummer Boy
+The Lizards
+Thelonius Monk
+Them
+The Maker
+The Mango Song
+The Man Who Stepped Into Yesterday
+Them Changes
+The Meditation Singers
+Theme from New York, New York
+Theme from Star Trek
+Theme from The Andy Griffith Show
+Theme From the Bottom
+The Mighty Diamonds
+The Modern Lovers
+The Moma Dance
+The Mothers of Invention
+The Name is Slick
+The Night the Lights Went Out in Georgia
+The Ocean
+The Oh Kee Pa Ceremony
+The Old Home Place
+The Other One
+The Overload
+The Pendulum
+The Police
+The Practical Song
+The Price of Love
+The Prison Joke
+The Proclaimers
+The Punk Meets the Godfather
+The Real Me
+The Rock
+The Rolling Stones
+The Rover
+The Silver Light
+The Sloth
+The Squirming Coil
+The Stanley Brothers
+The Staples Singers
+The Star-Spangled Banner
+The Sugarhill Gang
+The Surfaris
+The Tears of a Clown
+The Thrill is Gone
+The Unsafe Bridge
+The Unwinding
+The Velvet Underground
+The Very Long Fuse
+The Vibration of Life
+The Way It Goes
+The Wedge
+The Well
+The Who
+The Wild Ones
+The Wind Cries Mary
+Things People Do
+Thread
+Three Little Birds
+Thunderhead
+Thunder Road
+Tide Turns
+Timber
+Timber (Jerry the Mule)
+Time
+Time Loves a Hero
+Time Turns Elastic
+Tim O'Brien
+Tiny
+Title Track
+Tito Puente
+TMWSIY
+To France
+Tommy Tucker
+Tomorrow's Song
+Tom Waits
+Tonight
+Too Much of Everything
+Torn and Frayed
+Touch Me
+Tower Jam
+Traditional
+Traffic
+Train Round the Bend
+Train Song
+Trane To Conamarra
+Treat Me Like a Fool
+Trench Town Rock
+Trey Anastasio
+Trey Anastasio & Don Hart
+Trey, Mike, and The Benevento/Russo Duo
+Tripe Face Boogie
+Tropical Hot Dog Night
+Trust Fund Baby
+TTE
+Tube
+Tubthumping
+Tuesday
+Tuesday's Gone
+Tumbling Dice
+Tupac Shakur (Featuring Dr.Dre)
+Turd on the Run
+Turtle in the Clouds
+Tush
+TV on the Radio
+T.V. Show
+T.V. Theme
+Tweezer
+Tweezer Reprise
+Twenty Years Later
+Twist
+Two Versions of Me
+Uncle Pen
+Uncloudy Day
+Undermind
+Undun
+Union Federal
+United We Stand
+Urbie Green
+Us and Them
+Vacuum Solo
+Valdese
+Van Alstyne and Kahn
+Vangelis
+Van Halen
+Van Morrison
+Ventilator Blues
+Vicki Lawrence
+Victim
+Victor Jam Session
+Vida Blue
+Viola Lee Blues
+Violent Femmes
+Vultures
+Wading in the Velvet Sea
+Wait
+Waiting All Night
+Waking Up
+Waking Up Dead
+Walfredo
+Walk Away
+Walk This Way
+Walls of the Cave
+War
+Waste
+Water in the Sky
+Waves
+Way Down in the Hole
+We Are Come to Outlive Our Brains
+We Are the Champions
+Weekapaug Groove
+Weekly Time
+Ween
+Weigh
+We're an American Band
+We're Not Gonna Take It
+West Indian folk song
+West L.A. Fadeaway
+What's Going Through Your Mind
+What's the Use?
+What Things Seem
+What You Will
+When Something is Wrong with My Baby
+When the Cactus is in Bloom
+When the Circus Comes
+While My Guitar Gently Weeps
+Whipping Post
+White Rabbit
+White Winter Hymnal
+Who By Fire
+Who Do? We Do!
+Who Knows
+Whole Lotta Love
+Who Loves the Sun?
+Why Don't We Do It in the Road?
+Why Don't You Love Me?
+Why You Been Gone So Long?
+Wider
+Wild Child
+Wild Honey Pie
+Wild Thing
+Wildwood Weed
+Willie Nelson
+Willin'
+Will It Go Round in Circles
+Will Smith (a.k.a. The Fresh Prince)
+Will the Circle Be Unbroken?
+Wilson
+Wilson Pickett
+Wind Beneath My Wings
+Windham Hell
+Windora Bug
+Windy City
+Wingsuit
+Winterqueen
+Wipe Out
+Wolfman's Brother
+Wombat
+Woodlands Jam
+Woodstock
+Wormtown
+XTC
+Ya Mar
+Yarmouth Road
+YEM
+Yer Blues
+Yerushalayim Shel Zahav
+You Ain't Goin' Nowhere
+You Better Believe It Baby
+You Enjoy Myself
+You Gotta See Mama Every Night
+You Never Know
+Your Pet Cat
+You Sexy Thing
+You Shook Me All Night Long
+Zenzile
+Ziggy Stardust
+ZZ Top
