@@ -273,7 +273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const existingSongNames = new Set(existingSongs.map(song => song.name));
           
           // Filter to new songs only
-          const newSongs = songsList.filter(song => !existingSongNames.has(song.name));
+          const newSongs = songsList.filter((song: {name: string, slug: string, times_played: number}) => !existingSongNames.has(song.name));
           
           if (newSongs.length === 0) {
             return res.json({ message: "No new songs found to add", songsAdded: 0 });
@@ -292,7 +292,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.json({ 
             message: `Successfully added ${newSongs.length} new song(s)`, 
             songsAdded: newSongs.length,
-            newSongs: newSongs.map(s => s.name)
+            newSongs: newSongs.map((s: {name: string}) => s.name)
           });
         } catch (err) {
           console.error("Error reading songs from cached file:", err);

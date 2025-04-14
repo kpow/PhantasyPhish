@@ -164,6 +164,48 @@ If the song isn't added correctly:
 - Consider periodic updates to the entire song database to ensure it stays current with the latest Phish performances
 - If adding multiple songs, consider batching them to minimize database operations
 
+## Bulk Song Management
+
+For managing multiple songs at once, we've created specialized tools in the `tools/song_management` directory:
+
+### 1. Analyzing Missing Songs
+
+To identify all missing songs:
+
+```bash
+node --experimental-modules tools/song_management/analyze_all_missing_songs.js
+```
+
+This script:
+- Compares songs in our database with those from Phish.net
+- Creates a JSON file with all missing songs sorted by play count
+- Shows summary statistics about missing songs
+
+### 2. Adding Songs in Batches
+
+To add missing songs in batches of 10:
+
+```bash
+# Add first batch (songs 0-9)
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 0
+
+# Add second batch (songs 10-19) 
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 10
+
+# Continue with additional batches
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 20
+```
+
+Parameters:
+- First parameter: Batch size (default: 10)
+- Second parameter: Starting index (default: 0)
+
+The script will:
+- Process songs from the missing songs report
+- Add them to the JSON file
+- Call the API to update the database
+- Show progress and provide the command to run for the next batch
+
 ## Note on JSON Format
 
 The song entry in `phish_songs.json` follows this format:

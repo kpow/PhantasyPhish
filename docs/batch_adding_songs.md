@@ -1,92 +1,101 @@
 # Batch Adding Songs to the Database
 
-This document explains how to add multiple Phish songs to the database in batches.
+This document explains how to use the batch song management tools to efficiently add multiple missing songs to the database.
 
 ## Overview
 
-The application maintains a database of Phish songs for setlist prediction purposes. When songs are missing, they need to be added to make predictions more accurate. This process automates the addition of multiple songs at once.
+The application requires a comprehensive database of Phish songs for accurate setlist predictions. We've created tools to identify missing songs and add them in batches, making it easy to maintain a complete song database.
 
-## Available Scripts
+## Available Tools
 
-### 1. Add Top 10 Most-Played Missing Songs
+All tools are located in the `tools/song_management` directory:
 
-The `add_top_10_songs.js` script adds the 10 most frequently played Phish songs that are missing from our database.
+1. **analyze_all_missing_songs.js** - Identifies missing songs by comparing our database with the Phish.net song data
+2. **add_all_missing_songs_batch.js** - Adds missing songs in configurable batches
+3. **add_songs_batch.js** - Alternative batch script for adding specific sets of songs
 
-```bash
-node add_top_10_songs.js
-```
+## Step 1: Analyze Missing Songs
 
-This script:
-- Adds the top 10 missing songs to the JSON data file
-- Calls the API to update the database
-- Reports which songs were added and which already existed
-
-### 2. Add Missing Songs in Batches
-
-The `add_songs_batch.js` script adds songs in batches of any size (default is 10).
+First, run the analysis script to generate a report of all missing songs:
 
 ```bash
-# Process 10 songs starting from the beginning
-node add_songs_batch.js
-
-# Process a custom batch size
-node add_songs_batch.js 5
-
-# Continue from a specific index (to resume after previous batches)
-node add_songs_batch.js 10 20
+node --experimental-modules tools/song_management/analyze_all_missing_songs.js
 ```
 
-Parameters:
-- First parameter: Batch size (default: 10)
-- Second parameter: Starting index (default: 0)
+This script will:
+- Load the Phish.net song data from the markdown file in `attached_assets/`
+- Compare it with songs in our database
+- Create a JSON file with all missing songs sorted by play count
+- Generate a summary report showing the most-played missing songs
+- Show statistics about missing songs (total count, plays, etc.)
 
-This script:
-- Processes songs from the missing_songs_report.json file
-- Adds the specified batch of songs to the JSON data file
-- Calls the API to update the database
-- Reports progress and provides the command to run for the next batch
+## Step 2: Add Songs in Batches
 
-## Prerequisites
-
-Before running these scripts, you should analyze which songs are missing:
+Use the batch script to add missing songs 10 at a time (or any batch size you prefer):
 
 ```bash
-node analyze_missing_songs.js
+# Add first batch (songs 0-9)
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 0
+
+# After the first batch completes, run the next batch (songs 10-19)
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 10
+
+# Continue with subsequent batches
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 20
 ```
 
-This generates:
-- missing_songs_report.json: Contains detailed information about missing songs
-- top_missing_songs.csv: A CSV file for easier viewing of the top missing songs
+### Parameters:
+
+1. **Batch size** (default: 10) - How many songs to process in one go
+2. **Starting index** (default: 0) - Index from which to start processing songs
+
+### What the Script Does:
+
+- Reads the songs to add from the missing songs report
+- Adds them to the phish_songs.json file
+- Makes API calls to update the database
+- Shows progress (percentage of songs processed)
+- Provides the next command to run for the next batch
+
+## Step 3: Verify the Additions
+
+After running the batch scripts, you can verify the songs were added by:
+
+1. Checking the API response which lists all newly added songs
+2. Querying the songs API:
+
+```bash
+curl http://localhost:5000/api/songs/all | grep -i "SongName"
+```
+
+## Handling Errors
+
+If any errors occur during batch processing:
+
+1. Check the error message in the console
+2. Fix the issue (e.g., correct malformed data in the source file)
+3. Re-run the batch from the failed index
+
+## Best Practices
+
+- Run the analysis script periodically to catch any new missing songs
+- Process songs in reasonable batch sizes (10-20 at a time) to avoid overwhelming the server
+- Keep a backup of the song data before making large batch changes
+- After completing all batches, run the analysis script again to verify no songs are still missing
 
 ## Example Workflow
 
-1. Run the analysis to identify missing songs:
-   ```bash
-   node analyze_missing_songs.js
-   ```
+```bash
+# 1. Analyze to find missing songs
+node --experimental-modules tools/song_management/analyze_all_missing_songs.js
 
-2. Add the top 10 most-played missing songs:
-   ```bash
-   node add_top_10_songs.js
-   ```
+# 2. Add songs in batches of 10
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 0
+node --experimental-modules tools/song_management/add_all_missing_songs_batch.js 10 10
+# Continue until all songs are added...
 
-3. Continue adding songs in batches of 10:
-   ```bash
-   # First batch (songs 11-20)
-   node add_songs_batch.js 10 10
-   
-   # Second batch (songs 21-30)
-   node add_songs_batch.js 10 20
-   
-   # Continue until all songs are added
-   ```
+# 3. Verify no songs are missing
+node --experimental-modules tools/song_management/analyze_all_missing_songs.js
+```
 
-## Notes
-
-- The scripts check for duplicates to avoid adding songs that already exist
-- The database is updated by calling the `/api/songs/reload` endpoint
-- If the API call fails, you'll need to manually call the endpoint:
-  ```bash
-  curl -X POST http://localhost:5000/api/songs/reload
-  ```
-- Progress is reported after each batch, showing how many songs have been processed
+If done correctly, the final analysis should show zero missing songs.
