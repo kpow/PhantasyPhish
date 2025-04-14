@@ -483,24 +483,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username: "phishnet"
       });
       
-      if (!Array.isArray(setlistData) || setlistData.length === 0) {
+      if (!Array.isArray(actualSetlistData) || actualSetlistData.length === 0) {
         return res.status(404).json({ message: "Setlist not found for this show" });
       }
       
       // Process the raw setlist data
-      const processedSetlist = processRawSetlist(setlistData);
+      const processedSetlist = processRawSetlist(actualSetlistData);
       
-      // Score the prediction
-      // Need to ensure the prediction setlist matches the expected format
-      // First, safely check if setlist exists and is an object
-      const setlist = prediction.setlist && typeof prediction.setlist === 'object' 
-        ? prediction.setlist as Record<string, unknown>
-        : { set1: [], set2: [], encore: [] };
-        
+      // Use the prediction setlist data we parsed earlier
       const predictionSetlist = {
-        set1: Array.isArray(setlist.set1) ? setlist.set1 : [],
-        set2: Array.isArray(setlist.set2) ? setlist.set2 : [],
-        encore: Array.isArray(setlist.encore) ? setlist.encore : []
+        set1: Array.isArray(predictionSetlistData.set1) ? predictionSetlistData.set1 : [],
+        set2: Array.isArray(predictionSetlistData.set2) ? predictionSetlistData.set2 : [],
+        encore: Array.isArray(predictionSetlistData.encore) ? predictionSetlistData.encore : []
       };
       const scoreBreakdown = scorePrediction(predictionSetlist, processedSetlist);
       
