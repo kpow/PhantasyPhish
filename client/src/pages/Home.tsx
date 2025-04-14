@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
@@ -8,7 +8,7 @@ import ScoreCard from "@/components/setlist/ScoreCard";
 import { usePhishData } from "@/hooks/usePhishData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SetlistContext } from "@/contexts/SetlistContext";
+import { useSetlist } from "@/contexts/SetlistContextRefactored";
 
 export default function Home() {
   const { isLoadingSongs, isLoadingUpcomingShow, isLoadingRecentShows } =
@@ -128,7 +128,7 @@ function LoadingState() {
 }
 
 function MainContent() {
-  const { scoringMode, scoringData } = useContext(SetlistContext);
+  const { isInScoringMode, scoringData } = useSetlist();
   
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-0">
@@ -149,7 +149,7 @@ function MainContent() {
         <UpcomingShow />
       </div>
 
-      {scoringMode && scoringData.actualSetlist ? (
+      {isInScoringMode && scoringData.actualSetlist ? (
         /* When in scoring mode, ScoreCard takes up the full middle and right columns */
         <div className="lg:col-span-9">
           <ScoreCard 

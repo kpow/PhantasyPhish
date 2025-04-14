@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { ScoringBreakdown, ProcessedSetlist } from '@shared/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronRight, X } from 'lucide-react';
-import { SetlistContext } from '@/contexts/SetlistContext';
+import { useSetlist } from '@/contexts/SetlistContextRefactored';
 
 interface ScoreCardProps {
   scoreBreakdown: ScoringBreakdown;
@@ -20,7 +20,7 @@ interface ScoreCardProps {
 }
 
 export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }: ScoreCardProps) {
-  const { toggleScoringMode } = useContext(SetlistContext);
+  const { exitScoringMode } = useSetlist();
   const [isPredictionsOpen, setIsPredictionsOpen] = useState(true);
   const [isSetlistOpen, setIsSetlistOpen] = useState(true);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
@@ -47,7 +47,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
             <Button 
               variant="ghost" 
               size="icon" 
-              onClick={() => toggleScoringMode()}
+              onClick={exitScoringMode}
               className="text-gray-400 hover:text-white hover:bg-[#2A2A2A]"
             >
               <X className="h-5 w-5" />
