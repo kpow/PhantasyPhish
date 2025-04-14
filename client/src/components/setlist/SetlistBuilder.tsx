@@ -70,6 +70,14 @@ export default function SetlistBuilder() {
 
       const responseData = await response.json();
       
+      // Dispatch a custom event to notify other components a prediction was saved
+      const event = new CustomEvent('predictionSaved', { 
+        detail: { 
+          showId: selectedShow.showid 
+        } 
+      });
+      window.dispatchEvent(event);
+      
       // Different message based on whether it's an update or new prediction
       if (responseData.updated) {
         toast({

@@ -109,10 +109,10 @@ export default function UpcomingShow() {
   const [showPredictions, setShowPredictions] = useState<Record<string, boolean>>({});
   
   // Check which shows have predictions when component mounts
-  useEffect(() => {
+  const checkShowPredictions = async () => {
     if (isAuthenticated && upcomingShows?.length) {
       // Check each upcoming show to see if we have a prediction for it
-      upcomingShows.forEach(async (show) => {
+      for (const show of upcomingShows) {
         try {
           const response = await fetch(`/api/users/current/predictions/${show.showid}`);
           if (response.ok) {
@@ -122,14 +122,44 @@ export default function UpcomingShow() {
                 ...prev, 
                 [show.showid]: true
               }));
+            } else {
+              setShowPredictions(prev => ({
+                ...prev, 
+                [show.showid]: false
+              }));
             }
           }
         } catch (error) {
           console.error(`Error checking prediction for show ${show.showid}:`, error);
         }
-      });
+      }
     }
+  };
+
+  // Initial check on mount
+  useEffect(() => {
+    checkShowPredictions();
   }, [isAuthenticated, upcomingShows]);
+  
+  // Listen for prediction saved events
+  useEffect(() => {
+    const handlePredictionSaved = (event: Event) => {
+      const customEvent = event as CustomEvent<{showId: string}>;
+      const showId = customEvent.detail.showId;
+      
+      // Update our local state to show the prediction exists
+      setShowPredictions(prev => ({
+        ...prev,
+        [showId]: true
+      }));
+    };
+    
+    window.addEventListener('predictionSaved', handlePredictionSaved);
+    
+    return () => {
+      window.removeEventListener('predictionSaved', handlePredictionSaved);
+    };
+  }, []);
 
   const handlePickSetlist = async (show: PhishShow) => {
     if (!isAuthenticated) {
