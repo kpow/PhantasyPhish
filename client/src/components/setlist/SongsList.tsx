@@ -1,13 +1,13 @@
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { SetlistContext } from '@/contexts/SetlistContext';
+import { useSetlist } from '@/contexts/SetlistContextRefactored';
 import { useScroll } from '@/contexts/ScrollContext';
 import { usePhishData } from '@/hooks/usePhishData';
 import { PhishSong } from '@/types';
-import { Search, ChevronUp, ArrowDown, ArrowUp, SortAsc, SortDesc } from 'lucide-react';
+import { Search, ChevronUp, SortAsc, SortDesc } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SongsList() {
@@ -18,7 +18,7 @@ export default function SongsList() {
     addSongToSet,
     setSetlist,
     selectedShow
-  } = useContext(SetlistContext);
+  } = useSetlist();
   const { scrollToSet } = useScroll();
   const [searchTerm, setSearchTerm] = useState('');
   const [sortType, setSortType] = useState<'az' | 'plays'>('plays');
@@ -223,9 +223,9 @@ export default function SongsList() {
                         {/* Count only non-empty slots for each set */}
                         {(() => {
                           // Count actual songs in each set
-                          const set1Songs = setlist['set1'].filter(spot => spot.song !== null).length;
-                          const set2Songs = setlist['set2'].filter(spot => spot.song !== null).length;
-                          const encoreSongs = setlist['encore'].filter(spot => spot.song !== null).length;
+                          const set1Songs = setlist['set1'].filter((spot) => spot.song !== null).length;
+                          const set2Songs = setlist['set2'].filter((spot) => spot.song !== null).length;
+                          const encoreSongs = setlist['encore'].filter((spot) => spot.song !== null).length;
                           
                           return (
                             <>
