@@ -149,23 +149,29 @@ function MainContent() {
         <UpcomingShow />
       </div>
 
-      {/* Middle Column - Build a Setlist */}
-      <div className="lg:col-span-5">
-        <SetlistBuilder />
-      </div>
-
-      {/* Right Column - Song List or Score Card */}
-      <div className="lg:col-span-4">
-        {scoringMode && scoringData.actualSetlist ? (
+      {scoringMode && scoringData.actualSetlist ? (
+        /* When in scoring mode, ScoreCard takes up the full middle and right columns */
+        <div className="lg:col-span-9">
           <ScoreCard 
             scoreBreakdown={scoringData.breakdown!}
             actualSetlist={scoringData.actualSetlist}
             showDetails={scoringData.showDetails}
           />
-        ) : (
-          <SongsList />
-        )}
-      </div>
+        </div>
+      ) : (
+        /* Normal mode - middle column with setlist builder and right column with song list */
+        <>
+          {/* Middle Column - Build a Setlist */}
+          <div className="lg:col-span-5">
+            <SetlistBuilder />
+          </div>
+
+          {/* Right Column - Song List */}
+          <div className="lg:col-span-4">
+            <SongsList />
+          </div>
+        </>
+      )}
 
       {/* Recent Shows Row (Full Width) */}
       <div className="lg:col-span-12">
