@@ -54,7 +54,7 @@ export default function Header() {
           className="flex items-center cursor-pointer" 
           onClick={() => setLocation("/")}
         >
-          <FishIcon className="w-16 h-16 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
+          <FishIcon className="w-20 h-20 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
           <div className="sm:hidden flex flex-col items-start justify-center">
             <h1 className="font-display text-2xl leading-tight text-primary font-bold">Phantasy</h1>
             <h1 className="font-display text-2xl leading-tight text-primary font-bold -mt-1">Phish</h1>
