@@ -24,7 +24,8 @@ export default function SetlistBuilder() {
     loadPredictionForShow,
     exitScoringMode,
     enterScoringMode,
-    setScoringData
+    setScoringData,
+    navigateToShow
   } = useSetlist();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -72,8 +73,8 @@ export default function SetlistBuilder() {
         const success = await loadPredictionForShow(scoringParams.showId);
         if (success) {
           // Enable scoring mode
-          if (!scoringMode) {
-            toggleScoringMode();
+          if (!isInScoringMode) {
+            enterScoringMode();
           }
         } else {
           toast({
@@ -86,7 +87,7 @@ export default function SetlistBuilder() {
     };
     
     fetchPredictionFromURL();
-  }, [match, params, scoringMatch, scoringParams, loadPredictionForShow, toggleScoringMode, scoringMode]);
+  }, [match, params, scoringMatch, scoringParams, loadPredictionForShow, enterScoringMode, isInScoringMode]);
 
   // Function to test the scoring functionality
   const handleTestScoring = async () => {
@@ -231,7 +232,7 @@ export default function SetlistBuilder() {
       setScoringData(newScoringData);
       
       // Enable scoring mode to display the score card
-      toggleScoringMode();
+      enterScoringMode();
       
       // Update URL to reflect we're in scoring mode
       if (selectedShow && location !== `/prediction/${selectedShow.showid}/score`) {
@@ -422,14 +423,11 @@ export default function SetlistBuilder() {
 </div>
 
         <div className="mt-6 flex gap-2">
-          {scoringMode ? (
+          {isInScoringMode ? (
             <>
               <Button 
                 className="w-full bg-green-500 hover:bg-green-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
-                onClick={() => {
-                  // The toggleScoringMode function now handles URL updates directly
-                  toggleScoringMode();
-                }}
+                onClick={exitScoringMode}
               >
                 Back to Setlist
               </Button>
