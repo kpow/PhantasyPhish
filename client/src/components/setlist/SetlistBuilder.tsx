@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
 import ScoreCard from './ScoreCard';
-import { useSetlist } from '@/contexts/SetlistContext';
+import { useSetlist } from '@/contexts/SetlistContextRefactored';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatShowDate } from '@/hooks/usePhishData';
 import { useQuery } from '@tanstack/react-query';

@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PhishShow } from "@/types";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { useSetlist } from "@/contexts/SetlistContext";
+import { useSetlist } from "@/contexts/SetlistContextRefactored";
 import { useScroll } from "@/contexts/ScrollContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLocation } from "wouter";
