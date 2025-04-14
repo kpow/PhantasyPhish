@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -8,6 +8,7 @@ import { useSetlist } from '@/contexts/SetlistContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatShowDate } from '@/hooks/usePhishData';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation, useRoute } from 'wouter';
 
 export default function SetlistBuilder() {
   const { 
@@ -26,9 +27,65 @@ export default function SetlistBuilder() {
   } = useSetlist();
   const { user } = useAuth();
   const { toast } = useToast();
+  const [location, setLocation] = useLocation();
+  const [match, params] = useRoute('/prediction/:showId');
+  const [scoringMatch, scoringParams] = useRoute('/prediction/:showId/score');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
+  const [pageTitle, setPageTitle] = useState<string>('Build a Setlist');
+  
+  // Effect to update the page title when show or scoring mode changes
+  useEffect(() => {
+    if (selectedShow) {
+      let title = `${formatShowDate(selectedShow.showdate)} - ${selectedShow.venue}`;
+      if (scoringMode) {
+        title += ' (Scoring)';
+      } else {
+        title += ' (Editing)';
+      }
+      setPageTitle(title);
+    } else {
+      setPageTitle('Build a Setlist');
+    }
+  }, [selectedShow, scoringMode]);
+  
+  // Effect to load prediction data from URL params on component mount
+  useEffect(() => {
+    const fetchPredictionFromURL = async () => {
+      // Check if we're on a prediction URL with a showId param
+      if (match && params.showId) {
+        // Load the prediction for this show
+        const success = await loadPredictionForShow(params.showId);
+        if (!success) {
+          toast({
+            title: "Prediction Not Found",
+            description: "Could not find a prediction for this show ID.",
+            variant: "destructive"
+          });
+        }
+      }
+      // Check if we're on a scoring URL with a showId param
+      else if (scoringMatch && scoringParams.showId) {
+        // Load the prediction for scoring
+        const success = await loadPredictionForShow(scoringParams.showId);
+        if (success) {
+          // Enable scoring mode
+          if (!scoringMode) {
+            toggleScoringMode();
+          }
+        } else {
+          toast({
+            title: "Prediction Not Found",
+            description: "Could not find a prediction for this show ID to score.",
+            variant: "destructive"
+          });
+        }
+      }
+    };
+    
+    fetchPredictionFromURL();
+  }, [match, params, scoringMatch, scoringParams, loadPredictionForShow, toggleScoringMode, scoringMode]);
 
   // Function to test the scoring functionality
   const handleTestScoring = async () => {
@@ -175,6 +232,11 @@ export default function SetlistBuilder() {
       // Enable scoring mode to display the score card
       toggleScoringMode();
       
+      // Update URL to reflect we're in scoring mode
+      if (selectedShow && location !== `/prediction/${selectedShow.showid}/score`) {
+        setLocation(`/prediction/${selectedShow.showid}/score`);
+      }
+      
       toast({
         title: "Test Scoring Complete",
         description: `Your setlist prediction scored ${scoreData.score} points!`,
@@ -271,6 +333,12 @@ export default function SetlistBuilder() {
 
       // Don't reset - just leave the current setlist displayed
       // This will let the user continue working with their saved setlist
+      
+      // Update the URL to reflect the prediction being edited
+      // Only update if we're not already on that URL
+      if (location !== `/prediction/${selectedShow.showid}`) {
+        setLocation(`/prediction/${selectedShow.showid}`);
+      }
     } catch (error) {
       console.error('Error submitting prediction:', error);
       toast({
@@ -357,7 +425,14 @@ export default function SetlistBuilder() {
             <>
               <Button 
                 className="w-full bg-green-500 hover:bg-green-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
-                onClick={toggleScoringMode}
+                onClick={() => {
+                  toggleScoringMode();
+                  
+                  // Update URL when going back to edit mode
+                  if (selectedShow && location !== `/prediction/${selectedShow.showid}`) {
+                    setLocation(`/prediction/${selectedShow.showid}`);
+                  }
+                }}
               >
                 Back to Setlist
               </Button>
