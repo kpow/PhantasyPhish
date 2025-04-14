@@ -59,55 +59,52 @@ export default function RecentShows() {
   const isMobile = useIsMobile();
   
   // Load a setlist for a specific show
-  const loadSetlist = async (showId: string) => {
+  const loadSetlist = (showId: string) => {
     setIsLoading(true);
     
-    try {
-      const setlist = await fetchSetlist(showId);
-      setCurrentSetlist(setlist);
-      setIsLoading(false);
-      return true;
-    } catch (error) {
-      console.error('Error fetching setlist:', error);
-      setIsLoading(false);
-      toast({
-        title: "Failed to load setlist",
-        description: "There was an error loading the setlist. Please try again.",
-        variant: "destructive"
+    fetchSetlist(showId)
+      .then(setlist => {
+        setCurrentSetlist(setlist);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching setlist:', error);
+        setIsLoading(false);
+        toast({
+          title: "Failed to load setlist",
+          description: "There was an error loading the setlist. Please try again.",
+          variant: "destructive"
+        });
       });
-      return false;
-    }
   };
 
   // Handler for clicking on a show card
-  const handleViewSetlist = async (showId: string) => {
+  const handleViewSetlist = (showId: string) => {
     // Find the index of the clicked show
     const index = recentShows.findIndex(show => show.showid === showId);
     if (index !== -1) {
       setCurrentShowIndex(index);
-      const success = await loadSetlist(showId);
-      if (success) {
-        setIsModalOpen(true);
-      }
+      setIsModalOpen(true); // Open modal immediately
+      loadSetlist(showId); // Then load the data
     }
   };
   
   // Navigate to previous show
-  const goToPreviousShow = async () => {
+  const goToPreviousShow = () => {
     if (!recentShows || recentShows.length === 0) return;
     
     const newIndex = (currentShowIndex - 1 + recentShows.length) % recentShows.length;
     setCurrentShowIndex(newIndex);
-    await loadSetlist(recentShows[newIndex].showid);
+    loadSetlist(recentShows[newIndex].showid);
   };
   
   // Navigate to next show
-  const goToNextShow = async () => {
+  const goToNextShow = () => {
     if (!recentShows || recentShows.length === 0) return;
     
     const newIndex = (currentShowIndex + 1) % recentShows.length;
     setCurrentShowIndex(newIndex);
-    await loadSetlist(recentShows[newIndex].showid);
+    loadSetlist(recentShows[newIndex].showid);
   };
 
   if (isLoadingRecentShows) {
@@ -218,10 +215,10 @@ export default function RecentShows() {
             <div className="flex items-center justify-between">
               <div>
                 <DialogTitle className="text-xl text-white">
-                  {currentSetlist && `Setlist for ${formatShowDate(currentSetlist.showdate)}`}
+                  {recentShows[currentShowIndex] && `Setlist for ${formatShowDate(recentShows[currentShowIndex].showdate)}`}
                 </DialogTitle>
                 <DialogDescription className="text-gray-300">
-                  {currentSetlist && `${currentSetlist.venue}, ${currentSetlist.location}`}
+                  {recentShows[currentShowIndex] && `${recentShows[currentShowIndex].venue}, ${recentShows[currentShowIndex].location}`}
                 </DialogDescription>
               </div>
               
