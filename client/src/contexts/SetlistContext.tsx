@@ -26,6 +26,7 @@ interface SetlistContextType {
   scoringData: ScoringData;
   setSelectedSong: (song: PhishSong | null) => void;
   setSelectedShow: (show: PhishShow | null) => void;
+  setScoringData: (data: ScoringData) => void;
   setSetlistSpot: (
     set: "set1" | "set2" | "encore",
     position: number,
@@ -70,6 +71,7 @@ export const SetlistContext = createContext<SetlistContextType>({
   },
   setSelectedSong: () => {},
   setSelectedShow: () => {},
+  setScoringData: () => {},
   setSetlistSpot: () => {},
   addSongToSet: () => {},
   reorderSongs: () => {},

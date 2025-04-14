@@ -12,7 +12,7 @@ interface ScoreCardProps {
     date: string;
     venue: string;
     location: string;
-  };
+  } | null;
 }
 
 export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }: ScoreCardProps) {
