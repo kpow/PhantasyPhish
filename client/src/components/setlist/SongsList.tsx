@@ -91,10 +91,10 @@ export default function SongsList() {
       // If no empty spots and not at max capacity, add a new slot with the song
       const maxSize = setType === 'encore' ? 3 : 10;
       
-      // Count actual songs (not empty slots)
-      const actualSongCount = setlist[setType].filter(spot => spot.song !== null).length;
+      // Count total items (including empty slots)
+      const totalItems = setlist[setType].length;
       
-      if (actualSongCount < maxSize) {
+      if (totalItems < maxSize) {
         // Create a deep copy of the current setlist
         const updatedSetlist = { 
           set1: [...setlist.set1],
@@ -103,7 +103,7 @@ export default function SongsList() {
         };
         
         // Create a new spot with the song
-        const newPosition = updatedSetlist[setType].length;
+        const newPosition = totalItems;
         const newSpot = { position: newPosition, song };
         
         // Add the new spot with the song to the appropriate set
