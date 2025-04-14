@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ScoringBreakdown, ProcessedSetlist } from '@shared/types';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronDown, ChevronRight, X } from 'lucide-react';
+import { SetlistContext } from '@/contexts/SetlistContext';
 
 interface ScoreCardProps {
   scoreBreakdown: ScoringBreakdown;
@@ -18,6 +20,7 @@ interface ScoreCardProps {
 }
 
 export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }: ScoreCardProps) {
+  const { toggleScoringMode } = useContext(SetlistContext);
   const [isPredictionsOpen, setIsPredictionsOpen] = useState(false);
   const [isSetlistOpen, setIsSetlistOpen] = useState(true);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
@@ -39,7 +42,17 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
           <h2 className="font-display text-2xl text-white">
             Score: <span className="text-green-400 font-bold">{scoreBreakdown.totalScore}</span>
           </h2>
-          <Badge variant="outline" className="border-green-500 text-green-500 px-3 py-1 text-sm font-semibold">TEST SCORE</Badge>
+          <div className="flex items-center space-x-3">
+            <Badge variant="outline" className="border-green-500 text-green-500 px-3 py-1 text-sm font-semibold">TEST SCORE</Badge>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => toggleScoringMode()}
+              className="text-gray-400 hover:text-white hover:bg-[#2A2A2A]"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
         </div>
         {showDetails && (
           <div className="text-sm text-gray-300 mt-1">
@@ -143,12 +156,12 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
         <CollapsibleContent>
           <div className="p-4">
             {scoreBreakdown.details.length > 0 ? (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                 {scoreBreakdown.details.map((detail, index) => (
-                  <div key={index} className="bg-[#252525] p-3 rounded-md flex justify-between items-center">
-                    <div>
-                      <span className="font-medium text-white">{detail.songName}</span>
-                      <div className="flex items-center mt-1">
+                  <div key={index} className="bg-[#252525] p-3 rounded-md flex flex-col h-full">
+                    <div className="flex-1">
+                      <span className="font-medium text-white block mb-2">{detail.songName}</span>
+                      <div className="flex flex-wrap gap-2 mt-1 mb-2">
                         <Badge 
                           variant="outline" 
                           className={
@@ -164,8 +177,8 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
                         </Badge>
                         
                         {detail.actualSet && (
-                          <div className="flex items-center ml-2">
-                            <span className="text-gray-400 mx-1">→</span>
+                          <>
+                            <span className="text-gray-400">→</span>
                             <Badge 
                               variant="outline" 
                               className={
@@ -179,22 +192,22 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
                               {' #'}
                               {(detail.actualPosition as number) + 1}
                             </Badge>
-                          </div>
+                          </>
                         )}
                         
                         {!detail.actualSet && (
-                          <span className="ml-2 text-gray-500 text-sm">Not played</span>
+                          <span className="text-gray-500 text-sm">Not played</span>
                         )}
                       </div>
                       
-                      <p className="text-xs text-gray-400 mt-1">{detail.reason}</p>
+                      <p className="text-xs text-gray-400 mt-2">{detail.reason}</p>
                     </div>
                     
-                    <div className="text-center">
+                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-700">
+                      <span className="text-xs text-gray-500">Points</span>
                       <div className={`text-lg font-bold ${detail.points > 0 ? "text-green-400" : "text-gray-500"}`}>
                         {detail.points}
                       </div>
-                      <div className="text-xs text-gray-500">pts</div>
                     </div>
                   </div>
                 ))}
