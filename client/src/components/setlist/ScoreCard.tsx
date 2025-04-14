@@ -7,7 +7,7 @@ import { ScoringBreakdown, ProcessedSetlist } from '@shared/types';
 
 interface ScoreCardProps {
   scoreBreakdown: ScoringBreakdown;
-  actualSetlist: ProcessedSetlist;
+  actualSetlist: ProcessedSetlist | null;
   showDetails?: {
     date: string;
     venue: string;
@@ -16,8 +16,18 @@ interface ScoreCardProps {
 }
 
 export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }: ScoreCardProps) {
+  if (!actualSetlist) {
+    return (
+      <div className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full">
+        <div className="text-center py-6 text-gray-400">
+          No setlist data available for scoring
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="absolute top-0 right-0 z-10 w-1/3 h-full bg-[#1E1E1E] border-l border-gray-800 p-5 overflow-y-auto">
+    <div className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full overflow-y-auto">
       {/* Score Summary Header */}
       <div className="mb-6">
         <div className="flex justify-between items-center">

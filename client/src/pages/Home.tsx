@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import Header from "@/components/layout/Header";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
 import SetlistBuilder from "@/components/setlist/SetlistBuilder";
 import SongsList from "@/components/setlist/SongsList";
+import ScoreCard from "@/components/setlist/ScoreCard";
 import { usePhishData } from "@/hooks/usePhishData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SetlistContext } from "@/contexts/SetlistContext";
 
 export default function Home() {
   const { isLoadingSongs, isLoadingUpcomingShow, isLoadingRecentShows } =
@@ -126,6 +128,8 @@ function LoadingState() {
 }
 
 function MainContent() {
+  const { scoringMode, scoringData } = useContext(SetlistContext);
+  
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-0">
       {/* Left Column */}
@@ -150,9 +154,17 @@ function MainContent() {
         <SetlistBuilder />
       </div>
 
-      {/* Right Column - Song List */}
+      {/* Right Column - Song List or Score Card */}
       <div className="lg:col-span-4">
-        <SongsList />
+        {scoringMode && scoringData.actualSetlist ? (
+          <ScoreCard 
+            scoreBreakdown={scoringData.breakdown!}
+            actualSetlist={scoringData.actualSetlist}
+            showDetails={scoringData.showDetails}
+          />
+        ) : (
+          <SongsList />
+        )}
       </div>
 
       {/* Recent Shows Row (Full Width) */}

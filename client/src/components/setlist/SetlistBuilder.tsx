@@ -317,14 +317,7 @@ export default function SetlistBuilder() {
     selectedSong={selectedSong}
   />
   
-  {/* Scorecard overlay when in scoring mode */}
-  {scoringMode && scoringData.actualSetlist && scoringData.breakdown && (
-    <ScoreCard 
-      scoreBreakdown={scoringData.breakdown}
-      actualSetlist={scoringData.actualSetlist}
-      showDetails={scoringData.showDetails}
-    />
-  )}
+  {/* We no longer need the scorecard overlay - it's shown in the third column */}
 </div>
 
         <div className="mt-6 flex gap-2">
