@@ -21,7 +21,7 @@ interface ScoreCardProps {
 
 export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }: ScoreCardProps) {
   const { toggleScoringMode } = useContext(SetlistContext);
-  const [isPredictionsOpen, setIsPredictionsOpen] = useState(false);
+  const [isPredictionsOpen, setIsPredictionsOpen] = useState(true);
   const [isSetlistOpen, setIsSetlistOpen] = useState(true);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   if (!actualSetlist) {
@@ -229,63 +229,93 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
         
         <CollapsibleContent>
           <div className="p-4">
+            {/* Group predictions by set */}
             {scoreBreakdown.details.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                {scoreBreakdown.details.map((detail, index) => (
-                  <div key={index} className="bg-[#252525] p-3 rounded-md flex flex-col h-full">
-                    <div className="flex-1">
-                      <span className="font-medium text-white block mb-2">{detail.songName}</span>
-                      <div className="flex flex-wrap gap-2 mt-1 mb-2">
-                        <Badge 
-                          variant="outline" 
-                          className={
-                            detail.predictedSet === 'set1' ? 'border-primary text-primary' : 
-                            detail.predictedSet === 'set2' ? 'border-orange-500 text-orange-500' : 
-                            'border-green-500 text-green-500'
-                          }
-                        >
-                          {detail.predictedSet === 'set1' ? 'Set 1' : 
-                           detail.predictedSet === 'set2' ? 'Set 2' : 'Encore'}
-                          {' #'}
-                          {detail.predictedPosition + 1}
-                        </Badge>
-                        
-                        {detail.actualSet && (
-                          <>
-                            <span className="text-gray-400">→</span>
-                            <Badge 
-                              variant="outline" 
-                              className={
-                                detail.actualSet === 'set1' ? 'border-primary text-primary' : 
-                                detail.actualSet === 'set2' ? 'border-orange-500 text-orange-500' : 
-                                'border-green-500 text-green-500'
-                              }
-                            >
-                              {detail.actualSet === 'set1' ? 'Set 1' : 
-                               detail.actualSet === 'set2' ? 'Set 2' : 'Encore'}
-                              {' #'}
-                              {(detail.actualPosition as number) + 1}
-                            </Badge>
-                          </>
-                        )}
-                        
-                        {!detail.actualSet && (
-                          <span className="text-gray-500 text-sm">Not played</span>
-                        )}
-                      </div>
-                      
-                      <p className="text-xs text-gray-400 mt-2">{detail.reason}</p>
-                    </div>
-                    
-                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-700">
-                      <span className="text-xs text-gray-500">Points</span>
-                      <div className={`text-lg font-bold ${detail.points > 0 ? "text-green-400" : "text-gray-500"}`}>
-                        {detail.points}
-                      </div>
+              <>
+                {/* 2-column grid for Set 1 and Set 2 predictions */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  {/* Set 1 Predictions */}
+                  <div>
+                    <h3 className="text-primary font-semibold mb-2">Set 1 Predictions</h3>
+                    <div className="bg-[#252525] p-3 rounded-md h-full">
+                      <ol className="list-decimal pl-5">
+                        {scoreBreakdown.details
+                          .filter(song => song.predictedSet === 'set1')
+                          .sort((a, b) => (a.predictedPosition || 0) - (b.predictedPosition || 0))
+                          .map((song, i) => (
+                            <li key={`pred-set1-${i}`} className="mb-1 flex items-center">
+                              <span className={`${song.points > 0 ? "text-white" : "text-gray-400"}`}>
+                                {song.songName}
+                              </span>
+                              {song.points > 0 && (
+                                <Badge 
+                                  className="ml-2 px-1.5 py-0 bg-green-500/20 text-green-400 text-xs"
+                                >
+                                  +{song.points}
+                                </Badge>
+                              )}
+                            </li>
+                          ))
+                        }
+                      </ol>
                     </div>
                   </div>
-                ))}
-              </div>
+                  
+                  {/* Set 2 Predictions */}
+                  <div>
+                    <h3 className="text-orange-500 font-semibold mb-2">Set 2 Predictions</h3>
+                    <div className="bg-[#252525] p-3 rounded-md h-full">
+                      <ol className="list-decimal pl-5">
+                        {scoreBreakdown.details
+                          .filter(song => song.predictedSet === 'set2')
+                          .sort((a, b) => (a.predictedPosition || 0) - (b.predictedPosition || 0))
+                          .map((song, i) => (
+                            <li key={`pred-set2-${i}`} className="mb-1 flex items-center">
+                              <span className={`${song.points > 0 ? "text-white" : "text-gray-400"}`}>
+                                {song.songName}
+                              </span>
+                              {song.points > 0 && (
+                                <Badge 
+                                  className="ml-2 px-1.5 py-0 bg-green-500/20 text-green-400 text-xs"
+                                >
+                                  +{song.points}
+                                </Badge>
+                              )}
+                            </li>
+                          ))
+                        }
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Encore Predictions - Full width */}
+                <div>
+                  <h3 className="text-green-500 font-semibold mb-2">Encore Predictions</h3>
+                  <div className="bg-[#252525] p-3 rounded-md">
+                    <ol className="list-decimal pl-5">
+                      {scoreBreakdown.details
+                        .filter(song => song.predictedSet === 'encore')
+                        .sort((a, b) => (a.predictedPosition || 0) - (b.predictedPosition || 0))
+                        .map((song, i) => (
+                          <li key={`pred-encore-${i}`} className="mb-1 flex items-center">
+                            <span className={`${song.points > 0 ? "text-white" : "text-gray-400"}`}>
+                              {song.songName}
+                            </span>
+                            {song.points > 0 && (
+                              <Badge 
+                                className="ml-2 px-1.5 py-0 bg-green-500/20 text-green-400 text-xs"
+                              >
+                                +{song.points}
+                              </Badge>
+                            )}
+                          </li>
+                        ))
+                      }
+                    </ol>
+                  </div>
+                </div>
+              </>
             ) : (
               <div className="text-center text-gray-500 py-6">
                 No predictions to score
