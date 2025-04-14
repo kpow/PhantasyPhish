@@ -1,4 +1,13 @@
-import { SetlistItem } from '@shared/types';
+// Define the types here to avoid import issues
+export interface SetlistItem {
+  position: number;
+  song: {
+    id: string | number;
+    name: string;
+    slug?: string;
+    times_played?: number;
+  } | null;
+}
 
 export interface ScoringBreakdown {
   totalScore: number;

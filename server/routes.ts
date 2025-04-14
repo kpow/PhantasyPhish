@@ -441,6 +441,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Score a prediction against a real setlist
+  app.post("/api/predictions/:predictionId/score", async (req, res) => {
+    try {
+      // Make sure user is authenticated
+      if (!req.isAuthenticated() || !req.user) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      
+      const predictionId = parseInt(req.params.predictionId);
+      const userId = (req.user as { id: number }).id;
+      
+      // Get the prediction
+      const prediction = await storage.getPrediction(predictionId);
+      
+      if (!prediction) {
+        return res.status(404).json({ message: "Prediction not found" });
+      }
+      
+      // Check if the prediction belongs to the user
+      if (prediction.user_id !== userId) {
+        return res.status(403).json({ message: "You can only score your own predictions" });
+      }
+      
+      // Get the actual setlist from Phish API
+      const setlistData = await fetchPhishData(`/setlists/showid/${prediction.show_id}.json`, {
+        username: "phishnet"
+      });
+      
+      if (!Array.isArray(setlistData) || setlistData.length === 0) {
+        return res.status(404).json({ message: "Setlist not found for this show" });
+      }
+      
+      // Process the raw setlist data
+      const processedSetlist = processRawSetlist(setlistData);
+      
+      // Score the prediction
+      const scoreBreakdown = scorePrediction(prediction.setlist, processedSetlist);
+      
+      // Update the prediction with the score
+      const updatedPrediction = await storage.updatePredictionScore(predictionId, scoreBreakdown.totalScore);
+      
+      res.json({
+        prediction: updatedPrediction,
+        score: scoreBreakdown.totalScore,
+        breakdown: scoreBreakdown,
+        actualSetlist: processedSetlist
+      });
+    } catch (error) {
+      console.error("Error scoring prediction:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get structured setlist data for scoring (includes raw data for test purposes)
+  app.get("/api/setlists/:showId/structured", async (req, res) => {
+    try {
+      const { showId } = req.params;
+      const setlistData = await fetchPhishData(`/setlists/showid/${showId}.json`, {
+        username: "phishnet"
+      });
+
+      if (Array.isArray(setlistData) && setlistData.length > 0) {
+        // Process the setlist into our scoring format
+        const processedSetlist = processRawSetlist(setlistData);
+        
+        res.json({
+          processedSetlist,
+          rawSetlistData: setlistData  // For debugging/test purposes
+        });
+      } else {
+        res.status(404).json({ message: "Setlist not found" });
+      }
+    } catch (error) {
+      console.error("Error fetching structured setlist:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Test endpoint for scoring (useful for debugging and testing)
+  app.post("/api/test/score", async (req, res) => {
+    try {
+      const { prediction, actualSetlist } = req.body;
+      
+      if (!prediction || !actualSetlist) {
+        return res.status(400).json({ message: "Missing prediction or actualSetlist" });
+      }
+      
+      // Score the prediction
+      const scoreBreakdown = scorePrediction(prediction, actualSetlist);
+      
+      res.json({
+        score: scoreBreakdown.totalScore,
+        breakdown: scoreBreakdown
+      });
+    } catch (error) {
+      console.error("Error in test scoring:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

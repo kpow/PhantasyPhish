@@ -1,5 +1,3 @@
-import { SetlistItem } from "@/types";
-
 export interface ScoringBreakdown {
   totalScore: number;
   songInShow: { count: number, points: number }; // 3 points each

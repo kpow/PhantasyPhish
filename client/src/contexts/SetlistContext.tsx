@@ -1,5 +1,18 @@
 import React, { createContext, useState, ReactNode, useContext } from "react";
 import { PhishSong, SetlistItem, PhishShow } from "@/types";
+import { ScoringBreakdown, ProcessedSetlist } from '@shared/types';
+
+interface ScoringData {
+  breakdown: ScoringBreakdown | null;
+  actualSetlist: ProcessedSetlist | null;
+  showDetails: {
+    date: string;
+    venue: string;
+    location: string;
+  } | null;
+  isLoading: boolean;
+  error: string | null;
+}
 
 interface SetlistContextType {
   setlist: {
@@ -9,6 +22,8 @@ interface SetlistContextType {
   };
   selectedSong: PhishSong | null;
   selectedShow: PhishShow | null;
+  scoringMode: boolean;
+  scoringData: ScoringData;
   setSelectedSong: (song: PhishSong | null) => void;
   setSelectedShow: (show: PhishShow | null) => void;
   setSetlistSpot: (
@@ -26,6 +41,8 @@ interface SetlistContextType {
   resetSetlistAndShow: () => void;
   loadPredictionForShow: (showId: string) => Promise<boolean>;
   deletePredictionForShow: (showId: string) => Promise<boolean>;
+  scorePrediction: (predictionId: number) => Promise<boolean>;
+  toggleScoringMode: () => void;
   setSetlist: React.Dispatch<
     React.SetStateAction<{
       set1: SetlistItem[];
@@ -43,6 +60,14 @@ export const SetlistContext = createContext<SetlistContextType>({
   },
   selectedSong: null,
   selectedShow: null,
+  scoringMode: false,
+  scoringData: {
+    breakdown: null,
+    actualSetlist: null,
+    showDetails: null,
+    isLoading: false,
+    error: null
+  },
   setSelectedSong: () => {},
   setSelectedShow: () => {},
   setSetlistSpot: () => {},
@@ -52,6 +77,8 @@ export const SetlistContext = createContext<SetlistContextType>({
   resetSetlistAndShow: () => {},
   loadPredictionForShow: async () => false,
   deletePredictionForShow: async () => false,
+  scorePrediction: async () => false,
+  toggleScoringMode: () => {},
   // Empty function for the default value of setSetlist
   setSetlist: () => {},
 });
@@ -88,6 +115,85 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
   }>(initialSetlist);
   const [selectedSong, setSelectedSong] = useState<PhishSong | null>(null);
   const [selectedShow, setSelectedShow] = useState<PhishShow | null>(null);
+  const [scoringMode, setScoringMode] = useState<boolean>(false);
+  const [scoringData, setScoringData] = useState<ScoringData>({
+    breakdown: null,
+    actualSetlist: null,
+    showDetails: null,
+    isLoading: false,
+    error: null
+  });
+
+  const toggleScoringMode = () => {
+    setScoringMode(prev => !prev);
+  };
+
+  // Score a prediction
+  const scorePrediction = async (predictionId: number): Promise<boolean> => {
+    try {
+      setScoringData(prev => ({ ...prev, isLoading: true, error: null }));
+      
+      const response = await fetch(`/api/predictions/${predictionId}/score`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setScoringData(prev => ({
+          ...prev,
+          isLoading: false,
+          error: errorData.message || 'Failed to score prediction'
+        }));
+        return false;
+      }
+
+      const data = await response.json();
+      
+      // Extract show details
+      const showDetails = {
+        date: data.prediction.show_id, // This may need to be formatted
+        venue: 'Unknown Venue', // We may need to fetch this separately
+        location: 'Unknown Location'
+      };
+      
+      // Try to fetch show details if available
+      try {
+        const showResponse = await fetch(`/api/shows/details/${data.prediction.show_id}`);
+        if (showResponse.ok) {
+          const showData = await showResponse.json();
+          showDetails.date = showData.showdate;
+          showDetails.venue = showData.venue;
+          showDetails.location = showData.location;
+        }
+      } catch (e) {
+        console.error("Error fetching show details:", e);
+      }
+      
+      setScoringData({
+        breakdown: data.breakdown,
+        actualSetlist: data.actualSetlist,
+        showDetails,
+        isLoading: false,
+        error: null
+      });
+      
+      // Enter scoring mode
+      setScoringMode(true);
+      
+      return true;
+    } catch (error) {
+      console.error("Error scoring prediction:", error);
+      setScoringData(prev => ({
+        ...prev,
+        isLoading: false,
+        error: 'An unexpected error occurred while scoring the prediction'
+      }));
+      return false;
+    }
+  };
 
 
 
@@ -304,6 +410,8 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         setlist,
         selectedSong,
         selectedShow,
+        scoringMode,
+        scoringData,
         setSelectedSong,
         setSelectedShow,
         setSetlistSpot,
@@ -313,6 +421,8 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         resetSetlistAndShow,
         loadPredictionForShow,
         deletePredictionForShow,
+        scorePrediction,
+        toggleScoringMode,
         setSetlist,
       }}
     >
