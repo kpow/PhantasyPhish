@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { ScoringBreakdown, ProcessedSetlist } from '@shared/types';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 
 interface ScoreCardProps {
   scoreBreakdown: ScoringBreakdown;
@@ -16,6 +18,9 @@ interface ScoreCardProps {
 }
 
 export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }: ScoreCardProps) {
+  const [isPredictionsOpen, setIsPredictionsOpen] = useState(false);
+  const [isSetlistOpen, setIsSetlistOpen] = useState(true);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
   if (!actualSetlist) {
     return (
       <div className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full">
@@ -114,137 +119,188 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
         </div>
       </div>
 
-      {/* Your Predictions - Now in rows */}
-      <div className="bg-[#1A1A1A] rounded-lg mb-5">
-        <div className="px-4 py-3 border-b border-gray-800">
-          <h3 className="text-white font-semibold">Your Predictions</h3>
+      {/* Your Predictions - Now collapsible */}
+      <Collapsible 
+        open={isPredictionsOpen} 
+        onOpenChange={setIsPredictionsOpen}
+        className="bg-[#1A1A1A] rounded-lg mb-5"
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 cursor-pointer">
+          <CollapsibleTrigger className="flex items-center justify-between w-full">
+            <h3 className="text-white font-semibold">Your Predictions</h3>
+            <div className="flex items-center text-gray-400">
+              <Badge variant="outline" className="mr-2">
+                {scoreBreakdown.details.length} songs
+              </Badge>
+              {isPredictionsOpen ? 
+                <ChevronDown className="h-5 w-5" /> : 
+                <ChevronRight className="h-5 w-5" />
+              }
+            </div>
+          </CollapsibleTrigger>
         </div>
-        <div className="p-4">
-          {scoreBreakdown.details.length > 0 ? (
-            <div className="space-y-3">
-              {scoreBreakdown.details.map((detail, index) => (
-                <div key={index} className="bg-[#252525] p-3 rounded-md flex justify-between items-center">
-                  <div>
-                    <span className="font-medium text-white">{detail.songName}</span>
-                    <div className="flex items-center mt-1">
-                      <Badge 
-                        variant="outline" 
-                        className={
-                          detail.predictedSet === 'set1' ? 'border-primary text-primary' : 
-                          detail.predictedSet === 'set2' ? 'border-orange-500 text-orange-500' : 
-                          'border-green-500 text-green-500'
-                        }
-                      >
-                        {detail.predictedSet === 'set1' ? 'Set 1' : 
-                         detail.predictedSet === 'set2' ? 'Set 2' : 'Encore'}
-                        {' #'}
-                        {detail.predictedPosition + 1}
-                      </Badge>
+        
+        <CollapsibleContent>
+          <div className="p-4">
+            {scoreBreakdown.details.length > 0 ? (
+              <div className="space-y-3">
+                {scoreBreakdown.details.map((detail, index) => (
+                  <div key={index} className="bg-[#252525] p-3 rounded-md flex justify-between items-center">
+                    <div>
+                      <span className="font-medium text-white">{detail.songName}</span>
+                      <div className="flex items-center mt-1">
+                        <Badge 
+                          variant="outline" 
+                          className={
+                            detail.predictedSet === 'set1' ? 'border-primary text-primary' : 
+                            detail.predictedSet === 'set2' ? 'border-orange-500 text-orange-500' : 
+                            'border-green-500 text-green-500'
+                          }
+                        >
+                          {detail.predictedSet === 'set1' ? 'Set 1' : 
+                           detail.predictedSet === 'set2' ? 'Set 2' : 'Encore'}
+                          {' #'}
+                          {detail.predictedPosition + 1}
+                        </Badge>
+                        
+                        {detail.actualSet && (
+                          <div className="flex items-center ml-2">
+                            <span className="text-gray-400 mx-1">→</span>
+                            <Badge 
+                              variant="outline" 
+                              className={
+                                detail.actualSet === 'set1' ? 'border-primary text-primary' : 
+                                detail.actualSet === 'set2' ? 'border-orange-500 text-orange-500' : 
+                                'border-green-500 text-green-500'
+                              }
+                            >
+                              {detail.actualSet === 'set1' ? 'Set 1' : 
+                               detail.actualSet === 'set2' ? 'Set 2' : 'Encore'}
+                              {' #'}
+                              {(detail.actualPosition as number) + 1}
+                            </Badge>
+                          </div>
+                        )}
+                        
+                        {!detail.actualSet && (
+                          <span className="ml-2 text-gray-500 text-sm">Not played</span>
+                        )}
+                      </div>
                       
-                      {detail.actualSet && (
-                        <div className="flex items-center ml-2">
-                          <span className="text-gray-400 mx-1">→</span>
-                          <Badge 
-                            variant="outline" 
-                            className={
-                              detail.actualSet === 'set1' ? 'border-primary text-primary' : 
-                              detail.actualSet === 'set2' ? 'border-orange-500 text-orange-500' : 
-                              'border-green-500 text-green-500'
-                            }
-                          >
-                            {detail.actualSet === 'set1' ? 'Set 1' : 
-                             detail.actualSet === 'set2' ? 'Set 2' : 'Encore'}
-                            {' #'}
-                            {(detail.actualPosition as number) + 1}
-                          </Badge>
-                        </div>
-                      )}
-                      
-                      {!detail.actualSet && (
-                        <span className="ml-2 text-gray-500 text-sm">Not played</span>
-                      )}
+                      <p className="text-xs text-gray-400 mt-1">{detail.reason}</p>
                     </div>
                     
-                    <p className="text-xs text-gray-400 mt-1">{detail.reason}</p>
-                  </div>
-                  
-                  <div className="text-center">
-                    <div className={`text-lg font-bold ${detail.points > 0 ? "text-green-400" : "text-gray-500"}`}>
-                      {detail.points}
+                    <div className="text-center">
+                      <div className={`text-lg font-bold ${detail.points > 0 ? "text-green-400" : "text-gray-500"}`}>
+                        {detail.points}
+                      </div>
+                      <div className="text-xs text-gray-500">pts</div>
                     </div>
-                    <div className="text-xs text-gray-500">pts</div>
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center text-gray-500 py-6">
-              No predictions to score
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Actual Setlist */}
-      <div className="bg-[#1A1A1A] rounded-lg mb-5">
-        <div className="px-4 py-3 border-b border-gray-800">
-          <h3 className="text-white font-semibold">Actual Setlist</h3>
-        </div>
-        <div className="p-4 space-y-4">
-          {actualSetlist.set1.length > 0 && (
-            <div>
-              <h3 className="text-primary font-semibold mb-2">Set 1</h3>
-              <div className="bg-[#252525] p-3 rounded-md">
-                <ol className="list-decimal pl-5">
-                  {actualSetlist.set1.map((song, i) => (
-                    <li key={`set1-${i}`} className="mb-1 text-white">{song.name}</li>
-                  ))}
-                </ol>
+                ))}
               </div>
-            </div>
-          )}
-          
-          {actualSetlist.set2.length > 0 && (
-            <div>
-              <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
-              <div className="bg-[#252525] p-3 rounded-md">
-                <ol className="list-decimal pl-5">
-                  {actualSetlist.set2.map((song, i) => (
-                    <li key={`set2-${i}`} className="mb-1 text-white">{song.name}</li>
-                  ))}
-                </ol>
+            ) : (
+              <div className="text-center text-gray-500 py-6">
+                No predictions to score
               </div>
-            </div>
-          )}
-          
-          {actualSetlist.encore.length > 0 && (
-            <div>
-              <h3 className="text-green-500 font-semibold mb-2">Encore</h3>
-              <div className="bg-[#252525] p-3 rounded-md">
-                <ol className="list-decimal pl-5">
-                  {actualSetlist.encore.map((song, i) => (
-                    <li key={`encore-${i}`} className="mb-1 text-white">{song.name}</li>
-                  ))}
-                </ol>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-      
-      {/* Show notes section */}
-      <div className="bg-[#1A1A1A] rounded-lg">
-        <div className="px-4 py-3 border-b border-gray-800">
-          <h3 className="text-white font-semibold">Show Notes</h3>
-        </div>
-        <div className="p-4">
-          <div className="bg-[#252525] p-3 rounded-md">
-            <p className="text-gray-300 text-sm italic">
-              This is a test score using a real Phish setlist from 2024. When scoring actual predictions after a show, additional details and information about the show will appear here.
-            </p>
+            )}
           </div>
+        </CollapsibleContent>
+      </Collapsible>
+      
+      {/* Actual Setlist - Now collapsible */}
+      <Collapsible 
+        open={isSetlistOpen} 
+        onOpenChange={setIsSetlistOpen}
+        className="bg-[#1A1A1A] rounded-lg mb-5"
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 cursor-pointer">
+          <CollapsibleTrigger className="flex items-center justify-between w-full">
+            <h3 className="text-white font-semibold">Actual Setlist</h3>
+            <div className="flex items-center text-gray-400">
+              <Badge variant="outline" className="mr-2">
+                {actualSetlist.set1.length + actualSetlist.set2.length + actualSetlist.encore.length} songs
+              </Badge>
+              {isSetlistOpen ? 
+                <ChevronDown className="h-5 w-5" /> : 
+                <ChevronRight className="h-5 w-5" />
+              }
+            </div>
+          </CollapsibleTrigger>
         </div>
-      </div>
+        
+        <CollapsibleContent>
+          <div className="p-4 space-y-4">
+            {actualSetlist.set1.length > 0 && (
+              <div>
+                <h3 className="text-primary font-semibold mb-2">Set 1</h3>
+                <div className="bg-[#252525] p-3 rounded-md">
+                  <ol className="list-decimal pl-5">
+                    {actualSetlist.set1.map((song, i) => (
+                      <li key={`set1-${i}`} className="mb-1 text-white">{song.name}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            )}
+            
+            {actualSetlist.set2.length > 0 && (
+              <div>
+                <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
+                <div className="bg-[#252525] p-3 rounded-md">
+                  <ol className="list-decimal pl-5">
+                    {actualSetlist.set2.map((song, i) => (
+                      <li key={`set2-${i}`} className="mb-1 text-white">{song.name}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            )}
+            
+            {actualSetlist.encore.length > 0 && (
+              <div>
+                <h3 className="text-green-500 font-semibold mb-2">Encore</h3>
+                <div className="bg-[#252525] p-3 rounded-md">
+                  <ol className="list-decimal pl-5">
+                    {actualSetlist.encore.map((song, i) => (
+                      <li key={`encore-${i}`} className="mb-1 text-white">{song.name}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+      
+      {/* Show notes section - Now collapsible */}
+      <Collapsible 
+        open={isNotesOpen} 
+        onOpenChange={setIsNotesOpen}
+        className="bg-[#1A1A1A] rounded-lg"
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 cursor-pointer">
+          <CollapsibleTrigger className="flex items-center justify-between w-full">
+            <h3 className="text-white font-semibold">Show Notes</h3>
+            <div className="flex items-center text-gray-400">
+              {isNotesOpen ? 
+                <ChevronDown className="h-5 w-5" /> : 
+                <ChevronRight className="h-5 w-5" />
+              }
+            </div>
+          </CollapsibleTrigger>
+        </div>
+        
+        <CollapsibleContent>
+          <div className="p-4">
+            <div className="bg-[#252525] p-3 rounded-md">
+              <p className="text-gray-300 text-sm italic">
+                This is a test score using a real Phish setlist from 2024. When scoring actual predictions after a show, additional details and information about the show will appear here.
+              </p>
+            </div>
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   );
 }
