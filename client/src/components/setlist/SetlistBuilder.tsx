@@ -75,25 +75,31 @@ export default function SetlistBuilder() {
       const saveData = await saveResponse.json();
       const predictionId = saveData.prediction.id;
 
-      // Now test scoring with the test endpoint
-      // In a real scenario, we would fetch the actual setlist from the API
-      // For testing purposes, we'll use a sample setlist
+      // For testing purposes, use actual show setlists from 2024
+      // These are actual Phish setlists from recent shows
       const testSetlist = {
         set1: [
-          { name: "Tweezer", position: 0 },
-          { name: "Sample in a Jar", position: 1 },
-          { name: "Bathtub Gin", position: 2 },
-          { name: "Character Zero", position: 3 }
+          { name: "Turtle in the Clouds", position: 0 },
+          { name: "Sigma Oasis", position: 1 },
+          { name: "46 Days", position: 2 },
+          { name: "Army of One", position: 3 },
+          { name: "Tube", position: 4 },
+          { name: "Bathtub Gin", position: 5 },
+          { name: "Split Open and Melt", position: 6 },
+          { name: "The Howling", position: 7 },
+          { name: "Walls of the Cave", position: 8 }
         ],
         set2: [
-          { name: "Mike's Song", position: 0 },
-          { name: "I Am Hydrogen", position: 1 },
-          { name: "Weekapaug Groove", position: 2 },
-          { name: "Ghost", position: 3 }
+          { name: "Set Your Soul Free", position: 0 },
+          { name: "No Men In No Man's Land", position: 1 },
+          { name: "Ruby Waves", position: 2 },
+          { name: "Twist", position: 3 },
+          { name: "Plasma", position: 4 },
+          { name: "Slave to the Traffic Light", position: 5 }
         ],
         encore: [
-          { name: "Waste", position: 0 },
-          { name: "First Tube", position: 1 }
+          { name: "A Life Beyond The Dream", position: 0 },
+          { name: "Character Zero", position: 1 }
         ]
       };
 
@@ -274,51 +280,52 @@ export default function SetlistBuilder() {
           </div>
         )}
 
-{scoringMode && scoringData.actualSetlist && scoringData.breakdown ? (
-          <ScoreCard 
-            scoreBreakdown={scoringData.breakdown}
-            actualSetlist={scoringData.actualSetlist}
-            showDetails={scoringData.showDetails}
-          />
-        ) : (
-          <div className={!selectedShow ? "opacity-50 pointer-events-none" : ""}>
-            <SetlistSection 
-              title="Set 1"
-              setType="set1"
-              setItems={setlist.set1}
-              titleColor="text-primary"
-              borderColor="border-primary"
-              height="h-[230px]"
-              onSetSong={setSetlistSpot}
-              onReorderSongs={reorderSongs}
-              selectedSong={selectedSong}
-            />
+<div className={`relative ${!selectedShow ? "opacity-50 pointer-events-none" : ""}`}>
+  <SetlistSection 
+    title="Set 1"
+    setType="set1"
+    setItems={setlist.set1}
+    titleColor="text-primary"
+    borderColor="border-primary"
+    height="h-[230px]"
+    onSetSong={setSetlistSpot}
+    onReorderSongs={reorderSongs}
+    selectedSong={selectedSong}
+  />
 
-            <SetlistSection 
-              title="Set 2"
-              setType="set2"
-              setItems={setlist.set2}
-              titleColor="text-orange-500"
-              borderColor="border-orange-500"
-              height="h-[230px]"
-              onSetSong={setSetlistSpot}
-              onReorderSongs={reorderSongs}
-              selectedSong={selectedSong}
-            />
+  <SetlistSection 
+    title="Set 2"
+    setType="set2"
+    setItems={setlist.set2}
+    titleColor="text-orange-500"
+    borderColor="border-orange-500"
+    height="h-[230px]"
+    onSetSong={setSetlistSpot}
+    onReorderSongs={reorderSongs}
+    selectedSong={selectedSong}
+  />
 
-            <SetlistSection 
-              title="Encore"
-              setType="encore"
-              setItems={setlist.encore}
-              titleColor="text-green-500"
-              borderColor="border-green-500"
-              height="h-[140px]"
-              onSetSong={setSetlistSpot}
-              onReorderSongs={reorderSongs}
-              selectedSong={selectedSong}
-            />
-          </div>
-        )}
+  <SetlistSection 
+    title="Encore"
+    setType="encore"
+    setItems={setlist.encore}
+    titleColor="text-green-500"
+    borderColor="border-green-500"
+    height="h-[140px]"
+    onSetSong={setSetlistSpot}
+    onReorderSongs={reorderSongs}
+    selectedSong={selectedSong}
+  />
+  
+  {/* Scorecard overlay when in scoring mode */}
+  {scoringMode && scoringData.actualSetlist && scoringData.breakdown && (
+    <ScoreCard 
+      scoreBreakdown={scoringData.breakdown}
+      actualSetlist={scoringData.actualSetlist}
+      showDetails={scoringData.showDetails}
+    />
+  )}
+</div>
 
         <div className="mt-6 flex gap-2">
           {scoringMode ? (
