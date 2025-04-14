@@ -47,12 +47,18 @@ export default function Header() {
     }
   };
 
+  // Simple navigation function
+  const navigateTo = (path: string) => {
+    // The SetlistContext will handle any scoring mode changes based on URL
+    setLocation(path);
+  };
+
   return (
     <header className="mb-0 md:mb-0 px-4 py-0 md:py-0x">
       <nav className="flex justify-between items-center mb-2 md:mb-6 max-w-7xl mx-auto">
         <div 
           className="flex items-center cursor-pointer" 
-          onClick={() => setLocation("/")}
+          onClick={() => navigateTo("/")}
         >
           <FishIcon className="w-20 h-20 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
           <div className="sm:hidden flex flex-col items-start justify-center">
@@ -89,11 +95,11 @@ export default function Header() {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setLocation("/profile")}>
+                <DropdownMenuItem onClick={() => navigateTo("/profile")}>
                   <User className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setLocation("/my-predictions")}>
+                <DropdownMenuItem onClick={() => navigateTo("/my-predictions")}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
                     <rect x="9" y="3" width="6" height="4" rx="2" />
@@ -110,10 +116,10 @@ export default function Header() {
             </DropdownMenu>
           ) : (
             <div className="flex items-center space-x-1 md:space-x-2">
-              <Button variant="ghost" size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => setLocation("/login")}>
+              <Button variant="ghost" size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => navigateTo("/login")}>
                 Log in
               </Button>
-              <Button size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => setLocation("/register")}>
+              <Button size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => navigateTo("/register")}>
                 Register
               </Button>
             </div>

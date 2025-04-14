@@ -426,19 +426,8 @@ export default function SetlistBuilder() {
               <Button 
                 className="w-full bg-green-500 hover:bg-green-600 font-medium py-3 px-4 rounded-lg transition-colors font-display text-lg"
                 onClick={() => {
-                  // First turn off scoring mode
+                  // The toggleScoringMode function now handles URL updates directly
                   toggleScoringMode();
-                  
-                  // Then update URL when going back to edit mode
-                  if (selectedShow) {
-                    // Force a small delay to ensure the scoring mode state is updated
-                    setTimeout(() => {
-                      setLocation(`/prediction/${selectedShow.showid}`);
-                    }, 50);
-                  } else {
-                    // If no show selected, go back to home
-                    setLocation('/');
-                  }
                 }}
               >
                 Back to Setlist

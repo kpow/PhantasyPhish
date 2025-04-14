@@ -190,9 +190,23 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
       }
     }
   }, [scoringMode, selectedShow, location, setLocation]);
+  
+  // Clear scoring mode on navigation away from score route
+  useEffect(() => {
+    // If we're not on a scoring route but scoring mode is true, disable it
+    if (location && !location.includes('/score') && scoringMode) {
+      setScoringMode(false);
+    }
+  }, [location, scoringMode]);
 
   const toggleScoringMode = () => {
-    setScoringMode(prev => !prev);
+    const newScoringMode = !scoringMode;
+    setScoringMode(newScoringMode);
+    
+    // If turning off scoring mode and we have a show selected, immediately redirect
+    if (!newScoringMode && selectedShow) {
+      setLocation(`/prediction/${selectedShow.showid}`);
+    }
   };
 
   // Score a prediction
