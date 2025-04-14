@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSetlist } from "@/contexts/SetlistContext";
 import { useScroll } from "@/contexts/ScrollContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLocation } from "wouter";
 import { 
   Trash2, 
   Music 
@@ -115,6 +116,7 @@ export default function UpcomingShow() {
   const { scrollToSet } = useScroll();
   const isMobile = useIsMobile();
   const [showPredictions, setShowPredictions] = useState<Record<string, boolean>>({});
+  const [, setLocation] = useLocation();
   
   // Check which shows have predictions when component mounts
   const checkShowPredictions = async () => {
@@ -184,6 +186,9 @@ export default function UpcomingShow() {
     
     // Try to load any existing prediction for this show
     await loadPredictionForShow(show.showid);
+    
+    // Navigate to the prediction URL
+    setLocation(`/prediction/${show.showid}`);
     
     // Scroll to the setlist builder
     scrollToSet('set1');

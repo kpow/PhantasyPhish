@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Link } from 'wouter';
 import {
   Dialog,
   DialogContent,
@@ -170,12 +171,34 @@ export default function MyPredictions() {
                   Score: <span className="text-green-400">{prediction.score}</span>
                 </p>
               )}
-              <Button 
-                className="w-full mt-2 bg-primary hover:bg-blue-600"
-                onClick={() => handleViewPrediction(prediction)}
-              >
-                View Prediction
-              </Button>
+              <div className="flex flex-col gap-2">
+                <Button 
+                  className="w-full bg-primary hover:bg-blue-600"
+                  onClick={() => handleViewPrediction(prediction)}
+                >
+                  View Prediction
+                </Button>
+                
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Link href={`/prediction/${prediction.show_id}`}>
+                    <Button 
+                      className="w-full bg-blue-700 hover:bg-blue-800"
+                      variant="secondary"
+                    >
+                      Edit
+                    </Button>
+                  </Link>
+                  
+                  <Link href={`/prediction/${prediction.show_id}/score`}>
+                    <Button 
+                      className="w-full bg-green-700 hover:bg-green-800"
+                      variant="secondary"
+                    >
+                      Score
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -250,9 +273,33 @@ export default function MyPredictions() {
             </div>
           )}
 
-          <DialogFooter>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
+              {selectedPrediction && (
+                <>
+                  <Link href={`/prediction/${selectedPrediction.show_id}`}>
+                    <Button 
+                      className="w-full bg-blue-700 hover:bg-blue-800"
+                      variant="secondary"
+                    >
+                      Edit
+                    </Button>
+                  </Link>
+                  
+                  <Link href={`/prediction/${selectedPrediction.show_id}/score`}>
+                    <Button 
+                      className="w-full bg-green-700 hover:bg-green-800"
+                      variant="secondary"
+                    >
+                      Score
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
+            
             <Button 
-              className="bg-primary hover:bg-blue-600"
+              className="bg-primary hover:bg-blue-600 w-full sm:w-auto mt-2 sm:mt-0"
               onClick={() => setIsModalOpen(false)}
             >
               Close
