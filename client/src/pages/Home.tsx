@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { useRoute } from "wouter";
-import Header from "@/components/layout/Header";
+import { useRoute, useLocation } from "wouter";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
 import SetlistBuilder from "@/components/setlist/SetlistBuilder";
@@ -14,13 +13,13 @@ import { SetlistContext } from "@/contexts/SetlistContext";
 export default function Home() {
   const { isLoadingSongs, isLoadingUpcomingShow, isLoadingRecentShows } =
     usePhishData();
+  const [location] = useLocation();
 
   const isLoading =
     isLoadingSongs || isLoadingUpcomingShow || isLoadingRecentShows;
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <Header />
       {isLoading ? <LoadingState /> : <MainContent />}
     </div>
   );

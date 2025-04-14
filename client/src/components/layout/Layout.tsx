@@ -1,11 +1,18 @@
 import React from 'react';
 import Footer from './Footer';
+import Header from './Header';
+import { useLocation } from 'wouter';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const [location] = useLocation();
+  
+  // Always show header, regardless of route
+  const showHeader = true;
+  
   return (
     <div 
       className="min-h-screen bg-dark text-white flex flex-col"
@@ -15,6 +22,7 @@ export default function Layout({ children }: LayoutProps) {
         backgroundColor: "#121212",
       }}
     >
+      {showHeader && <Header />}
       <div className="flex-grow">
         {children}
       </div>
