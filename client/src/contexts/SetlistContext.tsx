@@ -416,6 +416,7 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         scoringData,
         setSelectedSong,
         setSelectedShow,
+        setScoringData,
         setSetlistSpot,
         addSongToSet,
         reorderSongs,

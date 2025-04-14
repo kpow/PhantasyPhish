@@ -21,7 +21,8 @@ export default function SetlistBuilder() {
     clearSetlist, 
     resetSetlistAndShow, 
     loadPredictionForShow,
-    toggleScoringMode
+    toggleScoringMode,
+    setScoringData
   } = useSetlist();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -121,7 +122,7 @@ export default function SetlistBuilder() {
         location: selectedShow.location
       };
       
-      // Create a new scoring data object to update in context
+      // Create a new scoring data object and update the context
       const newScoringData = {
         breakdown: scoreData.breakdown,
         actualSetlist: testSetlist,
@@ -129,6 +130,9 @@ export default function SetlistBuilder() {
         isLoading: false,
         error: null
       };
+      
+      // Update scoring data in context
+      setScoringData(newScoringData);
       
       // Enable scoring mode to display the score card
       toggleScoringMode();

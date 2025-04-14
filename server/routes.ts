@@ -464,8 +464,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You can only score your own predictions" });
       }
       
+      // Check that we have a valid setlist in the prediction
+      // The setlist is stored as a JSON string and needs to be parsed
+      let predictionSetlistData: any;
+      try {
+        if (typeof prediction.setlist === 'string') {
+          predictionSetlistData = JSON.parse(prediction.setlist);
+        } else {
+          predictionSetlistData = prediction.setlist;
+        }
+      } catch (e) {
+        console.error("Error parsing prediction setlist:", e);
+        predictionSetlistData = { set1: [], set2: [], encore: [] };
+      }
+      
       // Get the actual setlist from Phish API
-      const setlistData = await fetchPhishData(`/setlists/showid/${prediction.show_id}.json`, {
+      const actualSetlistData = await fetchPhishData(`/setlists/showid/${prediction.show_id}.json`, {
         username: "phishnet"
       });
       
@@ -477,7 +491,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const processedSetlist = processRawSetlist(setlistData);
       
       // Score the prediction
-      const scoreBreakdown = scorePrediction(prediction.setlist, processedSetlist);
+      // Need to ensure the prediction setlist matches the expected format
+      // First, safely check if setlist exists and is an object
+      const setlist = prediction.setlist && typeof prediction.setlist === 'object' 
+        ? prediction.setlist as Record<string, unknown>
+        : { set1: [], set2: [], encore: [] };
+        
+      const predictionSetlist = {
+        set1: Array.isArray(setlist.set1) ? setlist.set1 : [],
+        set2: Array.isArray(setlist.set2) ? setlist.set2 : [],
+        encore: Array.isArray(setlist.encore) ? setlist.encore : []
+      };
+      const scoreBreakdown = scorePrediction(predictionSetlist, processedSetlist);
       
       // Update the prediction with the score
       const updatedPrediction = await storage.updatePredictionScore(predictionId, scoreBreakdown.totalScore);
@@ -529,7 +554,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Score the prediction
-      const scoreBreakdown = scorePrediction(prediction, actualSetlist);
+      // Need to ensure the prediction setlist matches the expected format
+      const predictionSetlist = {
+        set1: Array.isArray(prediction.set1) ? prediction.set1 : [],
+        set2: Array.isArray(prediction.set2) ? prediction.set2 : [],
+        encore: Array.isArray(prediction.encore) ? prediction.encore : []
+      };
+      const scoreBreakdown = scorePrediction(predictionSetlist, actualSetlist);
       
       res.json({
         score: scoreBreakdown.totalScore,
