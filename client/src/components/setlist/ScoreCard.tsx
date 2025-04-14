@@ -82,7 +82,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               <div className="mt-2 pl-10">
                 <p className="text-xs text-gray-400">
                   {scoreBreakdown.details
-                    .filter(song => song.reason.includes("Song in different set"))
+                    .filter(song => song.reason.includes("Song in show, wrong set"))
                     .slice(0, 3)
                     .map(song => song.songName)
                     .join(", ")}
@@ -109,7 +109,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               <div className="mt-2 pl-10">
                 <p className="text-xs text-gray-400">
                   {scoreBreakdown.details
-                    .filter(song => song.reason.includes("Song in correct set"))
+                    .filter(song => song.reason.includes("Song in correct set, wrong position"))
                     .slice(0, 3)
                     .map(song => song.songName)
                     .join(", ")}
@@ -136,7 +136,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               <div className="mt-2 pl-10">
                 <p className="text-xs text-gray-400">
                   {scoreBreakdown.details
-                    .filter(song => song.reason.includes("Song in correct position"))
+                    .filter(song => song.reason.includes("Correct song, correct position"))
                     .slice(0, 3)
                     .map(song => song.songName)
                     .join(", ")}
@@ -194,7 +194,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               <div className="mt-2 pl-10">
                 <p className="text-xs text-gray-400">
                   {scoreBreakdown.details
-                    .filter(song => song.reason.includes("Encore song"))
+                    .filter(song => song.reason.includes("Encore song in wrong position"))
                     .slice(0, 3)
                     .map(song => song.songName)
                     .join(", ")}
