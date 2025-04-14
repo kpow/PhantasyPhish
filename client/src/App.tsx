@@ -51,6 +51,13 @@ function Router() {
       <Route path="/my-predictions">
         <ProtectedRoute component={MyPredictions} />
       </Route>
+      {/* New routes for prediction editing and scoring */}
+      <Route path="/prediction/:showId">
+        <ProtectedRoute component={Home} />
+      </Route>
+      <Route path="/prediction/:showId/score">
+        <ProtectedRoute component={Home} />
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

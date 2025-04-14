@@ -1,6 +1,7 @@
-import React, { createContext, useState, ReactNode, useContext } from "react";
+import React, { createContext, useState, ReactNode, useContext, useEffect } from "react";
 import { PhishSong, SetlistItem, PhishShow } from "@/types";
 import { ScoringBreakdown, ProcessedSetlist } from '@shared/types';
+import { useLocation, useRoute, useRouter } from "wouter";
 
 interface ScoringData {
   breakdown: ScoringBreakdown | null;
@@ -125,6 +126,70 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     isLoading: false,
     error: null
   });
+  
+  // URL routing hooks
+  const [location, setLocation] = useLocation();
+  const [, params] = useRoute("/prediction/:showId");
+  const [scoringRoute, scoringParams] = useRoute("/prediction/:showId/score");
+
+  // Handle URL changes
+  useEffect(() => {
+    // Parse params from URL
+    const urlShowId = params?.showId || scoringParams?.showId;
+    const isScoring = !!scoringRoute;
+    
+    if (urlShowId) {
+      // Load data for the show ID from URL
+      (async () => {
+        try {
+          // Fetch show details
+          const showResponse = await fetch(`/api/shows/details/${urlShowId}`);
+          
+          if (showResponse.ok) {
+            const showData = await showResponse.json();
+            // Set selected show in context
+            setSelectedShow(showData);
+            
+            // Load prediction for this show
+            await loadPredictionForShow(urlShowId);
+            
+            // If we're on the scoring route, trigger scoring mode
+            if (isScoring) {
+              // Find the prediction ID for this show
+              const predictionsResponse = await fetch(`/api/users/current/predictions/${urlShowId}`);
+              if (predictionsResponse.ok) {
+                const predictionData = await predictionsResponse.json();
+                if (predictionData.prediction) {
+                  // Score the prediction
+                  await scorePrediction(predictionData.prediction.id);
+                }
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error loading from URL params:", error);
+        }
+      })();
+    }
+  }, [location]);
+
+  // Update URL when scoring mode changes
+  useEffect(() => {
+    if (selectedShow) {
+      const showId = selectedShow.showid;
+      if (scoringMode) {
+        // Update URL to reflect scoring mode
+        if (!location.includes('/score')) {
+          setLocation(`/prediction/${showId}/score`);
+        }
+      } else {
+        // Update URL to reflect edit mode
+        if (location.includes('/score')) {
+          setLocation(`/prediction/${showId}`);
+        }
+      }
+    }
+  }, [scoringMode, selectedShow, location, setLocation]);
 
   const toggleScoringMode = () => {
     setScoringMode(prev => !prev);
