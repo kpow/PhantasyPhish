@@ -61,73 +61,147 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
         )}
       </div>
       
-      {/* Score Breakdown - Keep rows design */}
+      {/* Score Breakdown with song examples */}
       <div className="bg-[#1A1A1A] p-4 mb-5 rounded-lg">
         <h3 className="text-gray-300 font-semibold mb-3 text-sm uppercase tracking-wide">Score Breakdown</h3>
         <div className="space-y-2">
-          <div className="flex justify-between items-center p-2 rounded bg-[#252525]">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-blue-600 mr-3">
-                {scoreBreakdown.songInShow.count}
-              </span>
-              <span className="text-white">Song in Show</span>
+          <div className="p-3 rounded bg-[#252525]">
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-blue-600 mr-3">
+                  {scoreBreakdown.songInShow.count}
+                </span>
+                <span className="text-white">Song in Show</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xs text-gray-400 mr-2">3 pts each</span>
+                <span className="text-green-400 font-bold">{scoreBreakdown.songInShow.points}</span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400 mr-2">3 pts each</span>
-              <span className="text-green-400 font-bold">{scoreBreakdown.songInShow.points}</span>
-            </div>
+            {scoreBreakdown.songInShow.count > 0 && (
+              <div className="mt-2 pl-10">
+                <p className="text-xs text-gray-400">
+                  {scoreBreakdown.details
+                    .filter(song => song.reason.includes("Song in different set"))
+                    .slice(0, 3)
+                    .map(song => song.songName)
+                    .join(", ")}
+                  {scoreBreakdown.songInShow.count > 3 ? ` and ${scoreBreakdown.songInShow.count - 3} more` : ""}
+                </p>
+              </div>
+            )}
           </div>
           
-          <div className="flex justify-between items-center p-2 rounded bg-[#252525]">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-orange-600 mr-3">
-                {scoreBreakdown.songInSet.count}
-              </span>
-              <span className="text-white">Song in Set</span>
+          <div className="p-3 rounded bg-[#252525]">
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-orange-600 mr-3">
+                  {scoreBreakdown.songInSet.count}
+                </span>
+                <span className="text-white">Song in Set</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xs text-gray-400 mr-2">6 pts each</span>
+                <span className="text-green-400 font-bold">{scoreBreakdown.songInSet.points}</span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400 mr-2">6 pts each</span>
-              <span className="text-green-400 font-bold">{scoreBreakdown.songInSet.points}</span>
-            </div>
+            {scoreBreakdown.songInSet.count > 0 && (
+              <div className="mt-2 pl-10">
+                <p className="text-xs text-gray-400">
+                  {scoreBreakdown.details
+                    .filter(song => song.reason.includes("Song in correct set"))
+                    .slice(0, 3)
+                    .map(song => song.songName)
+                    .join(", ")}
+                  {scoreBreakdown.songInSet.count > 3 ? ` and ${scoreBreakdown.songInSet.count - 3} more` : ""}
+                </p>
+              </div>
+            )}
           </div>
           
-          <div className="flex justify-between items-center p-2 rounded bg-[#252525]">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-green-600 mr-3">
-                {scoreBreakdown.correctSong.count}
-              </span>
-              <span className="text-white">Correct Song</span>
+          <div className="p-3 rounded bg-[#252525]">
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-green-600 mr-3">
+                  {scoreBreakdown.correctSong.count}
+                </span>
+                <span className="text-white">Correct Song</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xs text-gray-400 mr-2">10 pts each</span>
+                <span className="text-green-400 font-bold">{scoreBreakdown.correctSong.points}</span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400 mr-2">10 pts each</span>
-              <span className="text-green-400 font-bold">{scoreBreakdown.correctSong.points}</span>
-            </div>
+            {scoreBreakdown.correctSong.count > 0 && (
+              <div className="mt-2 pl-10">
+                <p className="text-xs text-gray-400">
+                  {scoreBreakdown.details
+                    .filter(song => song.reason.includes("Song in correct position"))
+                    .slice(0, 3)
+                    .map(song => song.songName)
+                    .join(", ")}
+                  {scoreBreakdown.correctSong.count > 3 ? ` and ${scoreBreakdown.correctSong.count - 3} more` : ""}
+                </p>
+              </div>
+            )}
           </div>
           
-          <div className="flex justify-between items-center p-2 rounded bg-[#252525]">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-purple-600 mr-3">
-                {scoreBreakdown.correctSpecial.count}
-              </span>
-              <span className="text-white">Special Songs</span>
+          <div className="p-3 rounded bg-[#252525]">
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-purple-600 mr-3">
+                  {scoreBreakdown.correctSpecial.count}
+                </span>
+                <span className="text-white">Special Songs</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xs text-gray-400 mr-2">15 pts each</span>
+                <span className="text-green-400 font-bold">{scoreBreakdown.correctSpecial.points}</span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400 mr-2">15 pts each</span>
-              <span className="text-green-400 font-bold">{scoreBreakdown.correctSpecial.points}</span>
-            </div>
+            {scoreBreakdown.correctSpecial.count > 0 && (
+              <div className="mt-2 pl-10">
+                <p className="text-xs text-gray-400">
+                  {scoreBreakdown.details
+                    .filter(song => 
+                      song.reason.includes("opener") || 
+                      song.reason.includes("closer") || 
+                      song.reason.includes("Encore in correct position")
+                    )
+                    .slice(0, 3)
+                    .map(song => song.songName)
+                    .join(", ")}
+                  {scoreBreakdown.correctSpecial.count > 3 ? ` and ${scoreBreakdown.correctSpecial.count - 3} more` : ""}
+                </p>
+              </div>
+            )}
           </div>
           
-          <div className="flex justify-between items-center p-2 rounded bg-[#252525]">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-pink-600 mr-3">
-                {scoreBreakdown.encoreInSet.count}
-              </span>
-              <span className="text-white">Encore</span>
+          <div className="p-3 rounded bg-[#252525]">
+            <div className="flex justify-between items-center mb-2">
+              <div className="flex items-center">
+                <span className="text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full bg-pink-600 mr-3">
+                  {scoreBreakdown.encoreInSet.count}
+                </span>
+                <span className="text-white">Encore</span>
+              </div>
+              <div className="flex items-center">
+                <span className="text-xs text-gray-400 mr-2">10 pts each</span>
+                <span className="text-green-400 font-bold">{scoreBreakdown.encoreInSet.points}</span>
+              </div>
             </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400 mr-2">10 pts each</span>
-              <span className="text-green-400 font-bold">{scoreBreakdown.encoreInSet.points}</span>
-            </div>
+            {scoreBreakdown.encoreInSet.count > 0 && (
+              <div className="mt-2 pl-10">
+                <p className="text-xs text-gray-400">
+                  {scoreBreakdown.details
+                    .filter(song => song.reason.includes("Encore song"))
+                    .slice(0, 3)
+                    .map(song => song.songName)
+                    .join(", ")}
+                  {scoreBreakdown.encoreInSet.count > 3 ? ` and ${scoreBreakdown.encoreInSet.count - 3} more` : ""}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -243,33 +317,39 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
         </div>
         
         <CollapsibleContent>
-          <div className="p-4 space-y-4">
-            {actualSetlist.set1.length > 0 && (
-              <div>
-                <h3 className="text-primary font-semibold mb-2">Set 1</h3>
-                <div className="bg-[#252525] p-3 rounded-md">
-                  <ol className="list-decimal pl-5">
-                    {actualSetlist.set1.map((song, i) => (
-                      <li key={`set1-${i}`} className="mb-1 text-white">{song.name}</li>
-                    ))}
-                  </ol>
+          <div className="p-4">
+            {/* 2-column grid for Set 1 and Set 2, full width for Encore */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {/* Set 1 */}
+              {actualSetlist.set1.length > 0 && (
+                <div>
+                  <h3 className="text-primary font-semibold mb-2">Set 1</h3>
+                  <div className="bg-[#252525] p-3 rounded-md h-full">
+                    <ol className="list-decimal pl-5">
+                      {actualSetlist.set1.map((song, i) => (
+                        <li key={`set1-${i}`} className="mb-1 text-white">{song.name}</li>
+                      ))}
+                    </ol>
+                  </div>
                 </div>
-              </div>
-            )}
-            
-            {actualSetlist.set2.length > 0 && (
-              <div>
-                <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
-                <div className="bg-[#252525] p-3 rounded-md">
-                  <ol className="list-decimal pl-5">
-                    {actualSetlist.set2.map((song, i) => (
-                      <li key={`set2-${i}`} className="mb-1 text-white">{song.name}</li>
-                    ))}
-                  </ol>
+              )}
+              
+              {/* Set 2 */}
+              {actualSetlist.set2.length > 0 && (
+                <div>
+                  <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
+                  <div className="bg-[#252525] p-3 rounded-md h-full">
+                    <ol className="list-decimal pl-5">
+                      {actualSetlist.set2.map((song, i) => (
+                        <li key={`set2-${i}`} className="mb-1 text-white">{song.name}</li>
+                      ))}
+                    </ol>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
             
+            {/* Encore - Full width */}
             {actualSetlist.encore.length > 0 && (
               <div>
                 <h3 className="text-green-500 font-semibold mb-2">Encore</h3>
