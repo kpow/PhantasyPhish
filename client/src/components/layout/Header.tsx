@@ -55,7 +55,7 @@ export default function Header() {
 
   return (
     <header className="mb-0 md:mb-0 px-4 py-0 md:py-0x">
-      <nav className="flex justify-between items-center mb-2 md:mb-6 max-w-7xl mx-auto">
+      <nav className="container mx-auto flex justify-between items-center mb-2 md:mb-6">
         <div 
           className="flex items-center cursor-pointer" 
           onClick={() => navigateTo("/")}
