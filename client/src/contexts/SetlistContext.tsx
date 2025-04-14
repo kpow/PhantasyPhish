@@ -204,12 +204,32 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     position: number,
     song: PhishSong | null,
   ) => {
-    setSetlist((prev) => ({
-      ...prev,
-      [set]: prev[set].map((item) =>
-        item.position === position ? { ...item, song } : item,
-      ),
-    }));
+    if (song === null) {
+      // If removing a song, remove the entire item from the array
+      setSetlist((prev) => {
+        // Filter out the item at the specified position
+        const newSetItems = prev[set].filter(item => item.position !== position);
+        
+        // Update the positions of the remaining items
+        const updatedItems = newSetItems.map((item, index) => ({
+          ...item,
+          position: index,
+        }));
+        
+        return {
+          ...prev,
+          [set]: updatedItems,
+        };
+      });
+    } else {
+      // If adding a song, update the existing slot
+      setSetlist((prev) => ({
+        ...prev,
+        [set]: prev[set].map((item) =>
+          item.position === position ? { ...item, song } : item,
+        ),
+      }));
+    }
 
     // Clear the selected song after adding it
     setSelectedSong(null);
@@ -219,16 +239,16 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     // Define maximum size based on the set type
     const maxSize = set === "encore" ? 3 : 10;
 
-    // Count actual songs (not empty slots)
-    const actualSongCount = setlist[set].filter(spot => spot.song !== null).length;
+    // Count total items (including empty slots)
+    const totalItems = setlist[set].length;
     
     // Check if we're already at the maximum
-    if (actualSongCount >= maxSize) {
+    if (totalItems >= maxSize) {
       return; // Do nothing if we've reached the limit
     }
 
     // Create a new spot object
-    const newPosition = setlist[set].length;
+    const newPosition = totalItems;
     const newSpot: SetlistItem = {
       position: newPosition,
       song: null as PhishSong | null,
