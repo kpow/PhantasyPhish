@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { fetchPhishData, slugifySongName } from "./utils/api-utils";
 import { insertSongSchema, insertShowSchema, insertPredictionSchema } from "@shared/schema";
+import { scorePrediction, processRawSetlist } from "./utils/scoring-utils";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
