@@ -546,6 +546,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!prediction || !actualSetlist) {
         return res.status(400).json({ message: "Missing prediction or actualSetlist" });
       }
+
+      // Log the incoming prediction and actual setlist for debugging
+      console.log("Testing score with prediction:", JSON.stringify(prediction));
+      console.log("Testing against actual setlist:", JSON.stringify(actualSetlist));
       
       // Score the prediction
       // Need to ensure the prediction setlist matches the expected format
@@ -554,7 +558,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         set2: Array.isArray(prediction.set2) ? prediction.set2 : [],
         encore: Array.isArray(prediction.encore) ? prediction.encore : []
       };
+      
       const scoreBreakdown = scorePrediction(predictionSetlist, actualSetlist);
+      
+      // Log the scoring breakdown for debugging
+      console.log("Score breakdown:", JSON.stringify(scoreBreakdown));
       
       res.json({
         score: scoreBreakdown.totalScore,

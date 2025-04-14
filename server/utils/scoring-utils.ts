@@ -68,11 +68,11 @@ export function scorePrediction(
     const actualSet = actualSetlist[setKey as keyof typeof actualSetlist];
 
     // Check for null songs in the set and filter them out
-    const validPredictions = predictedSet.filter(item => item.song !== null);
+    const validPredictions = predictedSet.filter(item => item && item.song !== null);
     
     // Score each valid prediction
     validPredictions.forEach(prediction => {
-      if (!prediction.song) return; // Skip null predictions
+      if (!prediction || !prediction.song) return; // Skip null predictions
       
       const songName = prediction.song.name;
       const predictedPosition = prediction.position;

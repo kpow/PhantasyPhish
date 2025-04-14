@@ -103,11 +103,43 @@ export default function SetlistBuilder() {
         ]
       };
 
+      // Convert prediction data for scoring
+      // Ensure the prediction format matches what the scoring engine expects
+      const formattedPrediction = {
+        set1: setlist.set1.map(item => ({
+          position: item.position,
+          song: item.song ? {
+            id: item.song.id,
+            name: item.song.name,
+            slug: item.song.slug || '',
+            times_played: item.song.times_played || 0
+          } : null
+        })),
+        set2: setlist.set2.map(item => ({
+          position: item.position,
+          song: item.song ? {
+            id: item.song.id,
+            name: item.song.name,
+            slug: item.song.slug || '',
+            times_played: item.song.times_played || 0
+          } : null
+        })),
+        encore: setlist.encore.map(item => ({
+          position: item.position,
+          song: item.song ? {
+            id: item.song.id,
+            name: item.song.name,
+            slug: item.song.slug || '',
+            times_played: item.song.times_played || 0
+          } : null
+        }))
+      };
+
       // Use the test scoring endpoint
       const testResponse = await fetch('/api/test/score', {
         method: 'POST',
         body: JSON.stringify({
-          prediction: predictionData.setlist,
+          prediction: formattedPrediction,
           actualSetlist: testSetlist
         }),
         headers: {
