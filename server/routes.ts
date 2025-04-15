@@ -57,7 +57,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
         country: show.country,
       }));
       
-      res.json({ shows: formattedShows });
+      // If we have less than 8 shows from the API, pull additional shows from our database
+      if (formattedShows.length < 8) {
+        console.log(`Only found ${formattedShows.length} upcoming shows from API, adding additional shows from database`);
+        
+        // Get the tour shows from our database
+        const tourId = 1; // Spring 2025 tour
+        const dbShows = await storage.getShowsByTour(tourId);
+        
+        // Convert to the same format as API shows
+        const additionalShows = dbShows
+          // Only include shows that aren't already in formattedShows
+          .filter(show => !formattedShows.some(apiShow => apiShow.showid === show.show_id))
+          // Format like API shows
+          .map(show => ({
+            showid: show.show_id,
+            showdate: show.date,
+            venue: show.venue,
+            location: `${show.city}, ${show.state}`,
+            country: show.country,
+          }));
+        
+        // Combine API shows and database shows, limiting to 8 total
+        const combinedShows = [...formattedShows, ...additionalShows].slice(0, 8);
+        console.log(`Returning ${combinedShows.length} total upcoming shows`);
+        
+        res.json({ shows: combinedShows });
+      } else {
+        res.json({ shows: formattedShows });
+      }
     } catch (error) {
       console.error("Error fetching upcoming shows:", error);
       res.status(500).json({ message: (error as Error).message });
