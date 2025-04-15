@@ -7,13 +7,6 @@ import { scorePrediction, processRawSetlist } from "./utils/scoring-utils";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-// Get the current module's file path
-const __filename = fileURLToPath(import.meta.url);
-// Get the directory name
-const __dirname = dirname(__filename);
 import authRoutes from "./auth/routes";
 import { isAuthenticated, isAdmin } from "./auth/middleware";
 
