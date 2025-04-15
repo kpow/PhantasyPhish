@@ -136,9 +136,9 @@ export default function Scoring() {
           <div className="flex justify-center p-8">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
-        ) : (
+        ) : tourData && tourData.tours && tourData.tours.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {tourData?.tours.map(tour => (
+            {tourData.tours.map(tour => (
               <Card 
                 key={tour.id} 
                 className={`cursor-pointer transition-colors hover:bg-muted/50 ${activeTour === tour.id ? 'border-primary border-2' : ''}`}
@@ -153,6 +153,10 @@ export default function Scoring() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        ) : (
+          <div className="text-center p-8">
+            <p className="text-muted-foreground">No tours available.</p>
           </div>
         )}
       </div>
@@ -174,13 +178,13 @@ export default function Scoring() {
                   <div className="flex justify-center p-8">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   </div>
-                ) : showData?.shows.length === 0 ? (
+                ) : !showData || !showData.shows || showData.shows.length === 0 ? (
                   <p className="text-center text-gray-400 py-8">
                     No shows assigned to this tour yet.
                   </p>
                 ) : (
                   <div className="space-y-4">
-                    {showData?.shows.map(show => (
+                    {showData.shows.map(show => (
                       <div key={show.id} className="flex justify-between items-center p-3 border border-border rounded-md">
                         <div>
                           <h4 className="font-medium">{show.venue}</h4>
@@ -227,7 +231,7 @@ export default function Scoring() {
                   <div className="flex justify-center p-8">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   </div>
-                ) : leaderboardData?.leaderboard.length === 0 ? (
+                ) : !leaderboardData || !leaderboardData.leaderboard || leaderboardData.leaderboard.length === 0 ? (
                   <p className="text-center text-gray-400 py-8">
                     No scores recorded for this tour yet.
                   </p>
@@ -244,14 +248,14 @@ export default function Scoring() {
                         </tr>
                       </thead>
                       <tbody>
-                        {leaderboardData?.leaderboard.map((entry, index) => (
+                        {leaderboardData.leaderboard.map((entry, index) => (
                           <tr key={entry.userId} className="border-b border-border">
                             <td className="py-3 px-4">{index + 1}</td>
                             <td className="py-3 px-4">{entry.userName}</td>
                             <td className="py-3 px-4 text-right">{entry.showsParticipated}</td>
                             <td className="py-3 px-4 text-right font-semibold">{entry.totalScore}</td>
                             <td className="py-3 px-4 text-right">
-                              {Math.round(entry.totalScore / entry.showsParticipated)}
+                              {entry.showsParticipated > 0 ? Math.round(entry.totalScore / entry.showsParticipated) : 0}
                             </td>
                           </tr>
                         ))}
