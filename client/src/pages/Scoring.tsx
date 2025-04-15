@@ -55,32 +55,14 @@ export default function Scoring() {
   // Fetch shows for selected tour
   const { data: showData, isLoading: isLoadingShows } = useQuery<{ shows: Show[] }>({
     queryKey: [`/api/tours/${activeTour}/shows`],
-    enabled: !!activeTour && isAuthenticated && user?.is_admin,
-    refetchOnWindowFocus: false
+    enabled: !!activeTour && isAuthenticated && user?.is_admin
   });
   
   // Fetch tour leaderboard
   const { data: leaderboardData, isLoading: isLoadingLeaderboard } = useQuery<{ tourName: string, leaderboard: TourLeaderboardEntry[] }>({
     queryKey: [`/api/tours/${activeTour}/leaderboard`],
-    enabled: !!activeTour && isAuthenticated && user?.is_admin,
-    refetchOnWindowFocus: false
+    enabled: !!activeTour && isAuthenticated && user?.is_admin
   });
-  
-  // Log when active tour changes for debugging
-  useEffect(() => {
-    if (activeTour) {
-      console.log(`Active tour set to: ${activeTour}`);
-      // Force fetch the data
-      fetch(`/api/tours/${activeTour}/shows`)
-        .then(res => res.json())
-        .then(data => {
-          console.log('Direct fetch response:', data);
-        })
-        .catch(err => {
-          console.error('Direct fetch error:', err);
-        });
-    }
-  }, [activeTour]);
   
   // Handle score all predictions for a show
   const scoreShow = async (showId: string) => {
