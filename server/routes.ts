@@ -1081,6 +1081,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Get show status (is_scored) by showId (from our database)
+  app.get("/api/shows/:showId/status", async (req, res) => {
+    try {
+      const { showId } = req.params;
+      const show = await storage.getShowByShowId(showId);
+      
+      if (!show) {
+        return res.status(404).json({ message: "Show not found in database" });
+      }
+      
+      res.json({ 
+        show_id: show.show_id,
+        is_scored: show.is_scored
+      });
+    } catch (error) {
+      console.error("Error fetching show status:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
   // Get leaderboard for a specific tour
   app.get("/api/tours/:tourId/leaderboard", async (req, res) => {
     try {
