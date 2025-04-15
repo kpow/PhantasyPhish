@@ -39,6 +39,15 @@ export const songs = pgTable("songs", {
   times_played: integer("times_played").default(0),
 });
 
+export const tours = pgTable("tours", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull().unique(),
+  start_date: text("start_date").notNull(),
+  end_date: text("end_date").notNull(),
+  description: text("description"),
+  created_at: timestamp("created_at").defaultNow(),
+});
+
 export const shows = pgTable("shows", {
   id: serial("id").primaryKey(),
   show_id: text("show_id").notNull().unique(),
@@ -47,6 +56,8 @@ export const shows = pgTable("shows", {
   city: text("city").notNull(),
   state: text("state"),
   country: text("country").notNull(),
+  tour_id: integer("tour_id").references(() => tours.id),
+  is_scored: boolean("is_scored").default(false),
 });
 
 export const predictions = pgTable("predictions", {
@@ -106,6 +117,13 @@ export const insertSongSchema = createInsertSchema(songs).pick({
   times_played: true,
 });
 
+export const insertTourSchema = createInsertSchema(tours).pick({
+  name: true,
+  start_date: true,
+  end_date: true,
+  description: true,
+});
+
 export const insertShowSchema = createInsertSchema(shows).pick({
   show_id: true,
   date: true,
@@ -113,6 +131,8 @@ export const insertShowSchema = createInsertSchema(shows).pick({
   city: true,
   state: true,
   country: true,
+  tour_id: true,
+  is_scored: true,
 });
 
 export const insertPredictionSchema = createInsertSchema(predictions).pick({
@@ -137,6 +157,9 @@ export type EmailVerificationToken = typeof email_verification_tokens.$inferSele
 
 export type InsertSong = z.infer<typeof insertSongSchema>;
 export type Song = typeof songs.$inferSelect;
+
+export type InsertTour = z.infer<typeof insertTourSchema>;
+export type Tour = typeof tours.$inferSelect;
 
 export type InsertShow = z.infer<typeof insertShowSchema>;
 export type Show = typeof shows.$inferSelect;

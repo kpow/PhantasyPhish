@@ -48,11 +48,19 @@ export interface IStorage {
   getSongByName(name: string): Promise<Song | undefined>;
   createSong(song: InsertSong): Promise<Song>;
   
+  // Tour operations
+  getAllTours(): Promise<Tour[]>;
+  getTour(id: number): Promise<Tour | undefined>;
+  getTourByName(name: string): Promise<Tour | undefined>;
+  createTour(tour: InsertTour): Promise<Tour>;
+  
   // Show operations
   getAllShows(): Promise<Show[]>;
   getShow(id: number): Promise<Show | undefined>;
   getShowByShowId(showId: string): Promise<Show | undefined>;
+  getShowsByTour(tourId: number): Promise<Show[]>;
   createShow(show: InsertShow): Promise<Show>;
+  updateShowScoredStatus(showId: string, isScored: boolean): Promise<Show | undefined>;
   
   // Prediction operations
   getAllPredictions(): Promise<Prediction[]>;
@@ -62,6 +70,12 @@ export interface IStorage {
   createPrediction(prediction: InsertPrediction): Promise<Prediction>;
   updatePredictionScore(id: number, score: number): Promise<Prediction>;
   deletePredictionByUserAndShow(userId: number, showId: string): Promise<boolean>;
+  
+  // Leaderboard operations
+  getLeaderboardForShow(showId: string): Promise<{userId: number, userName: string, score: number}[]>;
+  getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]>;
+  getUserScoreForTour(userId: number, tourId: number): Promise<{totalScore: number, showsParticipated: number}>;
+  scoreAllPredictionsForShow(showId: string): Promise<{processed: number, updated: number, errors: number}>;
 }
 
 // Export the database implementation of the storage interface
