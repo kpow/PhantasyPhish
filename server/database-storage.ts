@@ -350,7 +350,7 @@ export class DatabaseStorage implements IStorage {
          COUNT(p.id) as "showsParticipated"
        FROM predictions p
        JOIN users u ON p.user_id = u.id
-       WHERE p.show_id = ANY($1) AND p.score IS NOT NULL
+       WHERE p.show_id = ANY($1::text[]) AND p.score IS NOT NULL
        GROUP BY p.user_id, u.display_name
        ORDER BY "totalScore" DESC`,
       [showIds]
@@ -379,7 +379,7 @@ export class DatabaseStorage implements IStorage {
          COALESCE(SUM(p.score), 0) as "totalScore",
          COUNT(p.id) as "showsParticipated"
        FROM predictions p
-       WHERE p.user_id = $1 AND p.show_id = ANY($2) AND p.score IS NOT NULL`,
+       WHERE p.user_id = $1 AND p.show_id = ANY($2::text[]) AND p.score IS NOT NULL`,
       [userId, showIds]
     );
     

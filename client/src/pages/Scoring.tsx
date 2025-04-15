@@ -54,13 +54,13 @@ export default function Scoring() {
   
   // Fetch shows for selected tour
   const { data: showData, isLoading: isLoadingShows } = useQuery<{ shows: Show[] }>({
-    queryKey: ['/api/tours', activeTour, 'shows'],
+    queryKey: [`/api/tours/${activeTour}/shows`],
     enabled: !!activeTour && isAuthenticated && user?.is_admin
   });
   
   // Fetch tour leaderboard
   const { data: leaderboardData, isLoading: isLoadingLeaderboard } = useQuery<{ tourName: string, leaderboard: TourLeaderboardEntry[] }>({
-    queryKey: ['/api/tours', activeTour, 'leaderboard'],
+    queryKey: [`/api/tours/${activeTour}/leaderboard`],
     enabled: !!activeTour && isAuthenticated && user?.is_admin
   });
   
