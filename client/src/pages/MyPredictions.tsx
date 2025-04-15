@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
+import { useSetlist } from '@/contexts/SetlistContextRefactored';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -40,6 +41,7 @@ interface ShowDetails {
 
 export default function MyPredictions() {
   const { user } = useAuth();
+  const { navigateToShow, scorePrediction } = useSetlist();
   const [selectedPrediction, setSelectedPrediction] = useState<PredictionItem | null>(null);
   const [showDetails, setShowDetails] = useState<ShowDetails | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -194,14 +196,18 @@ export default function MyPredictions() {
                   </Link>
                   
                   {showScoringStatus[prediction.show_id] && (
-                    <Link href={`/prediction/${prediction.show_id}/score`}>
-                      <Button 
-                        className="w-full bg-green-700 hover:bg-green-800"
-                        variant="secondary"
-                      >
-                        Score
-                      </Button>
-                    </Link>
+                    <Button 
+                      className="w-full bg-green-700 hover:bg-green-800"
+                      variant="secondary"
+                      onClick={async () => {
+                        // First score the prediction to load the data
+                        await scorePrediction(prediction.show_id);
+                        // Then navigate to the scoring page
+                        navigateToShow(prediction.show_id, true);
+                      }}
+                    >
+                      Score
+                    </Button>
                   )}
                 </div>
               </div>
@@ -341,14 +347,19 @@ export default function MyPredictions() {
                   </Link>
                   
                   {showScoringStatus[selectedPrediction.show_id] && (
-                    <Link href={`/prediction/${selectedPrediction.show_id}/score`}>
-                      <Button 
-                        className="w-full bg-green-700 hover:bg-green-800"
-                        variant="secondary"
-                      >
-                        Score
-                      </Button>
-                    </Link>
+                    <Button 
+                      className="w-full bg-green-700 hover:bg-green-800"
+                      variant="secondary"
+                      onClick={async () => {
+                        setIsModalOpen(false);
+                        // First score the prediction to load the data
+                        await scorePrediction(selectedPrediction.show_id);
+                        // Then navigate to the scoring page
+                        navigateToShow(selectedPrediction.show_id, true);
+                      }}
+                    >
+                      Score
+                    </Button>
                   )}
                 </>
               )}
