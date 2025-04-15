@@ -20,11 +20,22 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, CheckCircle2, Settings, BarChart3 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Settings, BarChart3, RefreshCw } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface User {
   id: number;
@@ -42,6 +53,7 @@ export default function AdminDashboard() {
   const { toast } = useToast();
   const { config, isLoading: isLoadingConfig, updateConfig } = useConfig();
   const [adminChecked, setAdminChecked] = useState(false);
+  const [isResettingScores, setIsResettingScores] = useState(false);
 
   // Query to check admin access
   const adminCheckQuery = useQuery({
@@ -88,6 +100,42 @@ export default function AdminDashboard() {
         title: "Update Failed",
         description: "Failed to update application settings."
       });
+    }
+  };
+  
+  // Handle prediction score reset
+  const handleResetPredictionScores = async () => {
+    try {
+      setIsResettingScores(true);
+      
+      const response = await fetch('/api/admin/reset-prediction-scores', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Reset Successful",
+          description: "All prediction scores have been reset to null and shows marked as unscored.",
+          duration: 5000
+        });
+      } else {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to reset prediction scores');
+      }
+    } catch (error) {
+      console.error('Error resetting prediction scores:', error);
+      toast({
+        variant: "destructive",
+        title: "Reset Failed",
+        description: error instanceof Error ? error.message : "Failed to reset prediction scores",
+        duration: 5000
+      });
+    } finally {
+      setIsResettingScores(false);
     }
   };
 
@@ -153,6 +201,46 @@ export default function AdminDashboard() {
                     Scoring Management
                   </Button>
                 </Link>
+                
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      className="bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100 flex items-center gap-2"
+                      disabled={isResettingScores}
+                    >
+                      {isResettingScores ? (
+                        <>
+                          <div className="animate-spin h-4 w-4 border-2 border-amber-700 border-t-transparent rounded-full mr-1" />
+                          Resetting...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="h-5 w-5" />
+                          Reset Prediction Scores
+                        </>
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action will reset all prediction scores to null and mark all shows as unscored.
+                        This is primarily for testing purposes and will affect all users' prediction scores.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={handleResetPredictionScores}
+                        className="bg-amber-600 hover:bg-amber-700"
+                      >
+                        Yes, Reset All Scores
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>
