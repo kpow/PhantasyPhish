@@ -154,8 +154,8 @@ export default function MyPredictions() {
       return (
         <Card className="bg-[#1E1E1E] border-0 shadow-lg">
           <CardContent className="p-6">
-            <p className="text-gray-300">You haven't made any predictions yet.</p>
-            <p className="mt-2 text-gray-400">Visit the upcoming shows section to predict a setlist.</p>
+            <p className="text-gray-300">You haven't made any picks yet.</p>
+            <p className="mt-2 text-gray-400">Visit the upcoming shows section to choose a setlist.</p>
           </CardContent>
         </Card>
       );
@@ -167,37 +167,37 @@ export default function MyPredictions() {
         {predictions.predictions.map((prediction) => (
           <Card key={prediction.id} className="bg-[#1E1E1E] border-0 shadow-lg hover:bg-[#252525] transition-colors">
             <CardHeader>
-              <CardTitle className="text-lg text-white">Show ID: {prediction.show_id}</CardTitle>
-              <p className="text-gray-400">Predicted on {formatDate(prediction.created_at)}</p>
+              <CardTitle className="text-lg text-white">show ID: {prediction.show_id}</CardTitle>
+              <p className="text-gray-400">picked on {formatDate(prediction.created_at)}</p>
             </CardHeader>
             <CardContent className="pb-4">
-              <p className="text-gray-300 mb-2">{countSongs(prediction)} songs predicted</p>
+              <p className="text-gray-300 mb-2">{countSongs(prediction)} songs picked</p>
               {prediction.score !== null && (
                 <p className="mb-2 font-semibold">
-                  Score: <span className="text-green-400">{prediction.score}</span>
+                  score: <span className="text-green-400">{prediction.score}</span>
                 </p>
               )}
               <div className="flex flex-col gap-2">
                 <Button 
-                  className="w-full bg-primary hover:bg-blue-600"
+                  className="w-full bg-primary hover:bg-blue-600 font-display"
                   onClick={() => handleViewPrediction(prediction)}
                 >
-                  View Prediction
+                  view picks
                 </Button>
                 
                 <div className={`grid ${showScoringStatus[prediction.show_id] ? 'grid-cols-2' : 'grid-cols-1'} gap-2 mt-1`}>
                   <Link href={`/prediction/${prediction.show_id}`}>
                     <Button 
-                      className="w-full bg-blue-700 hover:bg-blue-800"
+                      className="w-full bg-blue-700 hover:bg-blue-800 font-display"
                       variant="secondary"
                     >
-                      Edit
+                      edit
                     </Button>
                   </Link>
                   
                   {showScoringStatus[prediction.show_id] && (
                     <Button 
-                      className="w-full bg-green-700 hover:bg-green-800"
+                      className="w-full bg-green-700 hover:bg-green-800 font-display"
                       variant="secondary"
                       onClick={async () => {
                         // First score the prediction to load the data
@@ -206,7 +206,7 @@ export default function MyPredictions() {
                         navigateToShow(prediction.show_id, true);
                       }}
                     >
-                      Score
+                      score
                     </Button>
                   )}
                 </div>
@@ -238,14 +238,14 @@ export default function MyPredictions() {
 
   return (
     <div className="container mx-auto p-4 max-w-5xl">
-      <h1 className="text-2xl font-display text-primary mb-6">my predictions</h1>
+      <h1 className="text-2xl font-display text-primary mb-6">points and picks</h1>
       
       {/* Add Tabs for different sections */}
       <Tabs defaultValue="scorecard" className="mb-6">
         <TabsList className="mb-4">
-          <TabsTrigger value="scorecard">My Scorecard</TabsTrigger>
-          <TabsTrigger value="predictions">My Predictions</TabsTrigger>
-          <TabsTrigger value="tours">Tour Shows</TabsTrigger>
+          <TabsTrigger value="scorecard">my scorecard</TabsTrigger>
+          <TabsTrigger value="predictions">my setlist picks</TabsTrigger>
+          <TabsTrigger value="tours">tour shows</TabsTrigger>
         </TabsList>
         
         {/* Scorecard Tab */}
@@ -268,7 +268,7 @@ export default function MyPredictions() {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="bg-[#1E1E1E] text-white border-gray-700 max-w-2xl">
           <DialogHeader>
-            <DialogTitle className="text-xl">Setlist Prediction</DialogTitle>
+            <DialogTitle className="text-xl font-display">setlist picks</DialogTitle>
             {showDetails && (
               <DialogDescription className="text-gray-300">
                 {showDetails.venue}, {showDetails.location} on {formatDate(showDetails.showdate)}
@@ -279,7 +279,7 @@ export default function MyPredictions() {
           {selectedPrediction && (
             <div className="my-4 space-y-4">
               <div>
-                <h3 className="text-primary font-semibold mb-2">Set 1</h3>
+                <h3 className="text-primary font-semibold mb-2 font-display">set 1</h3>
                 <div className="bg-[#252525] p-3 rounded-md">
                   {selectedPrediction.setlist.set1.some(song => song !== null) ? (
                     <ul>
@@ -294,7 +294,7 @@ export default function MyPredictions() {
               </div>
               
               <div>
-                <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
+                <h3 className="text-orange-500 font-semibold mb-2 font-display">set 2</h3>
                 <div className="bg-[#252525] p-3 rounded-md">
                   {selectedPrediction.setlist.set2.some(song => song !== null) ? (
                     <ul>
@@ -309,7 +309,7 @@ export default function MyPredictions() {
               </div>
               
               <div>
-                <h3 className="text-green-500 font-semibold mb-2">Encore</h3>
+                <h3 className="text-green-500 font-semibold mb-2 font-display">encore</h3>
                 <div className="bg-[#252525] p-3 rounded-md">
                   {selectedPrediction.setlist.encore.some(song => song !== null) ? (
                     <ul>
@@ -318,7 +318,7 @@ export default function MyPredictions() {
                       ))}
                     </ul>
                   ) : (
-                    <p className="text-gray-400 italic">No songs selected</p>
+                    <p className="text-gray-400 italic">no songs selected</p>
                   )}
                 </div>
               </div>
@@ -326,7 +326,7 @@ export default function MyPredictions() {
               {selectedPrediction.score !== null && (
                 <div className="mt-4 p-3 bg-[#252525] rounded-md">
                   <p className="font-semibold">
-                    Score: <span className="text-green-400 text-lg">{selectedPrediction.score}</span>
+                    score: <span className="text-green-400 text-lg">{selectedPrediction.score}</span>
                   </p>
                 </div>
               )}
@@ -339,16 +339,16 @@ export default function MyPredictions() {
                 <>
                   <Link href={`/prediction/${selectedPrediction.show_id}`}>
                     <Button 
-                      className="w-full bg-blue-700 hover:bg-blue-800"
+                      className="w-full bg-blue-700 hover:bg-blue-800 font-display"
                       variant="secondary"
                     >
-                      Edit
+                      edit
                     </Button>
                   </Link>
                   
                   {showScoringStatus[selectedPrediction.show_id] && (
                     <Button 
-                      className="w-full bg-green-700 hover:bg-green-800"
+                      className="w-full bg-green-700 hover:bg-green-800 font-display"
                       variant="secondary"
                       onClick={async () => {
                         setIsModalOpen(false);
@@ -358,7 +358,7 @@ export default function MyPredictions() {
                         navigateToShow(selectedPrediction.show_id, true);
                       }}
                     >
-                      Score
+                      score
                     </Button>
                   )}
                 </>
@@ -366,10 +366,10 @@ export default function MyPredictions() {
             </div>
             
             <Button 
-              className="bg-primary hover:bg-blue-600 w-full sm:w-auto mt-2 sm:mt-0"
+              className="bg-primary hover:bg-blue-600 w-full sm:w-auto mt-2 sm:mt-0 font-display"
               onClick={() => setIsModalOpen(false)}
             >
-              Close
+              close
             </Button>
           </DialogFooter>
         </DialogContent>

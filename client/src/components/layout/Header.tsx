@@ -62,11 +62,11 @@ export default function Header() {
         >
           <FishIcon className="w-20 h-20 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
           <div className="sm:hidden flex flex-col items-start justify-center">
-            <h1 className="font-display text-2xl leading-tight text-primary font-bold">Phantasy</h1>
-            <h1 className="font-display text-2xl leading-tight text-primary font-bold -mt-1">Phish</h1>
+            <h1 className="font-display text-2xl leading-tight text-primary font-bold">phantasy</h1>
+            <h1 className="font-display text-2xl leading-tight text-primary font-bold -mt-1">phish</h1>
           </div>
           <h1 className="hidden sm:block font-display text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-primary truncate font-bold">
-            Phantasy Phish
+            phantasy phish
           </h1>
         </div>
         
@@ -97,7 +97,7 @@ export default function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigateTo("/profile")}>
                   <User className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <span>profile</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigateTo("/my-predictions")}>
                   <svg xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -105,7 +105,7 @@ export default function Header() {
                     <rect x="9" y="3" width="6" height="4" rx="2" />
                     <path d="m9 14 2 2 4-4" />
                   </svg>
-                  <span>My Predictions</span>
+                  <span>point and picks</span>
                 </DropdownMenuItem>
                 {user?.is_admin && (
                   <DropdownMenuItem onClick={() => navigateTo("/admin")}>
@@ -115,13 +115,13 @@ export default function Header() {
                       <path d="M12 19.5a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.04-3 2.5 2.5 0 0 0-3.32-3.32 2.5 2.5 0 0 0-3.68 5.88Z" />
                       <path d="M4.5 12a2.5 2.5 0 0 0 3.16 1.32 2.5 2.5 0 0 0 1.04-4.04 2.5 2.5 0 0 0-3-.42 2.5 2.5 0 0 0-1.2 3.14Z" />
                     </svg>
-                    <span>Admin Dashboard</span>
+                    <span>admin</span>
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
+                  <span>log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

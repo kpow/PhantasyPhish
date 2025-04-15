@@ -149,7 +149,7 @@ export default function AdminDashboard() {
       <div className="container mx-auto py-8">
         <Card>
           <CardHeader>
-            <CardTitle>Checking Admin Access...</CardTitle>
+            <CardTitle>checking admin access...</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex justify-center">
@@ -165,40 +165,17 @@ export default function AdminDashboard() {
     <div className="container mx-auto py-8">
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Admin Dashboard</CardTitle>
-          <CardDescription>
-            Manage users and application settings.
-          </CardDescription>
+          <CardTitle className="font-display">admin dashboard</CardTitle>
         </CardHeader>
         <CardContent>
-          <Alert className="mb-6 bg-yellow-50">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Admin Access</AlertTitle>
-            <AlertDescription>
-              You have administrator privileges. With great power comes great responsibility.
-            </AlertDescription>
-          </Alert>
-
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Admin User Info</h3>
-              <div className="grid grid-cols-2 gap-2">
-                <div className="font-medium">Email:</div>
-                <div>{user?.email}</div>
-                <div className="font-medium">Name:</div>
-                <div>{user?.display_name || "Not set"}</div>
-                <div className="font-medium">User ID:</div>
-                <div>{user?.id}</div>
-              </div>
-            </div>
-            
+          <div className="space-y-4">            
             <div className="mt-6">
-              <h3 className="text-lg font-semibold mb-4">Admin Tools</h3>
+              <h3 className="text-lg font-semibold mb-4">admin tools</h3>
               <div className="flex flex-wrap gap-4">
                 <Link href="/admin/scoring">
-                  <Button className="flex items-center gap-2">
+                  <Button className="flex items-center gap-2 font-display">
                     <BarChart3 className="h-5 w-5" />
-                    Scoring Management
+                    scoring management
                   </Button>
                 </Link>
                 
@@ -206,18 +183,18 @@ export default function AdminDashboard() {
                   <AlertDialogTrigger asChild>
                     <Button 
                       variant="outline" 
-                      className="bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100 flex items-center gap-2"
+                      className="bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100 flex items-center gap-2 font-display"
                       disabled={isResettingScores}
                     >
                       {isResettingScores ? (
                         <>
-                          <div className="animate-spin h-4 w-4 border-2 border-amber-700 border-t-transparent rounded-full mr-1" />
-                          Resetting...
+                          <div className="animate-spin h-4 w-4 border-2 border-amber-700 border-t-transparent rounded-full mr-1 font-display" />
+                          resetting...
                         </>
                       ) : (
                         <>
                           <RefreshCw className="h-5 w-5" />
-                          Reset Prediction Scores
+                          reset scores
                         </>
                       )}
                     </Button>
@@ -231,12 +208,12 @@ export default function AdminDashboard() {
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>cancel</AlertDialogCancel>
                       <AlertDialogAction 
                         onClick={handleResetPredictionScores}
                         className="bg-amber-600 hover:bg-amber-700"
                       >
-                        Yes, Reset All Scores
+                        yes, reset all scores
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -251,10 +228,10 @@ export default function AdminDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center">
             <Settings className="mr-2 h-5 w-5" />
-            Application Settings
+            <span className="font-display">application settings</span>
           </CardTitle>
           <CardDescription>
-            Configure global application settings
+            configure global application settings
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -266,9 +243,9 @@ export default function AdminDashboard() {
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="test-mode">Test Mode</Label>
+                  <Label htmlFor="test-mode">test mode</Label>
                   <p className="text-sm text-muted-foreground">
-                    When disabled, users will not be able to use the "Test Score" button on setlist builder.
+                    when disabled, users will not be able to use the "Test Score" button on setlist builder.
                   </p>
                 </div>
                 <Switch
@@ -284,9 +261,11 @@ export default function AdminDashboard() {
 
       <Card>
         <CardHeader>
-          <CardTitle>User Management</CardTitle>
+          <CardTitle>
+             <span className="font-display">user management</span>
+            </CardTitle>
           <CardDescription>
-            View and manage all users in the system
+            view and manage all users in the system
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -339,7 +318,7 @@ export default function AdminDashboard() {
             </div>
           ) : (
             <div className="text-center py-4">
-              <p className="text-muted-foreground">No users found.</p>
+              <p className="text-muted-foreground">no users found.</p>
             </div>
           )}
         </CardContent>

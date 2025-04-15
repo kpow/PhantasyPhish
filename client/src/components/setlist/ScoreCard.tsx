@@ -60,7 +60,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
       <div className="mb-6">
         <div className="flex justify-between items-center">
           <h2 className="font-display text-2xl text-white">
-            Score: <span className="text-green-400 font-bold">{scoreBreakdown.totalScore}</span>
+            score: <span className="text-green-400 font-bold">{scoreBreakdown.totalScore}</span>
           </h2>
           <div className="flex items-center space-x-3">
             <Badge variant="outline" className="border-green-500 text-green-500 px-3 py-1 text-sm font-semibold">TEST SCORE</Badge>
@@ -83,7 +83,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
       
       {/* Score Breakdown with song examples */}
       <div className="bg-[#1A1A1A] p-4 mb-5 rounded-lg">
-        <h3 className="text-gray-300 font-semibold mb-3 text-sm uppercase tracking-wide">Score Breakdown</h3>
+        <h3 className="text-gray-300 font-semibold mb-3 text-lg font-display tracking-wide">Score Breakdown</h3>
         <div className="space-y-2">
           <div className="p-3 rounded bg-[#252525]">
             <div className="flex justify-between items-center mb-2">
@@ -234,7 +234,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 cursor-pointer">
           <CollapsibleTrigger className="flex items-center justify-between w-full">
-            <h3 className="text-white font-semibold">Your Predictions</h3>
+            <h3 className="text-white text-lg font-display">your predictions</h3>
             <div className="flex items-center text-gray-400">
               <Badge variant="outline" className="mr-2">
                 {scoreBreakdown.details.length} songs
@@ -256,7 +256,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   {/* Set 1 Predictions */}
                   <div>
-                    <h3 className="text-primary font-semibold mb-2">Set 1 Predictions</h3>
+                    <h3 className="text-primary font-semibold font-display mb-2">set 1 picks</h3>
                     <div className="bg-[#252525] p-3 rounded-md h-full">
                       <ol className="list-decimal pl-5">
                         {scoreBreakdown.details
@@ -283,7 +283,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
                   
                   {/* Set 2 Predictions */}
                   <div>
-                    <h3 className="text-orange-500 font-semibold mb-2">Set 2 Predictions</h3>
+                    <h3 className="text-orange-500 font-semibold font-display mb-2">set 2 picks</h3>
                     <div className="bg-[#252525] p-3 rounded-md h-full">
                       <ol className="list-decimal pl-5">
                         {scoreBreakdown.details
@@ -311,7 +311,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
                 
                 {/* Encore Predictions - Full width */}
                 <div>
-                  <h3 className="text-green-500 font-semibold mb-2">Encore Predictions</h3>
+                  <h3 className="text-green-500 font-semibold font-display mb-2">encore picks</h3>
                   <div className="bg-[#252525] p-3 rounded-md">
                     <ol className="list-decimal pl-5">
                       {scoreBreakdown.details
@@ -338,7 +338,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               </>
             ) : (
               <div className="text-center text-gray-500 py-6">
-                No predictions to score
+                no predictions to score
               </div>
             )}
           </div>
@@ -353,7 +353,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 cursor-pointer">
           <CollapsibleTrigger className="flex items-center justify-between w-full">
-            <h3 className="text-white font-semibold">Actual Setlist</h3>
+            <h3 className="text-white font-semibold font-display">actual setlist</h3>
             <div className="flex items-center text-gray-400">
               <Badge variant="outline" className="mr-2">
                 {actualSetlist.set1.length + actualSetlist.set2.length + actualSetlist.encore.length} songs
@@ -373,7 +373,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               {/* Set 1 */}
               {actualSetlist.set1.length > 0 && (
                 <div>
-                  <h3 className="text-primary font-semibold mb-2">Set 1</h3>
+                  <h3 className="text-primary font-semibold font-display mb-2">set 1</h3>
                   <div className="bg-[#252525] p-3 rounded-md h-full">
                     <ol className="list-decimal pl-5">
                       {actualSetlist.set1.map((song, i) => (
@@ -387,7 +387,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
               {/* Set 2 */}
               {actualSetlist.set2.length > 0 && (
                 <div>
-                  <h3 className="text-orange-500 font-semibold mb-2">Set 2</h3>
+                  <h3 className="text-orange-500 font-semibold font-display mb-2">set 2</h3>
                   <div className="bg-[#252525] p-3 rounded-md h-full">
                     <ol className="list-decimal pl-5">
                       {actualSetlist.set2.map((song, i) => (
@@ -402,7 +402,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
             {/* Encore - Full width */}
             {actualSetlist.encore.length > 0 && (
               <div>
-                <h3 className="text-green-500 font-semibold mb-2">Encore</h3>
+                <h3 className="text-green-500 font-semibold font-display mb-2">encore</h3>
                 <div className="bg-[#252525] p-3 rounded-md">
                   <ol className="list-decimal pl-5">
                     {actualSetlist.encore.map((song, i) => (
@@ -424,7 +424,7 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
       >
         <div className="flex items-center justify-between px-4 py-3 border-b border-gray-800 cursor-pointer">
           <CollapsibleTrigger className="flex items-center justify-between w-full">
-            <h3 className="text-white font-semibold">Show Notes</h3>
+            <h3 className="text-white font-semibold font-display">show notes</h3>
             <div className="flex items-center text-gray-400">
               {isNotesOpen ? 
                 <ChevronDown className="h-5 w-5" /> : 

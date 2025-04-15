@@ -9,7 +9,7 @@ export default function Footer() {
 
           {/* About Column */}
           <div className="max-w-[400px] ml-2">
-            <h3 className="font-display text-xl text-primary mb-4">Phantasy Phish</h3>
+            <h3 className="font-display text-xl text-primary mb-4">phantasy phish</h3>
             <p className="text-gray-300">
               A fun side project for Phish fans to predict setlists for upcoming shows.
               No serious business here, just vibing and grooving with the band!
@@ -19,7 +19,7 @@ export default function Footer() {
           
           {/* Tech Stack Column */}
           <div className="mr-2 max-w-[400px]">
-            <h3 className="font-display text-xl text-primary mb-4 text-right">Tech Stack</h3>
+            <h3 className="font-display text-xl text-primary mb-4 text-right">tech stack</h3>
             <p className="space-y-2 text-gray-300 text-right">
               Love using awesome technologies like{' '}
               <a href="https://react.dev" target="_blank" rel="noopener noreferrer" className="text-gray-300 hover:text-primary transition-colors"><strong>React</strong></a>,{' '}
