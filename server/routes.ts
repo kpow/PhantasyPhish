@@ -31,7 +31,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get upcoming shows
   app.get("/api/shows/upcoming", async (_req, res) => {
     try {
-      const currentDate = new Date().toISOString().split('T')[0];
+      // Use UTC date to avoid timezone issues
+      const now = new Date();
+      const currentDate = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate()
+      )).toISOString().split('T')[0];
+      
+      console.log("Current UTC date for upcoming shows filter:", currentDate);
+      
       // Add username: "phishnet" parameter to avoid using koolyp data
       const showsData = await fetchPhishData("/shows/artist/phish.json", {
         order_by: "showdate",
@@ -85,7 +94,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 // Get most recent show (singular) - kept for backward compatibility
   app.get("/api/shows/recent", async (_req, res) => {
     try {
-      const currentDate = new Date().toISOString().split('T')[0];
+      // Use UTC date to avoid timezone issues
+      const now = new Date();
+      const currentDate = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate()
+      )).toISOString().split('T')[0];
+      
+      console.log("Current UTC date for recent show filter:", currentDate);
+      
       const showsData = await fetchPhishData("/shows/artist/phish.json", {
         order_by: "showdate",
         username: "phishnet"
@@ -114,7 +132,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get multiple recent shows
   app.get("/api/shows/recent/multiple", async (_req, res) => {
     try {
-      const currentDate = new Date().toISOString().split('T')[0];
+      // Use UTC date to avoid timezone issues
+      const now = new Date();
+      const currentDate = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate()
+      )).toISOString().split('T')[0];
+      
+      console.log("Current UTC date for multiple recent shows filter:", currentDate);
+      
       const showsData = await fetchPhishData("/shows/artist/phish.json", {
         order_by: "showdate",
         username: "phishnet"
