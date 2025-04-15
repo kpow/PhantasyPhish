@@ -24,11 +24,31 @@ export default function ScoreCard({ scoreBreakdown, actualSetlist, showDetails }
   const [isPredictionsOpen, setIsPredictionsOpen] = useState(true);
   const [isSetlistOpen, setIsSetlistOpen] = useState(true);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
-  if (!actualSetlist) {
+  
+  // Handle cases where either scoreBreakdown or actualSetlist is missing
+  if (!scoreBreakdown || !actualSetlist) {
     return (
       <div className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="font-display text-2xl text-white">
+            Score: <span className="text-gray-400">Not Available</span>
+          </h2>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={exitScoringMode}
+            className="text-gray-400 hover:text-white hover:bg-[#2A2A2A]"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
         <div className="text-center py-6 text-gray-400">
-          No setlist data available for scoring
+          {!scoreBreakdown && !actualSetlist
+            ? "Scoring data not available. Either the prediction or the show hasn't been scored yet."
+            : !scoreBreakdown
+              ? "Score breakdown data is missing."
+              : "Actual setlist data is missing."
+          }
         </div>
       </div>
     );

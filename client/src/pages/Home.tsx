@@ -149,14 +149,35 @@ function MainContent() {
         <UpcomingShow />
       </div>
 
-      {isInScoringMode && scoringData.actualSetlist ? (
+      {isInScoringMode ? (
         /* When in scoring mode, ScoreCard takes up the full middle and right columns */
         <div className="lg:col-span-9">
-          <ScoreCard 
-            scoreBreakdown={scoringData.breakdown!}
-            actualSetlist={scoringData.actualSetlist}
-            showDetails={scoringData.showDetails}
-          />
+          {scoringData.isLoading ? (
+            <Card className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full">
+              <CardContent className="flex items-center justify-center h-full">
+                <div className="text-center py-6">
+                  <div className="mb-4 text-primary">Loading setlist data...</div>
+                  <div className="animate-pulse h-6 w-32 bg-primary/20 rounded-md mx-auto mb-3"></div>
+                  <div className="animate-pulse h-4 w-48 bg-gray-700 rounded-md mx-auto"></div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : scoringData.error ? (
+            <Card className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full">
+              <CardContent className="flex items-center justify-center h-full">
+                <div className="text-center py-6 text-red-400">
+                  <div className="mb-2">Error loading score data:</div>
+                  <div className="text-sm">{scoringData.error}</div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : (
+            <ScoreCard 
+              scoreBreakdown={scoringData.breakdown!}
+              actualSetlist={scoringData.actualSetlist}
+              showDetails={scoringData.showDetails}
+            />
+          )}
         </div>
       ) : (
         /* Normal mode - middle column with setlist builder and right column with song list */
