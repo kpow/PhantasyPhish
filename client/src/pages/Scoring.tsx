@@ -145,8 +145,7 @@ export default function Scoring() {
         variant: "default"
       });
       
-      // Display test results in console for now
-      console.log('Test scoring results:', result);
+      // Test scoring complete
       
       setScoringStatus(prev => ({ ...prev, [showId]: 'tested' }));
     } catch (error) {
