@@ -320,9 +320,8 @@ export class DatabaseStorage implements IStorage {
       `SELECT p.user_id as "userId", u.display_name as "userName", p.score
        FROM predictions p
        JOIN users u ON p.user_id = u.id
-       WHERE p.show_id = $1 AND p.score IS NOT NULL
-       ORDER BY p.score DESC`,
-      showId
+       WHERE p.show_id = '${showId}' AND p.score IS NOT NULL
+       ORDER BY p.score DESC`
     );
     
     return result.rows.map(row => ({
@@ -341,7 +340,7 @@ export class DatabaseStorage implements IStorage {
       return [];
     }
     
-    // Get aggregate scores by user across all shows in the tour
+    // Get aggregate scores by user across all shows in the tour - construct SQL directly
     const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number}>(
       `SELECT 
          p.user_id as "userId", 
@@ -350,10 +349,9 @@ export class DatabaseStorage implements IStorage {
          COUNT(p.id) as "showsParticipated"
        FROM predictions p
        JOIN users u ON p.user_id = u.id
-       WHERE p.show_id = ANY($1::text[]) AND p.score IS NOT NULL
+       WHERE p.show_id = ANY(ARRAY[${showIds.map(id => `'${id}'`).join(',')}]::text[]) AND p.score IS NOT NULL
        GROUP BY p.user_id, u.display_name
-       ORDER BY "totalScore" DESC`,
-      showIds
+       ORDER BY "totalScore" DESC`
     );
     
     return result.rows.map(row => ({
