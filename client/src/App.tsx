@@ -15,6 +15,7 @@ import Profile from "@/pages/Profile";
 import MyPredictions from "@/pages/MyPredictions";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Scoring from "@/pages/Scoring";
+import TestTourShows from "@/pages/TestTourShows";
 import { SetlistProvider } from "./contexts/SetlistContextRefactored";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -88,6 +89,9 @@ function Router() {
       </Route>
       <Route path="/prediction/:showId/score">
         <ProtectedRoute component={Home} />
+      </Route>
+      <Route path="/test-tours">
+        <AdminRoute component={TestTourShows} />
       </Route>
       <Route component={NotFound} />
     </Switch>
