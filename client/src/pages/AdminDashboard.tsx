@@ -20,9 +20,11 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, CheckCircle2, Settings } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Settings, BarChart3 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 interface User {
   id: number;
@@ -139,6 +141,18 @@ export default function AdminDashboard() {
                 <div>{user?.display_name || "Not set"}</div>
                 <div className="font-medium">User ID:</div>
                 <div>{user?.id}</div>
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <h3 className="text-lg font-semibold mb-4">Admin Tools</h3>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/admin/scoring">
+                  <Button className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5" />
+                    Scoring Management
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

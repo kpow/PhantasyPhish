@@ -14,6 +14,7 @@ import ResendVerification from "@/pages/ResendVerification";
 import Profile from "@/pages/Profile";
 import MyPredictions from "@/pages/MyPredictions";
 import AdminDashboard from "@/pages/AdminDashboard";
+import Scoring from "@/pages/Scoring";
 import { SetlistProvider } from "./contexts/SetlistContextRefactored";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -77,6 +78,9 @@ function Router() {
       {/* Admin routes */}
       <Route path="/admin">
         <AdminRoute component={AdminDashboard} />
+      </Route>
+      <Route path="/admin/scoring">
+        <AdminRoute component={Scoring} />
       </Route>
       {/* New routes for prediction editing and scoring */}
       <Route path="/prediction/:showId">
