@@ -10,6 +10,7 @@ import path from "path";
 import authRoutes from "./auth/routes";
 import { isAuthenticated, isAdmin } from "./auth/middleware";
 import { db } from "./database";
+import { sql } from "drizzle-orm";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register authentication routes
@@ -1030,6 +1031,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating configuration:", error);
       res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Reset all prediction scores (admin-only)
+  app.post("/api/admin/reset-prediction-scores", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      // Execute SQL to reset all prediction scores to null
+      const result = await db.execute(sql`UPDATE predictions SET score = NULL`);
+      
+      // Also reset the is_scored flag for all shows
+      await db.execute(sql`UPDATE shows SET is_scored = false`);
+      
+      console.log("Reset all prediction scores to null and show scoring status to false");
+      res.json({ 
+        message: "All prediction scores have been reset and shows marked as unscored",
+        success: true
+      });
+    } catch (error) {
+      console.error("Error resetting prediction data:", error);
+      res.status(500).json({ 
+        message: "Error resetting prediction data", 
+        success: false,
+        error: String(error)
+      });
     }
   });
   
