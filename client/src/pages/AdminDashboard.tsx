@@ -38,20 +38,22 @@ export default function AdminDashboard() {
   const [adminChecked, setAdminChecked] = useState(false);
 
   // Query to check admin access
-  const { isLoading: isCheckingAdmin } = useQuery({
+  const adminCheckQuery = useQuery({
     queryKey: ["/api/admin/check"],
-    onSuccess: () => {
+    enabled: !!user && !adminChecked
+  });
+
+  useEffect(() => {
+    if (adminCheckQuery.isSuccess) {
       setAdminChecked(true);
-    },
-    onError: () => {
+    } else if (adminCheckQuery.isError) {
       toast({
         variant: "destructive",
         title: "Access Denied",
         description: "You don't have admin privileges to access this page."
       });
-    },
-    enabled: !!user && !adminChecked
-  });
+    }
+  }, [adminCheckQuery.isSuccess, adminCheckQuery.isError, toast]);
 
   // Query to fetch all users
   const { data: userData, isLoading: isLoadingUsers } = useQuery<{ users: User[] }>({

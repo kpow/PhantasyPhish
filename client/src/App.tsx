@@ -13,6 +13,7 @@ import VerifyEmail from "@/pages/VerifyEmail";
 import ResendVerification from "@/pages/ResendVerification";
 import Profile from "@/pages/Profile";
 import MyPredictions from "@/pages/MyPredictions";
+import AdminDashboard from "@/pages/AdminDashboard";
 import { SetlistProvider } from "./contexts/SetlistContextRefactored";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -71,6 +72,10 @@ function Router() {
       </Route>
       <Route path="/my-predictions">
         <ProtectedRoute component={MyPredictions} />
+      </Route>
+      {/* Admin routes */}
+      <Route path="/admin">
+        <AdminRoute component={AdminDashboard} />
       </Route>
       {/* New routes for prediction editing and scoring */}
       <Route path="/prediction/:showId">
