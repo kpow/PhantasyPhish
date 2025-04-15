@@ -64,6 +64,7 @@ export interface IStorage {
   getShowsByTour(tourId: number): Promise<Show[]>;
   createShow(show: InsertShow): Promise<Show>;
   updateShowScoredStatus(showId: string, isScored: boolean): Promise<Show | undefined>;
+  updateShowTour(showId: string, tourId: number): Promise<Show | undefined>;
   
   // Prediction operations
   getAllPredictions(): Promise<Prediction[]>;

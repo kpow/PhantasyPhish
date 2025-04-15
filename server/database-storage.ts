@@ -228,6 +228,16 @@ export class DatabaseStorage implements IStorage {
     
     return result[0];
   }
+  
+  async updateShowTour(showId: string, tourId: number): Promise<Show | undefined> {
+    const result = await db
+      .update(shows)
+      .set({ tour_id: tourId })
+      .where(eq(shows.show_id, showId))
+      .returning();
+    
+    return result[0];
+  }
 
   // Prediction operations
   async getAllPredictions(): Promise<Prediction[]> {
@@ -306,15 +316,20 @@ export class DatabaseStorage implements IStorage {
   // Leaderboard operations
   async getLeaderboardForShow(showId: string): Promise<{userId: number, userName: string, score: number}[]> {
     // Join predictions with users to get usernames
-    const result = await db.execute(`
-      SELECT p.user_id as "userId", u.display_name as "userName", p.score
-      FROM predictions p
-      JOIN users u ON p.user_id = u.id
-      WHERE p.show_id = $1 AND p.score IS NOT NULL
-      ORDER BY p.score DESC
-    `, [showId]);
+    const result = await db.execute<{userId: number, userName: string, score: number}>(
+      `SELECT p.user_id as "userId", u.display_name as "userName", p.score
+       FROM predictions p
+       JOIN users u ON p.user_id = u.id
+       WHERE p.show_id = $1 AND p.score IS NOT NULL
+       ORDER BY p.score DESC`,
+      [showId]
+    );
     
-    return result.rows;
+    return result.rows.map(row => ({
+      userId: Number(row.userId),
+      userName: String(row.userName || 'Anonymous'),
+      score: Number(row.score)
+    }));
   }
 
   async getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]> {
@@ -327,20 +342,26 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Get aggregate scores by user across all shows in the tour
-    const result = await db.execute(`
-      SELECT 
-        p.user_id as "userId", 
-        u.display_name as "userName", 
-        SUM(p.score) as "totalScore",
-        COUNT(p.id) as "showsParticipated"
-      FROM predictions p
-      JOIN users u ON p.user_id = u.id
-      WHERE p.show_id = ANY($1) AND p.score IS NOT NULL
-      GROUP BY p.user_id, u.display_name
-      ORDER BY "totalScore" DESC
-    `, [showIds]);
+    const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number}>(
+      `SELECT 
+         p.user_id as "userId", 
+         u.display_name as "userName", 
+         SUM(p.score) as "totalScore",
+         COUNT(p.id) as "showsParticipated"
+       FROM predictions p
+       JOIN users u ON p.user_id = u.id
+       WHERE p.show_id = ANY($1) AND p.score IS NOT NULL
+       GROUP BY p.user_id, u.display_name
+       ORDER BY "totalScore" DESC`,
+      [showIds]
+    );
     
-    return result.rows;
+    return result.rows.map(row => ({
+      userId: Number(row.userId),
+      userName: String(row.userName || 'Anonymous'),
+      totalScore: Number(row.totalScore || 0),
+      showsParticipated: Number(row.showsParticipated || 0)
+    }));
   }
 
   async getUserScoreForTour(userId: number, tourId: number): Promise<{totalScore: number, showsParticipated: number}> {
@@ -353,21 +374,22 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Get aggregate score for this user across all tour shows
-    const result = await db.execute(`
-      SELECT 
-        SUM(p.score) as "totalScore",
-        COUNT(p.id) as "showsParticipated"
-      FROM predictions p
-      WHERE p.user_id = $1 AND p.show_id = ANY($2) AND p.score IS NOT NULL
-    `, [userId, showIds]);
+    const result = await db.execute<{totalScore: string, showsParticipated: string}>(
+      `SELECT 
+         COALESCE(SUM(p.score), 0) as "totalScore",
+         COUNT(p.id) as "showsParticipated"
+       FROM predictions p
+       WHERE p.user_id = $1 AND p.show_id = ANY($2) AND p.score IS NOT NULL`,
+      [userId, showIds]
+    );
     
     if (result.rows.length === 0) {
       return { totalScore: 0, showsParticipated: 0 };
     }
     
     return {
-      totalScore: parseInt(result.rows[0].totalScore) || 0,
-      showsParticipated: parseInt(result.rows[0].showsParticipated) || 0
+      totalScore: Number(result.rows[0].totalScore || 0),
+      showsParticipated: Number(result.rows[0].showsParticipated || 0)
     };
   }
 

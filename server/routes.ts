@@ -9,6 +9,7 @@ import fs from "fs";
 import path from "path";
 import authRoutes from "./auth/routes";
 import { isAuthenticated, isAdmin } from "./auth/middleware";
+import { db } from "./database";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register authentication routes
@@ -646,6 +647,79 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
   
+  // Tours management (admin only)
+  app.get("/api/admin/tours", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const tours = await storage.getAllTours();
+      res.json({ tours });
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  app.post("/api/admin/tours", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const tourSchema = z.object({
+        name: z.string().min(1, "Tour name is required"),
+        start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
+        end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format"),
+        description: z.string().optional()
+      });
+      
+      const validatedData = tourSchema.parse(req.body);
+      const newTour = await storage.createTour(validatedData);
+      
+      res.status(201).json({ 
+        message: "Tour created successfully", 
+        tour: newTour 
+      });
+    } catch (error) {
+      console.error("Error creating tour:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Assign shows to a tour (admin only)
+  app.post("/api/admin/tours/:tourId/assign-shows", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { tourId } = req.params;
+      const { showIds } = req.body as { showIds: string[] };
+      
+      if (!Array.isArray(showIds) || showIds.length === 0) {
+        return res.status(400).json({ message: "No show IDs provided" });
+      }
+      
+      const tourIdNum = parseInt(tourId);
+      const tour = await storage.getTour(tourIdNum);
+      
+      if (!tour) {
+        return res.status(404).json({ message: "Tour not found" });
+      }
+      
+      // For each show ID, update the tour_id field
+      const results = [];
+      for (const showId of showIds) {
+        const show = await storage.getShowByShowId(showId);
+        if (show) {
+          // Update the show's tour ID using our storage method
+          const updatedShow = await storage.updateShowTour(showId, tourIdNum);
+          if (updatedShow) {
+            results.push(updatedShow);
+          }
+        }
+      }
+      
+      res.json({ 
+        message: `${results.length} shows assigned to tour "${tour.name}"`,
+        assignedShowIds: results.map(show => show.show_id)
+      });
+    } catch (error) {
+      console.error("Error assigning shows to tour:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
   // Score all predictions for a show (admin only)
   app.post("/api/admin/shows/:showId/score", isAuthenticated, isAdmin, async (req, res) => {
     try {
@@ -812,6 +886,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error updating configuration:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Public leaderboard endpoints
+  // Get tours for leaderboard
+  app.get("/api/tours", async (_req, res) => {
+    try {
+      const tours = await storage.getAllTours();
+      res.json({ tours });
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get shows for a specific tour
+  app.get("/api/tours/:tourId/shows", async (req, res) => {
+    try {
+      const tourId = parseInt(req.params.tourId);
+      const shows = await storage.getShowsByTour(tourId);
+      res.json({ shows });
+    } catch (error) {
+      console.error("Error fetching tour shows:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get leaderboard for a specific show
+  app.get("/api/shows/:showId/leaderboard", async (req, res) => {
+    try {
+      const { showId } = req.params;
+      
+      // Get the show to check if it's been scored
+      const show = await storage.getShowByShowId(showId);
+      
+      if (!show) {
+        return res.status(404).json({ message: "Show not found" });
+      }
+      
+      if (!show.is_scored) {
+        return res.status(400).json({ message: "This show has not been scored yet" });
+      }
+      
+      const leaderboard = await storage.getLeaderboardForShow(showId);
+      res.json({ leaderboard });
+    } catch (error) {
+      console.error("Error fetching show leaderboard:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get leaderboard for a specific tour
+  app.get("/api/tours/:tourId/leaderboard", async (req, res) => {
+    try {
+      const tourId = parseInt(req.params.tourId);
+      
+      // Get the tour to verify it exists
+      const tour = await storage.getTour(tourId);
+      
+      if (!tour) {
+        return res.status(404).json({ message: "Tour not found" });
+      }
+      
+      const leaderboard = await storage.getLeaderboardForTour(tourId);
+      res.json({ 
+        tourName: tour.name,
+        leaderboard 
+      });
+    } catch (error) {
+      console.error("Error fetching tour leaderboard:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get current user's score for a specific tour
+  app.get("/api/users/current/tours/:tourId/score", isAuthenticated, async (req, res) => {
+    try {
+      const tourId = parseInt(req.params.tourId);
+      const userId = (req.user as any).id;
+      
+      // Get the tour to verify it exists
+      const tour = await storage.getTour(tourId);
+      
+      if (!tour) {
+        return res.status(404).json({ message: "Tour not found" });
+      }
+      
+      const userScore = await storage.getUserScoreForTour(userId, tourId);
+      res.json({ 
+        tourName: tour.name,
+        score: userScore
+      });
+    } catch (error) {
+      console.error("Error fetching user tour score:", error);
       res.status(500).json({ message: (error as Error).message });
     }
   });
