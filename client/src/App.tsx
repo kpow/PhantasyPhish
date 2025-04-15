@@ -62,12 +62,23 @@ function AdminRoute({ component: Component }: { component: React.ComponentType }
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      {/* Admin routes - these need to be before more generic routes */}
+      <Route path="/admin/scoring">
+        <AdminRoute component={Scoring} />
+      </Route>
+      <Route path="/admin">
+        <AdminRoute component={AdminDashboard} />
+      </Route>
+      <Route path="/test-tours">
+        <AdminRoute component={TestTourShows} />
+      </Route>
+      
+      {/* User-specific routes */}
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/forgot-password" component={ForgotPassword} />
-      <Route path="/reset-password" component={ResetPassword} />
       <Route path="/reset-password/:token" component={ResetPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route path="/verify-email/:token" component={VerifyEmail} />
       <Route path="/resend-verification" component={ResendVerification} />
       <Route path="/profile">
@@ -76,23 +87,19 @@ function Router() {
       <Route path="/my-predictions">
         <ProtectedRoute component={MyPredictions} />
       </Route>
-      {/* Admin routes */}
-      <Route path="/admin">
-        <AdminRoute component={AdminDashboard} />
-      </Route>
-      <Route path="/admin/scoring">
-        <AdminRoute component={Scoring} />
-      </Route>
-      {/* New routes for prediction editing and scoring */}
-      <Route path="/prediction/:showId">
-        <ProtectedRoute component={Home} />
-      </Route>
+      
+      {/* Prediction routes */}
       <Route path="/prediction/:showId/score">
         <ProtectedRoute component={Home} />
       </Route>
-      <Route path="/test-tours">
-        <AdminRoute component={TestTourShows} />
+      <Route path="/prediction/:showId">
+        <ProtectedRoute component={Home} />
       </Route>
+      
+      {/* Home route - this should be after more specific routes */}
+      <Route path="/" component={Home} />
+      
+      {/* 404 catch-all */}
       <Route component={NotFound} />
     </Switch>
   );
