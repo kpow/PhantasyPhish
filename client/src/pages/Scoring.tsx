@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from "lucide-react";
+import { formatShowDate } from "@/hooks/usePhishData";
 
 interface Tour {
   id: number;
@@ -196,7 +197,7 @@ export default function Scoring() {
                 <CardContent className="p-4">
                   <h3 className="font-semibold text-lg">{tour.name}</h3>
                   <p className="text-sm text-gray-400">
-                    {new Date(tour.start_date).toLocaleDateString()} - {new Date(tour.end_date).toLocaleDateString()}
+                    {formatShowDate(tour.start_date)} - {formatShowDate(tour.end_date)}
                   </p>
                   {tour.description && <p className="text-xs mt-2">{tour.description}</p>}
                 </CardContent>
@@ -238,7 +239,8 @@ export default function Scoring() {
                         <div>
                           <h4 className="font-medium">{show.venue}</h4>
                           <p className="text-sm text-gray-400">
-                            {new Date(show.date).toLocaleDateString()} | {show.city}, {show.state || show.country}
+                            {/* Use the formatShowDate function for consistent date display */}
+                            {formatShowDate(show.date)} | {show.city}, {show.state || show.country}
                           </p>
                         </div>
                         <div className="flex items-center space-x-2">
