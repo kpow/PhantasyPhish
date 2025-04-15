@@ -217,10 +217,17 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
+        // For future shows or missing setlists, provide a clearer message
+        let errorMessage = errorData.message || 'Failed to score prediction';
+        
+        if (errorData.message === "Setlist not found for this show") {
+          errorMessage = "This show hasn't happened yet or the setlist isn't available. You can use the Test Score button on the editor page to see how your prediction might score.";
+        }
+        
         setScoringData(prev => ({
           ...prev,
           isLoading: false,
-          error: errorData.message || 'Failed to score prediction'
+          error: errorMessage
         }));
         return false;
       }
