@@ -8,6 +8,7 @@ interface User {
   email: string;
   display_name: string | null;
   avatar_path: string | null;
+  is_admin: boolean;
   created_at: string;
   updated_at: string;
 }

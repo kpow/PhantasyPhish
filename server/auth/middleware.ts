@@ -45,6 +45,15 @@ export function isAuthenticated(req: Request, res: Response, next: NextFunction)
   res.status(401).json({ message: "Unauthorized" });
 }
 
+// Middleware to check if user is an admin
+export function isAdmin(req: Request, res: Response, next: NextFunction) {
+  if (req.isAuthenticated() && req.user && (req.user as any).is_admin) {
+    return next();
+  }
+  
+  res.status(403).json({ message: "Forbidden: Admin access required" });
+}
+
 // Middleware to handle authentication errors
 export function handleAuthErrors(err: Error, req: Request, res: Response, next: NextFunction) {
   console.error("Authentication error:", err);
