@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// This includes React hooks directly
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,12 +43,38 @@ export default function MyPredictions() {
   const [selectedPrediction, setSelectedPrediction] = useState<PredictionItem | null>(null);
   const [showDetails, setShowDetails] = useState<ShowDetails | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showScoringStatus, setShowScoringStatus] = useState<Record<string, boolean>>({});
 
   // Fetch user predictions
   const { data: predictions, isLoading, error } = useQuery<{ predictions: PredictionItem[] }>({
     queryKey: ['/api/users/' + user?.id + '/predictions'],
     enabled: !!user?.id
   });
+  
+  // Fetch show scoring status when predictions are loaded
+  useEffect(() => {
+    const fetchShowScoringStatus = async () => {
+      if (!predictions?.predictions || predictions.predictions.length === 0) return;
+      
+      const scoringStatus: Record<string, boolean> = {};
+      
+      for (const prediction of predictions.predictions) {
+        try {
+          const response = await fetch(`/api/shows/${prediction.show_id}/status`);
+          if (response.ok) {
+            const data = await response.json();
+            scoringStatus[prediction.show_id] = data.is_scored;
+          }
+        } catch (error) {
+          console.error(`Error fetching scoring status for show ${prediction.show_id}:`, error);
+        }
+      }
+      
+      setShowScoringStatus(scoringStatus);
+    };
+    
+    fetchShowScoringStatus();
+  }, [predictions]);
 
   // Fetch show details when a prediction is selected
   const fetchShowDetails = async (showId: string) => {
@@ -156,7 +183,7 @@ export default function MyPredictions() {
                   View Prediction
                 </Button>
                 
-                <div className="grid grid-cols-2 gap-2 mt-1">
+                <div className={`grid ${showScoringStatus[prediction.show_id] ? 'grid-cols-2' : 'grid-cols-1'} gap-2 mt-1`}>
                   <Link href={`/prediction/${prediction.show_id}`}>
                     <Button 
                       className="w-full bg-blue-700 hover:bg-blue-800"
@@ -166,14 +193,16 @@ export default function MyPredictions() {
                     </Button>
                   </Link>
                   
-                  <Link href={`/prediction/${prediction.show_id}/score`}>
-                    <Button 
-                      className="w-full bg-green-700 hover:bg-green-800"
-                      variant="secondary"
-                    >
-                      Score
-                    </Button>
-                  </Link>
+                  {showScoringStatus[prediction.show_id] && (
+                    <Link href={`/prediction/${prediction.show_id}/score`}>
+                      <Button 
+                        className="w-full bg-green-700 hover:bg-green-800"
+                        variant="secondary"
+                      >
+                        Score
+                      </Button>
+                    </Link>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -299,7 +328,7 @@ export default function MyPredictions() {
           )}
 
           <DialogFooter className="flex flex-col sm:flex-row gap-2">
-            <div className="grid grid-cols-2 gap-2 w-full sm:w-auto">
+            <div className={`grid ${selectedPrediction && showScoringStatus[selectedPrediction.show_id] ? 'grid-cols-2' : 'grid-cols-1'} gap-2 w-full sm:w-auto`}>
               {selectedPrediction && (
                 <>
                   <Link href={`/prediction/${selectedPrediction.show_id}`}>
@@ -311,14 +340,16 @@ export default function MyPredictions() {
                     </Button>
                   </Link>
                   
-                  <Link href={`/prediction/${selectedPrediction.show_id}/score`}>
-                    <Button 
-                      className="w-full bg-green-700 hover:bg-green-800"
-                      variant="secondary"
-                    >
-                      Score
-                    </Button>
-                  </Link>
+                  {showScoringStatus[selectedPrediction.show_id] && (
+                    <Link href={`/prediction/${selectedPrediction.show_id}/score`}>
+                      <Button 
+                        className="w-full bg-green-700 hover:bg-green-800"
+                        variant="secondary"
+                      >
+                        Score
+                      </Button>
+                    </Link>
+                  )}
                 </>
               )}
             </div>
