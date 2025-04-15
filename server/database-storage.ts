@@ -353,7 +353,7 @@ export class DatabaseStorage implements IStorage {
        WHERE p.show_id = ANY($1::text[]) AND p.score IS NOT NULL
        GROUP BY p.user_id, u.display_name
        ORDER BY "totalScore" DESC`,
-      [showIds]
+      showIds
     );
     
     return result.rows.map(row => ({
@@ -374,13 +374,13 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Get aggregate score for this user across all tour shows
+    // Need to use SQL directly with pg.query for multiple parameters
     const result = await db.execute<{totalScore: string, showsParticipated: string}>(
       `SELECT 
          COALESCE(SUM(p.score), 0) as "totalScore",
          COUNT(p.id) as "showsParticipated"
        FROM predictions p
-       WHERE p.user_id = $1 AND p.show_id = ANY($2::text[]) AND p.score IS NOT NULL`,
-      [userId, showIds]
+       WHERE p.user_id = ${userId} AND p.show_id = ANY(ARRAY[${showIds.map(id => `'${id}'`).join(',')}]::text[]) AND p.score IS NOT NULL`
     );
     
     if (result.rows.length === 0) {
