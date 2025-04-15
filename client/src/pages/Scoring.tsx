@@ -110,6 +110,55 @@ export default function Scoring() {
     }
   };
   
+  // Handle test scoring for a show (doesn't affect database)
+  const testScoreShow = async (showId: string) => {
+    if (!isAuthenticated || !user?.is_admin) {
+      toast({
+        title: "Unauthorized",
+        description: "You don't have permission to perform this action",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setScoringStatus(prev => ({ ...prev, [showId]: 'testing' }));
+    
+    try {
+      const response = await fetch(`/api/admin/shows/${showId}/test-score`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to test score show');
+      }
+      
+      const result = await response.json();
+      
+      toast({
+        title: "Test Scoring Complete",
+        description: `Test scored ${result.stats.scored} predictions with ${result.stats.errors} errors`,
+        variant: "default"
+      });
+      
+      // Display test results in console for now
+      console.log('Test scoring results:', result);
+      
+      setScoringStatus(prev => ({ ...prev, [showId]: 'tested' }));
+    } catch (error) {
+      console.error('Error test scoring show:', error);
+      toast({
+        title: "Test Scoring Failed",
+        description: (error as Error).message,
+        variant: "destructive"
+      });
+      setScoringStatus(prev => ({ ...prev, [showId]: 'error' }));
+    }
+  };
+  
   if (!isAuthenticated || !user?.is_admin) {
     return (
       <div className="container mx-auto p-4 max-w-5xl">
@@ -192,25 +241,41 @@ export default function Scoring() {
                             {new Date(show.date).toLocaleDateString()} | {show.city}, {show.state || show.country}
                           </p>
                         </div>
-                        <div className="flex items-center">
+                        <div className="flex items-center space-x-2">
                           {show.is_scored ? (
                             <span className="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs font-medium">
                               Scored
                             </span>
                           ) : (
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => scoreShow(show.show_id)}
-                              disabled={scoringStatus[show.show_id] === 'scoring'}
-                            >
-                              {scoringStatus[show.show_id] === 'scoring' ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Scoring...
-                                </>
-                              ) : 'Score Show'}
-                            </Button>
+                            <>
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => testScoreShow(show.show_id)}
+                                disabled={scoringStatus[show.show_id] === 'testing' || scoringStatus[show.show_id] === 'scoring'}
+                              >
+                                {scoringStatus[show.show_id] === 'testing' ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Testing...
+                                  </>
+                                ) : 'Test Score'}
+                              </Button>
+                              
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => scoreShow(show.show_id)}
+                                disabled={scoringStatus[show.show_id] === 'scoring' || scoringStatus[show.show_id] === 'testing'}
+                              >
+                                {scoringStatus[show.show_id] === 'scoring' ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Scoring...
+                                  </>
+                                ) : 'Score Show'}
+                              </Button>
+                            </>
                           )}
                         </div>
                       </div>

@@ -720,6 +720,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Test score all predictions for a show (admin only)
+  // This endpoint doesn't save anything to the database, it just returns the test results
+  app.post("/api/admin/shows/:showId/test-score", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { showId } = req.params;
+      
+      // Get all predictions for this show
+      const predictions = await storage.getShowPredictions(showId);
+      
+      if (predictions.length === 0) {
+        return res.status(404).json({ message: "No predictions found for this show" });
+      }
+      
+      // Create a test setlist with common Phish songs
+      const testSetlist = {
+        set1: [
+          { name: "Tweezer", position: 0 },
+          { name: "Backwards Down the Number Line", position: 1 },
+          { name: "Stash", position: 2 },
+          { name: "Maze", position: 3 },
+          { name: "Bathtub Gin", position: 4 },
+          { name: "Character Zero", position: 5 }
+        ],
+        set2: [
+          { name: "Down with Disease", position: 0 },
+          { name: "Carini", position: 1 },
+          { name: "Light", position: 2 },
+          { name: "Ghost", position: 3 },
+          { name: "Harry Hood", position: 4 },
+          { name: "Cavern", position: 5 }
+        ],
+        encore: [
+          { name: "A Wave of Hope", position: 0 },
+          { name: "First Tube", position: 1 }
+        ]
+      };
+      
+      let processed = 0;
+      let scored = 0;
+      let errors = 0;
+      const results = [];
+      
+      // Score each prediction against the test setlist
+      for (const prediction of predictions) {
+        try {
+          processed++;
+          
+          // Parse the prediction setlist
+          let predictionSetlistData;
+          try {
+            if (typeof prediction.setlist === 'string') {
+              predictionSetlistData = JSON.parse(prediction.setlist);
+            } else {
+              predictionSetlistData = prediction.setlist;
+            }
+          } catch (e) {
+            console.error(`Error parsing prediction setlist for prediction ID ${prediction.id}:`, e);
+            errors++;
+            continue;
+          }
+          
+          // Format the prediction data to match what scorePrediction expects
+          const predictionSetlist = {
+            set1: Array.isArray(predictionSetlistData.set1) 
+              ? predictionSetlistData.set1.map((item: any, index: number) => ({
+                  position: index,
+                  song: item ? { id: item.id, name: item.name } : null
+                }))
+              : [],
+            set2: Array.isArray(predictionSetlistData.set2) 
+              ? predictionSetlistData.set2.map((item: any, index: number) => ({
+                  position: index,
+                  song: item ? { id: item.id, name: item.name } : null
+                }))
+              : [],
+            encore: Array.isArray(predictionSetlistData.encore) 
+              ? predictionSetlistData.encore.map((item: any, index: number) => ({
+                  position: index,
+                  song: item ? { id: item.id, name: item.name } : null
+                }))
+              : []
+          };
+          
+          const scoreBreakdown = scorePrediction(predictionSetlist, testSetlist);
+          
+          // Add to results but don't update the database
+          results.push({
+            predictionId: prediction.id,
+            userId: prediction.user_id,
+            score: scoreBreakdown.totalScore,
+            breakdown: scoreBreakdown
+          });
+          
+          scored++;
+        } catch (e) {
+          console.error(`Error test scoring prediction ID ${prediction.id}:`, e);
+          errors++;
+        }
+      }
+      
+      res.json({
+        message: `Test scored ${scored} out of ${processed} predictions with ${errors} errors`,
+        stats: {
+          processed,
+          scored,
+          errors
+        },
+        results,
+        testSetlist
+      });
+    } catch (error) {
+      console.error("Error test scoring predictions for show:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
   // Score all predictions for a show (admin only)
   app.post("/api/admin/shows/:showId/score", isAuthenticated, isAdmin, async (req, res) => {
     try {

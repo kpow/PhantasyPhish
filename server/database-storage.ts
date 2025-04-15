@@ -322,7 +322,7 @@ export class DatabaseStorage implements IStorage {
        JOIN users u ON p.user_id = u.id
        WHERE p.show_id = $1 AND p.score IS NOT NULL
        ORDER BY p.score DESC`,
-      [showId]
+      showId
     );
     
     return result.rows.map(row => ({
