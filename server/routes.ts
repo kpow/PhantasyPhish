@@ -645,6 +645,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
   });
+  
+  // Score all predictions for a show (admin only)
+  app.post("/api/admin/shows/:showId/score", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      const { showId } = req.params;
+      
+      // Get all predictions for this show
+      const predictions = await storage.getShowPredictions(showId);
+      
+      if (predictions.length === 0) {
+        return res.status(404).json({ message: "No predictions found for this show" });
+      }
+      
+      // Fetch the actual setlist from Phish API
+      const actualSetlistData = await fetchPhishData(`/setlists/showid/${showId}.json`, {
+        username: "phishnet"
+      });
+      
+      if (!Array.isArray(actualSetlistData) || actualSetlistData.length === 0) {
+        return res.status(404).json({ message: "Setlist not found for this show" });
+      }
+      
+      // Process the raw setlist data
+      const processedSetlist = processRawSetlist(actualSetlistData);
+      
+      let processed = 0;
+      let updated = 0;
+      let errors = 0;
+      
+      // Score each prediction
+      for (const prediction of predictions) {
+        try {
+          processed++;
+          
+          // Parse the prediction setlist
+          let predictionSetlistData;
+          try {
+            if (typeof prediction.setlist === 'string') {
+              predictionSetlistData = JSON.parse(prediction.setlist);
+            } else {
+              predictionSetlistData = prediction.setlist;
+            }
+          } catch (e) {
+            console.error(`Error parsing prediction setlist for prediction ID ${prediction.id}:`, e);
+            errors++;
+            continue;
+          }
+          
+          // Format the prediction data to match what scorePrediction expects
+          const predictionSetlist = {
+            set1: Array.isArray(predictionSetlistData.set1) 
+              ? predictionSetlistData.set1.map((item: any, index: number) => ({
+                  position: index,
+                  song: item ? { id: item.id, name: item.name } : null
+                }))
+              : [],
+            set2: Array.isArray(predictionSetlistData.set2) 
+              ? predictionSetlistData.set2.map((item: any, index: number) => ({
+                  position: index,
+                  song: item ? { id: item.id, name: item.name } : null
+                }))
+              : [],
+            encore: Array.isArray(predictionSetlistData.encore) 
+              ? predictionSetlistData.encore.map((item: any, index: number) => ({
+                  position: index,
+                  song: item ? { id: item.id, name: item.name } : null
+                }))
+              : []
+          };
+          
+          // Score the prediction
+          const scoreBreakdown = scorePrediction(predictionSetlist, processedSetlist);
+          
+          // Update the prediction score
+          await storage.updatePredictionScore(prediction.id, scoreBreakdown.totalScore);
+          updated++;
+        } catch (error) {
+          console.error(`Error scoring prediction ID ${prediction.id}:`, error);
+          errors++;
+        }
+      }
+      
+      // Mark the show as scored
+      await storage.updateShowScoredStatus(showId, true);
+      
+      res.json({
+        message: "Show scoring complete",
+        stats: {
+          processed,
+          updated,
+          errors
+        }
+      });
+    } catch (error) {
+      console.error("Error scoring show:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
 
   // Get all users (admin-only)
   app.get("/api/admin/users", isAuthenticated, isAdmin, async (_req, res) => {

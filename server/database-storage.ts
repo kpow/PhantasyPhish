@@ -5,7 +5,8 @@ import { IStorage } from './storage';
 import { 
   users, 
   songs, 
-  shows, 
+  shows,
+  tours, 
   predictions, 
   password_reset_tokens,
   email_verification_tokens,
@@ -13,7 +14,9 @@ import {
   type InsertUser,
   type UpdateUser,
   type Song, 
-  type InsertSong, 
+  type InsertSong,
+  type Tour,
+  type InsertTour, 
   type Show, 
   type InsertShow, 
   type Prediction, 
@@ -172,6 +175,26 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
+  // Tour operations
+  async getAllTours(): Promise<Tour[]> {
+    return db.select().from(tours);
+  }
+
+  async getTour(id: number): Promise<Tour | undefined> {
+    const result = await db.select().from(tours).where(eq(tours.id, id));
+    return result[0];
+  }
+
+  async getTourByName(name: string): Promise<Tour | undefined> {
+    const result = await db.select().from(tours).where(eq(tours.name, name));
+    return result[0];
+  }
+
+  async createTour(tour: InsertTour): Promise<Tour> {
+    const result = await db.insert(tours).values(tour).returning();
+    return result[0];
+  }
+
   // Show operations
   async getAllShows(): Promise<Show[]> {
     return db.select().from(shows);
@@ -187,8 +210,22 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
+  async getShowsByTour(tourId: number): Promise<Show[]> {
+    return db.select().from(shows).where(eq(shows.tour_id, tourId));
+  }
+
   async createShow(show: InsertShow): Promise<Show> {
     const result = await db.insert(shows).values(show).returning();
+    return result[0];
+  }
+  
+  async updateShowScoredStatus(showId: string, isScored: boolean): Promise<Show | undefined> {
+    const result = await db
+      .update(shows)
+      .set({ is_scored: isScored })
+      .where(eq(shows.show_id, showId))
+      .returning();
+    
     return result[0];
   }
 
@@ -264,5 +301,79 @@ export class DatabaseStorage implements IStorage {
       console.error("Error in deletePredictionByUserAndShow:", error);
       throw error;
     }
+  }
+
+  // Leaderboard operations
+  async getLeaderboardForShow(showId: string): Promise<{userId: number, userName: string, score: number}[]> {
+    // Join predictions with users to get usernames
+    const result = await db.execute(`
+      SELECT p.user_id as "userId", u.display_name as "userName", p.score
+      FROM predictions p
+      JOIN users u ON p.user_id = u.id
+      WHERE p.show_id = $1 AND p.score IS NOT NULL
+      ORDER BY p.score DESC
+    `, [showId]);
+    
+    return result.rows;
+  }
+
+  async getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]> {
+    // Get all shows in this tour
+    const tourShows = await this.getShowsByTour(tourId);
+    const showIds = tourShows.map(show => show.show_id);
+    
+    if (showIds.length === 0) {
+      return [];
+    }
+    
+    // Get aggregate scores by user across all shows in the tour
+    const result = await db.execute(`
+      SELECT 
+        p.user_id as "userId", 
+        u.display_name as "userName", 
+        SUM(p.score) as "totalScore",
+        COUNT(p.id) as "showsParticipated"
+      FROM predictions p
+      JOIN users u ON p.user_id = u.id
+      WHERE p.show_id = ANY($1) AND p.score IS NOT NULL
+      GROUP BY p.user_id, u.display_name
+      ORDER BY "totalScore" DESC
+    `, [showIds]);
+    
+    return result.rows;
+  }
+
+  async getUserScoreForTour(userId: number, tourId: number): Promise<{totalScore: number, showsParticipated: number}> {
+    // Get all shows in this tour
+    const tourShows = await this.getShowsByTour(tourId);
+    const showIds = tourShows.map(show => show.show_id);
+    
+    if (showIds.length === 0) {
+      return { totalScore: 0, showsParticipated: 0 };
+    }
+    
+    // Get aggregate score for this user across all tour shows
+    const result = await db.execute(`
+      SELECT 
+        SUM(p.score) as "totalScore",
+        COUNT(p.id) as "showsParticipated"
+      FROM predictions p
+      WHERE p.user_id = $1 AND p.show_id = ANY($2) AND p.score IS NOT NULL
+    `, [userId, showIds]);
+    
+    if (result.rows.length === 0) {
+      return { totalScore: 0, showsParticipated: 0 };
+    }
+    
+    return {
+      totalScore: parseInt(result.rows[0].totalScore) || 0,
+      showsParticipated: parseInt(result.rows[0].showsParticipated) || 0
+    };
+  }
+
+  async scoreAllPredictionsForShow(showId: string): Promise<{processed: number, updated: number, errors: number}> {
+    // This will be implemented in the routes using the scorePrediction utility
+    // since it requires fetching the actual setlist from the API
+    return { processed: 0, updated: 0, errors: 0 };
   }
 }
