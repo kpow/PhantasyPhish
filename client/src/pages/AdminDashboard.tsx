@@ -72,7 +72,7 @@ export default function AdminDashboard() {
     document.title = "Admin Dashboard - Phish Predictions";
   }, []);
 
-  if (isCheckingAdmin) {
+  if (adminCheckQuery.isLoading) {
     return (
       <div className="container mx-auto py-8">
         <Card>
