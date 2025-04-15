@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
+import { useConfig } from "../contexts/ConfigContext";
 import {
   Card,
   CardContent,
@@ -19,7 +20,9 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Settings } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 interface User {
   id: number;
@@ -35,6 +38,7 @@ interface User {
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { config, isLoading: isLoadingConfig, updateConfig } = useConfig();
   const [adminChecked, setAdminChecked] = useState(false);
 
   // Query to check admin access
@@ -65,6 +69,24 @@ export default function AdminDashboard() {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString();
+  };
+
+  // Handle test mode toggle change
+  const handleTestModeToggle = async (enabled: boolean) => {
+    try {
+      await updateConfig({ testModeEnabled: enabled });
+      toast({
+        title: "Settings Updated",
+        description: `Test mode has been ${enabled ? 'enabled' : 'disabled'}.`,
+        duration: 3000
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description: "Failed to update application settings."
+      });
+    }
   };
 
   useEffect(() => {
@@ -120,6 +142,41 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
+        </CardContent>
+      </Card>
+      
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Settings className="mr-2 h-5 w-5" />
+            Application Settings
+          </CardTitle>
+          <CardDescription>
+            Configure global application settings
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoadingConfig ? (
+            <div className="flex justify-center py-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="test-mode">Test Mode</Label>
+                  <p className="text-sm text-muted-foreground">
+                    When disabled, users will not be able to use the "Test Score" button on setlist builder.
+                  </p>
+                </div>
+                <Switch
+                  id="test-mode"
+                  checked={config.testModeEnabled}
+                  onCheckedChange={handleTestModeToggle}
+                />
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

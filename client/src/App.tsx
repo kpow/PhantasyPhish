@@ -17,6 +17,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import { SetlistProvider } from "./contexts/SetlistContextRefactored";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { ConfigProvider } from "./contexts/ConfigContext";
 import Layout from "@/components/layout/Layout";
 
 // Protected route component
@@ -93,14 +94,16 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <SetlistProvider>
-          <ScrollProvider>
-            <Layout>
-              <Router />
-            </Layout>
-            <Toaster />
-          </ScrollProvider>
-        </SetlistProvider>
+        <ConfigProvider>
+          <SetlistProvider>
+            <ScrollProvider>
+              <Layout>
+                <Router />
+              </Layout>
+              <Toaster />
+            </ScrollProvider>
+          </SetlistProvider>
+        </ConfigProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

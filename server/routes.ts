@@ -659,6 +659,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Configuration endpoint to get app settings
+  app.get("/api/admin/config", async (req, res) => {
+    try {
+      // Define the config schema
+      const configSchema = z.object({
+        testModeEnabled: z.boolean().default(true)
+      });
+      
+      // Check if config file exists, if not create default
+      const configPath = path.join(__dirname, '../config.json');
+      
+      if (!fs.existsSync(configPath)) {
+        // Create default config
+        const defaultConfig = {
+          testModeEnabled: true
+        };
+        fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
+      }
+      
+      // Read the config file
+      const configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      
+      // Validate with zod
+      const config = configSchema.parse(configData);
+      
+      res.json({ config });
+    } catch (error) {
+      console.error("Error fetching configuration:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+
+  // Update app configuration (admin-only)
+  app.post("/api/admin/config", isAuthenticated, isAdmin, async (req, res) => {
+    try {
+      // Define the config schema
+      const configSchema = z.object({
+        config: z.object({
+          testModeEnabled: z.boolean()
+        })
+      });
+      
+      // Validate the request body
+      const { config } = configSchema.parse(req.body);
+      
+      // Write to config file
+      const configPath = path.join(__dirname, '../config.json');
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+      
+      res.json({ 
+        message: "Configuration updated successfully",
+        config 
+      });
+    } catch (error) {
+      console.error("Error updating configuration:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
