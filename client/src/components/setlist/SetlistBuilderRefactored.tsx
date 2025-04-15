@@ -6,6 +6,7 @@ import SetlistSection from './SetlistSection';
 import ScoreCard from './ScoreCard';
 import { useSetlist } from '@/contexts/SetlistContextRefactored';
 import { useAuth } from '@/contexts/AuthContext';
+import { useConfig } from '@/contexts/ConfigContext';
 import { formatShowDate } from '@/hooks/usePhishData';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useRoute } from 'wouter';
@@ -28,6 +29,7 @@ export default function SetlistBuilder() {
     setScoringData
   } = useSetlist();
   const { user } = useAuth();
+  const { config } = useConfig();
   const { toast } = useToast();
   const [location, setLocation] = useLocation();
   const [match, params] = useRoute('/prediction/:showId');
@@ -401,14 +403,16 @@ export default function SetlistBuilder() {
                       : "select a show first"
                   }
                 </Button>
-                <Button 
-                  variant="secondary"
-                  className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors font-display"
-                  onClick={handleTestScoring}
-                  disabled={!selectedShow || isSubmitting || isTesting}
-                >
-                  {isTesting ? "Testing..." : "Test Score"}
-                </Button>
+                {config.testModeEnabled && (
+                  <Button 
+                    variant="secondary"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors font-display"
+                    onClick={handleTestScoring}
+                    disabled={!selectedShow || isSubmitting || isTesting}
+                  >
+                    {isTesting ? "Testing..." : "Test Score"}
+                  </Button>
+                )}
               </div>
               <Button 
                 variant="outline"
