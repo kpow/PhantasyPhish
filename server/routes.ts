@@ -8,6 +8,7 @@ import { z } from "zod";
 import fs from "fs";
 import path from "path";
 import authRoutes from "./auth/routes";
+import { isAuthenticated, isAdmin } from "./auth/middleware";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Register authentication routes
@@ -628,6 +629,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error in test scoring:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+
+  // Admin routes
+  // Admin check route - to verify if a user has admin privileges
+  app.get("/api/admin/check", isAuthenticated, isAdmin, (req, res) => {
+    res.json({ 
+      message: "You have admin access",
+      user: {
+        id: (req.user as any).id,
+        email: (req.user as any).email,
+        display_name: (req.user as any).display_name
+      }
+    });
+  });
+
+  // Get all users (admin-only)
+  app.get("/api/admin/users", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      // Get all users - we'd need to add this method to storage
+      // For now, mock with a placeholder response
+      const users = await storage.getAllUsers();
+      res.json({ users });
+    } catch (error) {
+      console.error("Error fetching users:", error);
       res.status(500).json({ message: (error as Error).message });
     }
   });
