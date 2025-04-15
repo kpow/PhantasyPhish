@@ -43,7 +43,7 @@ interface SetlistContextType {
   resetSetlistAndShow: () => void;
   loadPredictionForShow: (showId: string) => Promise<boolean>;
   deletePredictionForShow: (showId: string) => Promise<boolean>;
-  scorePrediction: (predictionId: number) => Promise<boolean>;
+  scorePrediction: (idParam: number | string) => Promise<boolean>;
   exitScoringMode: () => void;
   enterScoringMode: () => void;
   navigateToShow: (showId: string, scoring?: boolean) => void;
@@ -170,11 +170,44 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     }
   }, [location, isScoringRoute]);
 
-  // Score a prediction
-  const scorePrediction = async (predictionId: number): Promise<boolean> => {
+  // Score a prediction - can be called with either a prediction ID or a show ID
+  const scorePrediction = async (idParam: number | string): Promise<boolean> => {
     try {
       setScoringData(prev => ({ ...prev, isLoading: true, error: null }));
       
+      // First determine if we have a prediction ID or a show ID
+      let predictionId: number;
+      
+      // If it's a string, assume it's a show ID and get the prediction ID
+      if (typeof idParam === 'string') {
+        // Get the prediction for this show
+        const predictionResponse = await fetch(`/api/users/current/predictions/${idParam}`);
+        if (!predictionResponse.ok) {
+          setScoringData(prev => ({
+            ...prev,
+            isLoading: false,
+            error: 'Failed to load prediction for this show'
+          }));
+          return false;
+        }
+        
+        const predictionData = await predictionResponse.json();
+        if (!predictionData.prediction) {
+          setScoringData(prev => ({
+            ...prev,
+            isLoading: false,
+            error: 'No prediction found for this show'
+          }));
+          return false;
+        }
+        
+        predictionId = predictionData.prediction.id;
+      } else {
+        // It's already a prediction ID
+        predictionId = idParam;
+      }
+      
+      // Now score the prediction with the proper ID
       const response = await fetch(`/api/predictions/${predictionId}/score`, {
         method: 'POST',
         headers: {
