@@ -28,7 +28,6 @@ export default function TestTourShows() {
         throw new Error(`Error fetching shows: ${response.status}`);
       }
       const data = await response.json();
-      console.log('API Response:', data);
       setShows(data.shows || []);
     } catch (err) {
       console.error('Error fetching tour shows:', err);
