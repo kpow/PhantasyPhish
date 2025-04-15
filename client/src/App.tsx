@@ -34,6 +34,27 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   return isAuthenticated ? <Component /> : null;
 }
 
+// Admin-only route component
+function AdminRoute({ component: Component }: { component: React.ComponentType }) {
+  const [, setLocation] = useLocation();
+  const { user, isAuthenticated, isLoading } = useAuth();
+
+  // Check authentication and admin status
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        setLocation("/login");
+      } else if (!user?.is_admin) {
+        // Redirect to home if authenticated but not admin
+        setLocation("/");
+      }
+    }
+  }, [isAuthenticated, isLoading, user, setLocation]);
+
+  // Show the component only if authenticated and is admin
+  return isAuthenticated && user?.is_admin ? <Component /> : null;
+}
+
 function Router() {
   return (
     <Switch>
