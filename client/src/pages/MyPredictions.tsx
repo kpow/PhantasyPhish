@@ -13,7 +13,10 @@ import {
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PhishShow } from '@/types';
+import UserScorecard from '@/components/scorecard/UserScorecard';
+import TourShowsSection from '@/components/shows/TourShowsSection';
 
 interface PredictionItem {
   id: number;
@@ -84,10 +87,11 @@ export default function MyPredictions() {
     setIsModalOpen(true);
   };
 
-  if (isLoading) {
-    return (
-      <div className="container mx-auto p-4 max-w-5xl">
-        <h1 className="text-2xl font-display text-primary mb-6">my predictions</h1>
+  // Even if we're loading user predictions, we can still show the tabs layout
+  // with functional Tour Shows and Scorecard tabs
+  const renderPredictionsContent = () => {
+    if (isLoading) {
+      return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {[...Array(6)].map((_, i) => (
             <Card key={i} className="bg-[#1E1E1E] border-0 shadow-lg">
@@ -104,59 +108,32 @@ export default function MyPredictions() {
             </Card>
           ))}
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  if (error) {
-    return (
-      <div className="container mx-auto p-4 max-w-5xl">
-        <h1 className="text-2xl font-display text-primary mb-6">my predictions</h1>
+    if (error) {
+      return (
         <Card className="bg-[#1E1E1E] border-0 shadow-lg">
           <CardContent className="p-6">
             <p className="text-red-400">Error loading predictions. Please try again later.</p>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
+      );
+    }
 
-  if (!predictions || predictions.predictions.length === 0) {
-    return (
-      <div className="container mx-auto p-4 max-w-5xl">
-        <h1 className="text-2xl font-display text-primary mb-6">my predictions</h1>
+    if (!predictions || predictions.predictions.length === 0) {
+      return (
         <Card className="bg-[#1E1E1E] border-0 shadow-lg">
           <CardContent className="p-6">
             <p className="text-gray-300">You haven't made any predictions yet.</p>
             <p className="mt-2 text-gray-400">Visit the upcoming shows section to predict a setlist.</p>
           </CardContent>
         </Card>
-      </div>
-    );
-  }
+      );
+    }
 
-  // Format date for display
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    });
-  };
-
-  // Count songs in a prediction
-  const countSongs = (prediction: PredictionItem) => {
-    const set1Count = prediction.setlist.set1?.filter(song => song !== null).length || 0;
-    const set2Count = prediction.setlist.set2?.filter(song => song !== null).length || 0;
-    const encoreCount = prediction.setlist.encore?.filter(song => song !== null).length || 0;
-    return set1Count + set2Count + encoreCount;
-  };
-
-  return (
-    <div className="container mx-auto p-4 max-w-5xl">
-      <h1 className="text-2xl font-display text-primary mb-6">my predictions</h1>
-      
+    // Return the actual predictions grid if we have data
+    return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {predictions.predictions.map((prediction) => (
           <Card key={prediction.id} className="bg-[#1E1E1E] border-0 shadow-lg hover:bg-[#252525] transition-colors">
@@ -203,6 +180,54 @@ export default function MyPredictions() {
           </Card>
         ))}
       </div>
+    );
+  };
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
+  // Count songs in a prediction
+  const countSongs = (prediction: PredictionItem) => {
+    const set1Count = prediction.setlist.set1?.filter(song => song !== null).length || 0;
+    const set2Count = prediction.setlist.set2?.filter(song => song !== null).length || 0;
+    const encoreCount = prediction.setlist.encore?.filter(song => song !== null).length || 0;
+    return set1Count + set2Count + encoreCount;
+  };
+
+  return (
+    <div className="container mx-auto p-4 max-w-5xl">
+      <h1 className="text-2xl font-display text-primary mb-6">my predictions</h1>
+      
+      {/* Add Tabs for different sections */}
+      <Tabs defaultValue="scorecard" className="mb-6">
+        <TabsList className="mb-4">
+          <TabsTrigger value="scorecard">My Scorecard</TabsTrigger>
+          <TabsTrigger value="predictions">My Predictions</TabsTrigger>
+          <TabsTrigger value="tours">Tour Shows</TabsTrigger>
+        </TabsList>
+        
+        {/* Scorecard Tab */}
+        <TabsContent value="scorecard" className="mt-0">
+          <UserScorecard />
+        </TabsContent>
+        
+        {/* Predictions Tab */}
+        <TabsContent value="predictions" className="mt-0">
+          {renderPredictionsContent()}
+        </TabsContent>
+        
+        {/* Tour Shows Tab */}
+        <TabsContent value="tours" className="mt-0">
+          <TourShowsSection />
+        </TabsContent>
+      </Tabs>
 
       {/* Prediction Detail Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
