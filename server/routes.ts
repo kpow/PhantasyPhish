@@ -49,7 +49,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       const upcomingShows = showsData.filter((show: any) => show.showdate >= currentDate);
-      const formattedShows = upcomingShows.slice(0, 5).map((show: any) => ({
+      const formattedShows = upcomingShows.slice(0, 8).map((show: any) => ({
         showid: show.showid,
         showdate: show.showdate,
         venue: show.venue,

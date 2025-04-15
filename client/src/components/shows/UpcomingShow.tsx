@@ -256,7 +256,7 @@ export default function UpcomingShow() {
                   </CarouselItem>
                   
                   {/* Additional shows skeletons */}
-                  {[...Array(3)].map((_, i) => (
+                  {[...Array(7)].map((_, i) => (
                     <CarouselItem key={i} className="basis-full">
                       <div className="p-4 bg-[#252525] rounded-lg">
                         <Skeleton className="h-5 w-3/4 mb-2" />
@@ -274,25 +274,40 @@ export default function UpcomingShow() {
               </Carousel>
             </div>
           ) : (
-            <div>
-              <div className="space-y-2">
-                <Skeleton className="h-6 w-3/4" />
-                <Skeleton className="h-4 w-2/3" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-              <div className="mt-4">
-                <Skeleton className="h-10 w-full rounded-lg" />
-              </div>
-
-              {/* Loading skeletons for additional shows */}
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="mt-4">
-                  <Skeleton className="h-5 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/2 mb-1" />
-                  <Skeleton className="h-4 w-2/3 mb-3" />
-                  <Skeleton className="h-8 w-full rounded-lg" />
+            <div className="relative px-4">
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {/* Main show skeleton */}
+                  <CarouselItem className="basis-full">
+                    <div className="p-4 bg-[#252525] rounded-lg">
+                      <div className="space-y-2">
+                        <Skeleton className="h-6 w-3/4" />
+                        <Skeleton className="h-4 w-2/3" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </div>
+                      <div className="mt-4">
+                        <Skeleton className="h-10 w-full rounded-lg" />
+                      </div>
+                    </div>
+                  </CarouselItem>
+                  
+                  {/* Additional shows skeletons */}
+                  {[...Array(7)].map((_, i) => (
+                    <CarouselItem key={i} className="basis-full">
+                      <div className="p-4 bg-[#252525] rounded-lg">
+                        <Skeleton className="h-5 w-3/4 mb-2" />
+                        <Skeleton className="h-4 w-1/2 mb-1" />
+                        <Skeleton className="h-4 w-2/3 mb-3" />
+                        <Skeleton className="h-8 w-full rounded-lg" />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
+                  <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                  <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
                 </div>
-              ))}
+              </Carousel>
             </div>
           )}
         </CardContent>
@@ -337,7 +352,7 @@ export default function UpcomingShow() {
                 </CarouselItem>
                 
                 {/* Additional upcoming shows as separate slides */}
-                {upcomingShows.slice(1, 4).map((show) => (
+                {upcomingShows.slice(1).map((show) => (
                   <CarouselItem key={show.showid} className="basis-full">
                     <AdditionalUpcomingShow
                       show={show}
@@ -355,25 +370,42 @@ export default function UpcomingShow() {
             </Carousel>
           </div>
         ) : (
-          <div className="space-y-4">
-            {/* Main upcoming show */}
-            <MainUpcomingShow 
-              show={upcomingShows[0]} 
-              onPickSetlist={handlePickSetlist}
-              hasPrediction={showPredictions[upcomingShows[0].showid]}
-              onResetPrediction={handleResetPrediction}
-            />
-
-            {/* Additional upcoming shows */}
-            {upcomingShows.slice(1, 4).map((show) => (
-              <AdditionalUpcomingShow 
-                key={show.showid} 
-                show={show} 
-                onPickSetlist={handlePickSetlist}
-                hasPrediction={showPredictions[show.showid]}
-                onResetPrediction={handleResetPrediction}
-              />
-            ))}
+          <div className="relative px-4">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: true,
+              }}
+              className="w-full"
+            >
+              <CarouselContent>
+                {/* Main upcoming show as first slide */}
+                <CarouselItem className="basis-full">
+                  <MainUpcomingShow 
+                    show={upcomingShows[0]} 
+                    onPickSetlist={handlePickSetlist}
+                    hasPrediction={showPredictions[upcomingShows[0].showid]}
+                    onResetPrediction={handleResetPrediction}
+                  />
+                </CarouselItem>
+                
+                {/* Additional upcoming shows as separate slides */}
+                {upcomingShows.slice(1).map((show) => (
+                  <CarouselItem key={show.showid} className="basis-full">
+                    <AdditionalUpcomingShow
+                      show={show}
+                      onPickSetlist={handlePickSetlist}
+                      hasPrediction={showPredictions[show.showid]}
+                      onResetPrediction={handleResetPrediction}
+                    />
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
+                <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+              </div>
+            </Carousel>
           </div>
         )}
       </CardContent>
