@@ -5,6 +5,7 @@ import RecentShows from "@/components/shows/RecentShows";
 import SetlistBuilder from "@/components/setlist/SetlistBuilderRefactored";
 import SongsList from "@/components/setlist/SongsList";
 import ScoreCard from "@/components/setlist/ScoreCard";
+import ScoringExplanation from "@/components/scoring/ScoringExplanation";
 import { usePhishData } from "@/hooks/usePhishData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -147,6 +148,9 @@ function MainContent() {
 
         {/* Upcoming Shows Cards */}
         <UpcomingShow />
+        
+        {/* Scoring Explanation */}
+        <ScoringExplanation />
       </div>
 
       {isInScoringMode ? (

@@ -33,85 +33,7 @@ interface ShowCardProps {
   onResetPrediction?: (show: PhishShow) => void;
 }
 
-// Scoring callout component to display scoring rules
-function ScoringCallout() {
-  return (
-    <div className="bg-[#1A1A1A] p-3 mb-3 rounded-lg">
-      <h3 className="text-gray-300 font-semibold mb-2 text-md font-display tracking-wide">Scoring Rules</h3>
-      <div className="space-y-2">
-        <div className="p-2 rounded bg-[#252525]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-6 h-6 flex items-center justify-center rounded-full bg-purple-600 mr-2">
-                <Star size={12} />
-              </span>
-              <span className="text-white text-sm">Special Songs</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400">15 pts</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-2 rounded bg-[#252525]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-6 h-6 flex items-center justify-center rounded-full bg-green-600 mr-2">
-                <CircleCheck size={12} />
-              </span>
-              <span className="text-white text-sm">Correct Song</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400">10 pts</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-2 rounded bg-[#252525]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-6 h-6 flex items-center justify-center rounded-full bg-pink-600 mr-2">
-                <CircleCheck size={12} />
-              </span>
-              <span className="text-white text-sm">Encore</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400">10 pts</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-2 rounded bg-[#252525]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-6 h-6 flex items-center justify-center rounded-full bg-orange-600 mr-2">
-                <CircleAlert size={12} />
-              </span>
-              <span className="text-white text-sm">Song in Set</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400">6 pts</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-2 rounded bg-[#252525]">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <span className="text-white font-semibold w-6 h-6 flex items-center justify-center rounded-full bg-blue-600 mr-2">
-                <CircleAlert size={12} />
-              </span>
-              <span className="text-white text-sm">Song in Show</span>
-            </div>
-            <div className="flex items-center">
-              <span className="text-xs text-gray-400">3 pts</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+
 
 // Main upcoming show component
 function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPrediction }: ShowCardProps) {
@@ -123,10 +45,7 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
         <p>{typeof show.location === "string" ? show.location : ""}</p>
       </div>
       
-      {/* Scoring Callout */}
-      <ScoringCallout />
-      
-      <div className="mt-3 flex flex-col gap-2">
+      <div className="mt-4 flex flex-col gap-2">
         <Button 
           className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
