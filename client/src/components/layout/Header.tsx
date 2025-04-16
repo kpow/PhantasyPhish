@@ -54,23 +54,23 @@ export default function Header() {
   };
 
   return (
-    <header className="m-4 mb-0 px-6">
-      <nav className="container mx-auto flex justify-between items-center mb-2 md:mb-6">
+    <header className="m-2 mb-0 px-3">
+      <nav className="container mx-auto flex justify-between items-center mb-1 md:mb-4">
         {/* Logo and title section */}
         <div 
           className="flex items-center cursor-pointer" 
           onClick={() => navigateTo("/")}
         >
-          <FishIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mr-2 text-primary-foreground" />
+          <FishIcon className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mr-1 text-primary-foreground" />
           
           {/* Mobile version */}
           <div className="sm:hidden flex flex-col items-start justify-center">
-            <h1 className="font-display text-lg leading-tight text-primary font-bold">phantasy</h1>
-            <h1 className="font-display text-lg leading-tight text-primary font-bold -mt-1">phish</h1>
+            <h1 className="font-display text-xl leading-tight text-primary font-bold">phantasy</h1>
+            <h1 className="font-display text-xl leading-tight text-primary font-bold -mt-1">phish</h1>
           </div>
           
           {/* Desktop version */}
-          <h1 className="hidden sm:block font-display text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-primary truncate font-bold">
+          <h1 className="hidden sm:block font-display text-4xl sm:text-4xl md:text-5xl lg:text-6xl text-primary truncate font-bold">
             phantasy phish
           </h1>
         </div>
