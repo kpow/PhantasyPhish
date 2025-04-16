@@ -315,12 +315,12 @@ export default function ShowOverlay() {
 
   // Display overlay with prediction if authenticated
   return (
-    <div className="fixed top-40 sm:top-24 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex pt-[100px] justify-center overflow-auto">
+    <div className="fixed top-40 sm:top-24 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex pt-[50px] sm:pt-[100px] justify-center overflow-auto">
       <div className="container max-w-3xl">
         <Card className="bg-[#1a1a1a] border-[#333] text-white">
           <CardHeader>
             <CardTitle className="text-center text-primary font-display text-3xl">
-              Phish is playing live right now!
+              phish is playing right now, <br></br>where are your shoes!
             </CardTitle>
             <p className="text-center text-gray-400 mt-2">
               the site is disabled during the show. Check back later to score
@@ -333,7 +333,7 @@ export default function ShowOverlay() {
                 <div className="space-y-4">
                   <div className="text-center mb-4">
                     <h3 className="text-lg text-primary-foreground font-bold">
-                      Your setlist prediction for{" "}
+                      Your setlist picks for{" "}
                       {formatShowDate(userPrediction.showdate)}
                     </h3>
                   </div>
