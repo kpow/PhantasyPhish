@@ -25,6 +25,17 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ShowCardProps {
   show: PhishShow;
@@ -55,14 +66,34 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
         </Button>
         
         {hasPrediction && onResetPrediction && (
-          <Button 
-            variant="destructive"
-            className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
-            onClick={() => onResetPrediction(show)}
-          >
-            <Trash2 size={16} />
-            <span className="font-display">reset</span>
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button 
+                variant="destructive"
+                className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
+              >
+                <Trash2 size={16} />
+                <span className="font-display">reset</span>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset Prediction?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to reset your setlist prediction for {formatShowDate(show.showdate)}? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={() => onResetPrediction(show)}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Reset
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
     </div>
@@ -71,8 +102,6 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
 
 // Additional upcoming show component (smaller card)
 function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPrediction }: ShowCardProps) {
-
-  
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <h3 className="font-semibold text-white text-base mb-2">
@@ -94,14 +123,34 @@ function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPre
         </Button>
         
         {hasPrediction && onResetPrediction && (
-          <Button 
-            variant="destructive"
-            className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
-            onClick={() => onResetPrediction(show)}
-          >
-            <Trash2 size={16} />
-            <span className="font-display">reset</span>
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button 
+                variant="destructive"
+                className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
+              >
+                <Trash2 size={16} />
+                <span className="font-display">reset</span>
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Reset Prediction?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to reset your setlist prediction for {formatShowDate(show.showdate)}? This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction 
+                  onClick={() => onResetPrediction(show)}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  Reset
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
       </div>
     </div>
