@@ -53,13 +53,13 @@ function MainUpcomingShow({
         <p>{typeof show.location === "string" ? show.location : ""}</p>
       </div>
 
-      <div className="mt-4 flex flex-col gap-2">
+      <div className="mt-4 flex gap-2">
         <Button
-          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
+          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-2 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
         >
-          <Music size={16} />
-          <span>{hasPrediction ? "Edit setlist" : "Pick a setlist"}</span>
+          <Music size={14} />
+          <span>{hasPrediction ? "edit" : "pick"}</span>
         </Button>
 
         {hasPrediction && onResetPrediction && (
@@ -106,7 +106,7 @@ function AdditionalUpcomingShow({
   onResetPrediction,
 }: ShowCardProps) {
   return (
-    <div className="p-4 bg-[#252525] rounded-lg">
+    <div className="p-6 bg-[#252525] rounded-lg">
       <h3 className="font-semibold text-white text-base mb-2">
         {formatShowDate(show.showdate)}
       </h3>
@@ -116,13 +116,13 @@ function AdditionalUpcomingShow({
           {typeof show.location === "string" ? show.location : ""}
         </p>
       </div>
-      <div className="mt-3 flex flex-col gap-2">
+      <div className="mt-3 flex gap-2">
         <Button
-          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
+          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-2 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
         >
-          <Music size={16} />
-          <span>{hasPrediction ? "Edit setlist" : "Pick a setlist"}</span>
+          <Music size={12} />
+          <span>{hasPrediction ? "edit" : "Pick"}</span>
         </Button>
 
         {hasPrediction && onResetPrediction && (
@@ -138,7 +138,7 @@ function AdditionalUpcomingShow({
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Reset Prediction?</AlertDialogTitle>
+                <AlertDialogTitle>reset picks?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Are you sure you want to reset your setlist picks for{" "}
                   {formatShowDate(show.showdate)}? This action cannot be undone.
@@ -148,9 +148,9 @@ function AdditionalUpcomingShow({
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={() => onResetPrediction(show)}
-                  className="bg-red-600 hover:bg-red-700"
+                  className="bg-red-600 hover:bg-red-700 font-display"
                 >
-                  Reset
+                  reset
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -273,7 +273,7 @@ export default function UpcomingShow() {
         }));
 
         toast({
-          title: "Prediction Reset",
+          title: "setlist pick reset",
           description: `Your setlist picks for ${formatShowDate(show.showdate)} has been reset.`,
         });
       } else {
