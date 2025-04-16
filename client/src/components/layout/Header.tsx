@@ -55,9 +55,9 @@ export default function Header() {
 
   return (
     <header className="m-4 mb-0 px-6">
-      <nav className="container mx-auto flex justify-between items-center mb-2 md:mb-6">
+      <nav className="container mx-auto flex flex-col sm:flex-row sm:justify-between items-center mb-2 md:mb-6">
         <div 
-          className="flex items-center cursor-pointer" 
+          className="flex items-center justify-center w-full sm:w-auto cursor-pointer mb-4 sm:mb-0" 
           onClick={() => navigateTo("/")}
         >
           <FishIcon className="w-20 h-20 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
