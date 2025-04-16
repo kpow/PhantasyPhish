@@ -94,20 +94,31 @@ export default function ShowOverlay() {
     fetchClosestPrediction();
   }, [config.siteOverlayEnabled, isAuthenticated, user]);
   
+  // Get show date for a prediction
+  const getShowDate = async (showId: string): Promise<string | null> => {
+    try {
+      const response = await fetch(`/api/shows/${showId}`);
+      if (!response.ok) return null;
+      
+      const showData = await response.json();
+      return showData.showdate;
+    } catch (error) {
+      console.error(`Error getting show date for ${showId}:`, error);
+      return null;
+    }
+  };
+
   // Find a prediction for a specific date
   const findPredictionForDate = async (predictions: any[], date: string) => {
     for (const prediction of predictions) {
       try {
-        // Get show details to check date
-        const response = await fetch(`/api/shows/${prediction.show_id}`);
-        if (!response.ok) continue;
+        const showdate = await getShowDate(prediction.show_id);
+        if (!showdate) continue;
         
-        const showData = await response.json();
-        
-        if (showData.showdate === date) {
+        if (showdate === date) {
           return {
             ...prediction,
-            showdate: showData.showdate
+            showdate
           };
         }
       } catch (error) {
@@ -127,18 +138,16 @@ export default function ShowOverlay() {
     
     for (const prediction of predictions) {
       try {
-        // Get show details to check date
-        const response = await fetch(`/api/shows/${prediction.show_id}`);
-        if (!response.ok) continue;
+        const showdate = await getShowDate(prediction.show_id);
+        if (!showdate) continue;
         
-        const showData = await response.json();
-        const showDate = new Date(showData.showdate);
+        const showDate = new Date(showdate);
         showDate.setHours(0, 0, 0, 0);
         
         if (showDate > today) {
           futurePredictions.push({
             ...prediction,
-            showdate: showData.showdate
+            showdate
           });
         }
       } catch (error) {
@@ -158,18 +167,16 @@ export default function ShowOverlay() {
     
     for (const prediction of predictions) {
       try {
-        // Get show details to check date
-        const response = await fetch(`/api/shows/${prediction.show_id}`);
-        if (!response.ok) continue;
+        const showdate = await getShowDate(prediction.show_id);
+        if (!showdate) continue;
         
-        const showData = await response.json();
-        const showDate = new Date(showData.showdate);
+        const showDate = new Date(showdate);
         showDate.setHours(0, 0, 0, 0);
         
         if (showDate < today) {
           pastPredictions.push({
             ...prediction,
-            showdate: showData.showdate
+            showdate
           });
         }
       } catch (error) {

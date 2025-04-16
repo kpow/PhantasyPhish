@@ -254,6 +254,20 @@ export default function AdminDashboard() {
                   onCheckedChange={handleTestModeToggle}
                 />
               </div>
+              
+              <div className="flex items-center justify-between pt-4 border-t">
+                <div className="space-y-0.5">
+                  <Label htmlFor="show-overlay" className="font-semibold text-red-500">show overlay</Label>
+                  <p className="text-sm text-muted-foreground">
+                    when enabled, the site will be disabled with an overlay during shows. users can still log in.
+                  </p>
+                </div>
+                <Switch
+                  id="show-overlay"
+                  checked={config.siteOverlayEnabled}
+                  onCheckedChange={(enabled) => updateConfig({ siteOverlayEnabled: enabled })}
+                />
+              </div>
             </div>
           )}
         </CardContent>
