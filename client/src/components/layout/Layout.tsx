@@ -1,6 +1,7 @@
 import React from 'react';
 import Footer from './Footer';
 import Header from './Header';
+import ShowOverlay from '../overlay/ShowOverlay';
 import { useLocation } from 'wouter';
 
 interface LayoutProps {
@@ -9,7 +10,6 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
-  
   
   return (
     <div 
@@ -20,12 +20,14 @@ export default function Layout({ children }: LayoutProps) {
         backgroundColor: "#121212",
       }}
     >
-       
       <div className="flex-grow">
         <Header />
         {children}
       </div>
       <Footer />
+      
+      {/* Show overlay when enabled */}
+      <ShowOverlay />
     </div>
   );
 }

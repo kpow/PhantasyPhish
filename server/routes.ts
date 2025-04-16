@@ -1008,7 +1008,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // Define the config schema
       const configSchema = z.object({
-        testModeEnabled: z.boolean().default(true)
+        testModeEnabled: z.boolean().default(true),
+        siteOverlayEnabled: z.boolean().default(false)
       });
       
       // Check if config file exists, if not create default
@@ -1017,7 +1018,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!fs.existsSync(configPath)) {
         // Create default config
         const defaultConfig = {
-          testModeEnabled: true
+          testModeEnabled: true,
+          siteOverlayEnabled: false
         };
         fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
       }
@@ -1041,7 +1043,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Define the config schema
       const configSchema = z.object({
         config: z.object({
-          testModeEnabled: z.boolean()
+          testModeEnabled: z.boolean(),
+          siteOverlayEnabled: z.boolean()
         })
       });
       
@@ -1150,6 +1153,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error fetching show status:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
+  // Get show details by showId (from our database)
+  app.get("/api/shows/:showId", async (req, res) => {
+    try {
+      const { showId } = req.params;
+      const show = await storage.getShowByShowId(showId);
+      
+      if (!show) {
+        return res.status(404).json({ message: "Show not found in database" });
+      }
+      
+      res.json(show);
+    } catch (error) {
+      console.error("Error fetching show details:", error);
       res.status(500).json({ message: (error as Error).message });
     }
   });
