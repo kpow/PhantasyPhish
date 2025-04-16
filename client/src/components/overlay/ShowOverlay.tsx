@@ -256,7 +256,7 @@ export default function ShowOverlay() {
   // Display loading overlay
   if (isLoading) {
     return (
-      <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center">
+      <div className="fixed top-24 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center">
         <div className="container max-w-md">
           <Card className="bg-[#1a1a1a] border-[#333] text-white">
             <CardHeader>
@@ -273,15 +273,15 @@ export default function ShowOverlay() {
 
   // Display overlay with prediction if authenticated
   return (
-    <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center overflow-auto">
+    <div className="fixed top-24 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center overflow-auto">
       <div className="container max-w-3xl">
         <Card className="bg-[#1a1a1a] border-[#333] text-white">
           <CardHeader>
-            <CardTitle className="text-center text-primary">
+            <CardTitle className="text-center text-primary font-display text-3xl">
               Phish is playing live right now!
             </CardTitle>
             <p className="text-center text-gray-400 mt-2">
-              The site is currently disabled during the show. Check back later to score your prediction!
+              the site is disabled during the show. Check back later to score your setlist picks!
             </p>
           </CardHeader>
           <CardContent>
@@ -289,7 +289,7 @@ export default function ShowOverlay() {
               userPrediction ? (
                 <div className="space-y-4">
                   <div className="text-center mb-4">
-                    <h3 className="text-lg text-primary-foreground">
+                    <h3 className="text-lg text-primary-foreground font-bold">
                       Your setlist prediction for {formatShowDate(userPrediction.showdate)}
                     </h3>
                   </div>
