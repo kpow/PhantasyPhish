@@ -7,6 +7,7 @@ import {
   CircleAlert,
   Star
 } from "lucide-react";
+import Autoplay from 'embla-carousel-autoplay';
 import {
   Carousel,
   CarouselContent,
@@ -90,6 +91,12 @@ export default function ScoringExplanation() {
                   align: "start",
                   loop: true,
                 }}
+                plugins={[
+                  Autoplay({
+                    delay: 2000,
+                    stopOnInteraction: true
+                  })
+                ]}
                 className="w-full"
               >
                 <CarouselContent>
