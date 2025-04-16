@@ -74,10 +74,10 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     set2: SetlistItem[];
     encore: SetlistItem[];
   } = {
-    set1: Array(8)
+    set1: Array(5)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
-    set2: Array(8)
+    set2: Array(5)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
     encore: Array(3)
