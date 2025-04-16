@@ -11,13 +11,7 @@ import { useSetlist } from "@/contexts/SetlistContextRefactored";
 import { useScroll } from "@/contexts/ScrollContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLocation } from "wouter";
-import { 
-  Trash2, 
-  Music,
-  CircleCheck,
-  CircleAlert,
-  Star
-} from "lucide-react";
+import { Trash2, Music, CircleCheck, CircleAlert, Star } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -44,10 +38,13 @@ interface ShowCardProps {
   onResetPrediction?: (show: PhishShow) => void;
 }
 
-
-
 // Main upcoming show component
-function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPrediction }: ShowCardProps) {
+function MainUpcomingShow({
+  show,
+  onPickSetlist,
+  hasPrediction,
+  onResetPrediction,
+}: ShowCardProps) {
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <div className="text-[#E5E5E5]">
@@ -55,20 +52,20 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
         <p>{show.venue}</p>
         <p>{typeof show.location === "string" ? show.location : ""}</p>
       </div>
-      
+
       <div className="mt-4 flex flex-col gap-2">
-        <Button 
+        <Button
           className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
         >
           <Music size={16} />
           <span>{hasPrediction ? "Edit setlist" : "Pick a setlist"}</span>
         </Button>
-        
+
         {hasPrediction && onResetPrediction && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button 
+              <Button
                 variant="destructive"
                 className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
               >
@@ -80,12 +77,13 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
               <AlertDialogHeader>
                 <AlertDialogTitle>Reset Prediction?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to reset your setlist prediction for {formatShowDate(show.showdate)}? This action cannot be undone.
+                  Are you sure you want to reset your setlist picks for{" "}
+                  {formatShowDate(show.showdate)}? This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction 
+                <AlertDialogAction
                   onClick={() => onResetPrediction(show)}
                   className="bg-red-600 hover:bg-red-700"
                 >
@@ -101,7 +99,12 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
 }
 
 // Additional upcoming show component (smaller card)
-function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPrediction }: ShowCardProps) {
+function AdditionalUpcomingShow({
+  show,
+  onPickSetlist,
+  hasPrediction,
+  onResetPrediction,
+}: ShowCardProps) {
   return (
     <div className="p-4 bg-[#252525] rounded-lg">
       <h3 className="font-semibold text-white text-base mb-2">
@@ -114,18 +117,18 @@ function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPre
         </p>
       </div>
       <div className="mt-3 flex flex-col gap-2">
-        <Button 
+        <Button
           className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
         >
           <Music size={16} />
           <span>{hasPrediction ? "Edit setlist" : "Pick a setlist"}</span>
         </Button>
-        
+
         {hasPrediction && onResetPrediction && (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button 
+              <Button
                 variant="destructive"
                 className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
               >
@@ -137,12 +140,13 @@ function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPre
               <AlertDialogHeader>
                 <AlertDialogTitle>Reset Prediction?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to reset your setlist prediction for {formatShowDate(show.showdate)}? This action cannot be undone.
+                  Are you sure you want to reset your setlist picks for{" "}
+                  {formatShowDate(show.showdate)}? This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction 
+                <AlertDialogAction
                   onClick={() => onResetPrediction(show)}
                   className="bg-red-600 hover:bg-red-700"
                 >
@@ -161,35 +165,40 @@ export default function UpcomingShow() {
   const { upcomingShows, isLoadingUpcomingShow } = usePhishData();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
-  const { setSelectedShow, loadPredictionForShow, deletePredictionForShow } = useSetlist();
+  const { setSelectedShow, loadPredictionForShow, deletePredictionForShow } =
+    useSetlist();
   const { scrollToSet } = useScroll();
   const isMobile = useIsMobile();
-  const [showPredictions, setShowPredictions] = useState<Record<string, boolean>>({});
+  const [showPredictions, setShowPredictions] = useState<
+    Record<string, boolean>
+  >({});
   const [, setLocation] = useLocation();
-  
+
   // Check which shows have predictions when component mounts
   const checkShowPredictions = async () => {
     if (isAuthenticated && upcomingShows?.length) {
       // Check each upcoming show to see if we have a prediction for it
       for (const show of upcomingShows) {
         try {
-          const response = await fetch(`/api/users/current/predictions/${show.showid}`);
+          const response = await fetch(
+            `/api/users/current/predictions/${show.showid}`,
+          );
           if (response.ok) {
             const data = await response.json();
             if (data.prediction) {
-              setShowPredictions(prev => ({
-                ...prev, 
-                [show.showid]: true
+              setShowPredictions((prev) => ({
+                ...prev,
+                [show.showid]: true,
               }));
             } else {
-              setShowPredictions(prev => ({
-                ...prev, 
-                [show.showid]: false
+              setShowPredictions((prev) => ({
+                ...prev,
+                [show.showid]: false,
               }));
             }
           }
         } catch (error) {
-          console.error(`Error checking prediction for show ${show.showid}:`, error);
+          console.error(`Error checking picks for show ${show.showid}:`, error);
         }
       }
     }
@@ -199,24 +208,24 @@ export default function UpcomingShow() {
   useEffect(() => {
     checkShowPredictions();
   }, [isAuthenticated, upcomingShows]);
-  
+
   // Listen for prediction saved events
   useEffect(() => {
     const handlePredictionSaved = (event: Event) => {
-      const customEvent = event as CustomEvent<{showId: string}>;
+      const customEvent = event as CustomEvent<{ showId: string }>;
       const showId = customEvent.detail.showId;
-      
+
       // Update our local state to show the prediction exists
-      setShowPredictions(prev => ({
+      setShowPredictions((prev) => ({
         ...prev,
-        [showId]: true
+        [showId]: true,
       }));
     };
-    
-    window.addEventListener('predictionSaved', handlePredictionSaved);
-    
+
+    window.addEventListener("predictionSaved", handlePredictionSaved);
+
     return () => {
-      window.removeEventListener('predictionSaved', handlePredictionSaved);
+      window.removeEventListener("predictionSaved", handlePredictionSaved);
     };
   }, []);
 
@@ -224,62 +233,62 @@ export default function UpcomingShow() {
     if (!isAuthenticated) {
       toast({
         title: "Login Required",
-        description: "Please log in to submit a setlist prediction.",
-        variant: "destructive"
+        description: "Please log in to submit a setlist.",
+        variant: "destructive",
       });
       return;
     }
-    
+
     // Set the selected show in the context
     setSelectedShow(show);
-    
+
     // Try to load any existing prediction for this show
     await loadPredictionForShow(show.showid);
-    
+
     // Navigate to the prediction URL
     setLocation(`/prediction/${show.showid}`);
-    
+
     // Scroll to the setlist builder
-    scrollToSet('set1');
-    
+    scrollToSet("set1");
+
     toast({
       title: "Show Selected",
-      description: `Now build your setlist prediction for ${formatShowDate(show.showdate)}.`
+      description: `Now build your setlist picks for ${formatShowDate(show.showdate)}.`,
     });
   };
-  
+
   const handleResetPrediction = async (show: PhishShow) => {
     if (!isAuthenticated) {
       return;
     }
-    
+
     try {
       const success = await deletePredictionForShow(show.showid);
-      
+
       if (success) {
         // Update local state to reflect the prediction was deleted
-        setShowPredictions(prev => ({
+        setShowPredictions((prev) => ({
           ...prev,
-          [show.showid]: false
+          [show.showid]: false,
         }));
-        
+
         toast({
           title: "Prediction Reset",
-          description: `Your setlist prediction for ${formatShowDate(show.showdate)} has been reset.`
+          description: `Your setlist picks for ${formatShowDate(show.showdate)} has been reset.`,
         });
       } else {
         toast({
           title: "Error",
-          description: "Failed to reset prediction. Please try again.",
-          variant: "destructive"
+          description: "Failed to reset setlist. Please try again.",
+          variant: "destructive",
         });
       }
     } catch (error) {
-      console.error("Error resetting prediction:", error);
+      console.error("Error resetting setlist:", error);
       toast({
         title: "Error",
-        description: "Failed to reset prediction. Please try again.",
-        variant: "destructive"
+        description: "Failed to reset setlist. Please try again.",
+        variant: "destructive",
       });
     }
   };
@@ -288,8 +297,10 @@ export default function UpcomingShow() {
     return (
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
         <CardContent className="p-5">
-          <h2 className="font-display text-xl mb-3 text-white">sprang tur 2025</h2>
-          
+          <h2 className="font-display text-xl mb-3 text-white">
+            sprang tur 2025
+          </h2>
+
           {isMobile ? (
             <div className="relative px-4">
               <Carousel className="w-full">
@@ -307,7 +318,7 @@ export default function UpcomingShow() {
                       </div>
                     </div>
                   </CarouselItem>
-                  
+
                   {/* Additional shows skeletons */}
                   {[...Array(7)].map((_, i) => (
                     <CarouselItem key={i} className="basis-full">
@@ -343,7 +354,7 @@ export default function UpcomingShow() {
                       </div>
                     </div>
                   </CarouselItem>
-                  
+
                   {/* Additional shows skeletons */}
                   {[...Array(7)].map((_, i) => (
                     <CarouselItem key={i} className="basis-full">
@@ -382,8 +393,10 @@ export default function UpcomingShow() {
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
       <CardContent className="p-1">
-        <h2 className="font-display text-xl mb-3 text-white p-3">sprang tur 2025</h2>
-        
+        <h2 className="font-display text-xl mb-3 text-white p-3">
+          sprang tur 2025
+        </h2>
+
         {isMobile ? (
           <div className="relative px-4">
             <Carousel
@@ -396,14 +409,14 @@ export default function UpcomingShow() {
               <CarouselContent>
                 {/* Main upcoming show as first slide */}
                 <CarouselItem className="basis-full">
-                  <MainUpcomingShow 
-                    show={upcomingShows[0]} 
+                  <MainUpcomingShow
+                    show={upcomingShows[0]}
                     onPickSetlist={handlePickSetlist}
                     hasPrediction={showPredictions[upcomingShows[0].showid]}
                     onResetPrediction={handleResetPrediction}
                   />
                 </CarouselItem>
-                
+
                 {/* Additional upcoming shows as separate slides */}
                 {upcomingShows.slice(1).map((show) => (
                   <CarouselItem key={show.showid} className="basis-full">
@@ -434,14 +447,14 @@ export default function UpcomingShow() {
               <CarouselContent>
                 {/* Main upcoming show as first slide */}
                 <CarouselItem className="basis-full">
-                  <MainUpcomingShow 
-                    show={upcomingShows[0]} 
+                  <MainUpcomingShow
+                    show={upcomingShows[0]}
                     onPickSetlist={handlePickSetlist}
                     hasPrediction={showPredictions[upcomingShows[0].showid]}
                     onResetPrediction={handleResetPrediction}
                   />
                 </CarouselItem>
-                
+
                 {/* Additional upcoming shows as separate slides */}
                 {upcomingShows.slice(1).map((show) => (
                   <CarouselItem key={show.showid} className="basis-full">
