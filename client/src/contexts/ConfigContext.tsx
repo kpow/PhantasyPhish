@@ -4,11 +4,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 // Define the config shape
 interface AppConfig {
   testModeEnabled: boolean;
+  siteOverlayEnabled: boolean;
 }
 
 // Initial default config 
 const defaultConfig: AppConfig = {
-  testModeEnabled: true
+  testModeEnabled: true,
+  siteOverlayEnabled: false
 };
 
 // Context type definition
