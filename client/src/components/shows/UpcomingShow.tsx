@@ -84,7 +84,7 @@ function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPre
           {typeof show.location === "string" ? show.location : ""}
         </p>
       </div>
-      <div className="mt-3 flex md:flex-col gap-2">
+      <div className="mt-3 flex flex-col gap-2">
         <Button 
           className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
@@ -322,7 +322,7 @@ export default function UpcomingShow() {
   if (!upcomingShows || upcomingShows.length === 0) {
     return (
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0">
-        <CardContent className="p-5">
+        <CardContent className="p-5\2">
           <h2 className="font-display text-xl mb-3 text-white">Next Shows</h2>
           <p className="text-[#E5E5E5]">No upcoming shows scheduled.</p>
         </CardContent>
@@ -332,8 +332,8 @@ export default function UpcomingShow() {
 
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
-      <CardContent className="p-5">
-        <h2 className="font-display text-xl mb-3 text-white">sprang tur 2025</h2>
+      <CardContent className="p-1">
+        <h2 className="font-display text-xl mb-3 text-white p-3">sprang tur 2025</h2>
         
         {isMobile ? (
           <div className="relative px-4">
@@ -374,7 +374,7 @@ export default function UpcomingShow() {
             </Carousel>
           </div>
         ) : (
-          <div className="relative px-4">
+          <div className="relative px-2 mb-4">
             <Carousel
               opts={{
                 align: "start",
