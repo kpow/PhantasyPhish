@@ -94,16 +94,16 @@ interface SetlistProviderProps {
 }
 
 export function SetlistProvider({ children }: SetlistProviderProps) {
-  // Initialize setlist with 4 spots in each set
+  // Initialize setlist with 8 spots in sets 1 and 2, and 3 spots in encore
   const initialSetlist: {
     set1: SetlistItem[];
     set2: SetlistItem[];
     encore: SetlistItem[];
   } = {
-    set1: Array(5)
+    set1: Array(8)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
-    set2: Array(5)
+    set2: Array(8)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
     encore: Array(3)
@@ -394,13 +394,13 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         if (data.prediction) {
           // Format the prediction data to match our setlist format
           const predictionSetlist = {
-            set1: Array(5)
+            set1: Array(8)
               .fill(0)
               .map((_, i) => ({
                 position: i,
                 song: null as PhishSong | null,
               })),
-            set2: Array(5)
+            set2: Array(8)
               .fill(0)
               .map((_, i) => ({
                 position: i,
