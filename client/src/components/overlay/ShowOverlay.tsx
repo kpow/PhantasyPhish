@@ -35,30 +35,40 @@ export default function ShowOverlay() {
         setIsLoading(true);
         
         // Get user predictions
+        console.log("Fetching predictions for user:", user?.id);
         const response = await fetch(`/api/users/${user?.id}/predictions`);
         if (!response.ok) throw new Error('Failed to fetch predictions');
         
         const data = await response.json();
+        console.log("User predictions:", data.predictions);
         
         if (!data.predictions || data.predictions.length === 0) {
+          console.log("No predictions found for user");
           setUserPrediction(null);
+          setIsLoading(false);
           return;
         }
         
         // Get today's date in YYYY-MM-DD format
         const today = new Date();
         const formattedToday = today.toISOString().split('T')[0];
+        console.log("Today's date:", formattedToday);
         
         // First try to find a prediction for today's show
+        console.log("Looking for prediction for today's show");
         const todayPrediction = await findPredictionForDate(data.predictions, formattedToday);
         
         if (todayPrediction) {
+          console.log("Found prediction for today:", todayPrediction);
           setUserPrediction(todayPrediction);
+          setIsLoading(false);
           return;
         }
         
         // Next try to find the closest future prediction
+        console.log("Looking for future predictions");
         const futurePredictions = await getFuturePredictions(data.predictions);
+        console.log("Future predictions:", futurePredictions);
         
         if (futurePredictions.length > 0) {
           // Sort by date (ascending) to get the closest upcoming show
@@ -66,12 +76,16 @@ export default function ShowOverlay() {
             new Date(a.showdate).getTime() - new Date(b.showdate).getTime()
           );
           
+          console.log("Selected closest future prediction:", futurePredictions[0]);
           setUserPrediction(futurePredictions[0]);
+          setIsLoading(false);
           return;
         }
         
         // If no future predictions, use the most recent past prediction
+        console.log("Looking for past predictions");
         const pastPredictions = await getPastPredictions(data.predictions);
+        console.log("Past predictions:", pastPredictions);
         
         if (pastPredictions.length > 0) {
           // Sort by date (descending) to get the most recent show
@@ -79,11 +93,14 @@ export default function ShowOverlay() {
             new Date(b.showdate).getTime() - new Date(a.showdate).getTime()
           );
           
+          console.log("Selected most recent past prediction:", pastPredictions[0]);
           setUserPrediction(pastPredictions[0]);
+          setIsLoading(false);
           return;
         }
         
         // No predictions found
+        console.log("No suitable predictions found");
         setUserPrediction(null);
       } catch (error) {
         console.error('Error fetching closest prediction:', error);
@@ -99,11 +116,25 @@ export default function ShowOverlay() {
   // Get show date for a prediction
   const getShowDate = async (showId: string): Promise<string | null> => {
     try {
+      console.log(`Fetching show data for show ID: ${showId}`);
       const response = await fetch(`/api/shows/${showId}`);
-      if (!response.ok) return null;
+      if (!response.ok) {
+        console.error(`Error fetching show data: ${response.status} ${response.statusText}`);
+        return null;
+      }
       
       const showData = await response.json();
-      return showData.showdate;
+      console.log("Show data received:", showData);
+      
+      // Handle different API response structures
+      const date = showData.date || showData.showdate;
+      
+      if (!date) {
+        console.error("No date found in show data", showData);
+        return null;
+      }
+      
+      return date;
     } catch (error) {
       console.error(`Error getting show date for ${showId}:`, error);
       return null;
@@ -135,16 +166,22 @@ export default function ShowOverlay() {
   const getFuturePredictions = async (predictions: any[]) => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
+    console.log("Today's date for comparison:", today);
     
     const futurePredictions = [];
     
     for (const prediction of predictions) {
       try {
         const showdate = await getShowDate(prediction.show_id);
-        if (!showdate) continue;
+        if (!showdate) {
+          console.log(`No showdate found for prediction ${prediction.id}`);
+          continue;
+        }
         
+        console.log(`Show date for prediction ${prediction.id}: ${showdate}`);
         const showDate = new Date(showdate);
         showDate.setHours(0, 0, 0, 0);
+        console.log(`Comparing dates: ${showDate} > ${today} = ${showDate > today}`);
         
         if (showDate > today) {
           futurePredictions.push({
@@ -172,8 +209,10 @@ export default function ShowOverlay() {
         const showdate = await getShowDate(prediction.show_id);
         if (!showdate) continue;
         
+        console.log(`Show date for prediction ${prediction.id}: ${showdate}`);
         const showDate = new Date(showdate);
         showDate.setHours(0, 0, 0, 0);
+        console.log(`Comparing dates: ${showDate} < ${today} = ${showDate < today}`);
         
         if (showDate < today) {
           pastPredictions.push({
@@ -200,7 +239,7 @@ export default function ShowOverlay() {
   // Display loading overlay
   if (isLoading) {
     return (
-      <div className="fixed inset-0 pt-16 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center">
         <div className="container max-w-md">
           <Card className="bg-[#1a1a1a] border-[#333] text-white">
             <CardHeader>
@@ -217,7 +256,7 @@ export default function ShowOverlay() {
 
   // Display overlay with prediction if authenticated
   return (
-    <div className="fixed inset-0 pt-16 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center">
       <div className="container max-w-3xl">
         <Card className="bg-[#1a1a1a] border-[#333] text-white">
           <CardHeader>
