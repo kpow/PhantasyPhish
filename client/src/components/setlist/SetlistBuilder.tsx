@@ -371,7 +371,7 @@ export default function SetlistBuilder() {
             <p className="font-semibold">{selectedShow.venue}</p>
             <p className="text-sm">{selectedShow.location}</p>
             <div className="mt-2 text-xs text-gray-400 italic">
-              <p>Tip: Click on any song in your setlist to remove it</p>
+              <p>Tip: Click the X button to remove a song</p>
             </div>
           </div>
         ) : (
