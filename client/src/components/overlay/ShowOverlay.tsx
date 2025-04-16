@@ -231,6 +231,23 @@ export default function ShowOverlay() {
   // Check if we're on an admin page
   const isAdminPage = location.startsWith('/admin');
   
+  // Add a side effect to disable scrolling when the overlay is active
+  useEffect(() => {
+    // Only apply if overlay is enabled and we're not on an admin page
+    if (config.siteOverlayEnabled && !isAdminPage) {
+      // Save the current overflow value
+      const originalOverflow = document.body.style.overflow;
+      
+      // Disable scrolling on the body
+      document.body.style.overflow = 'hidden';
+      
+      // Cleanup function to restore scrolling when component unmounts
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [config.siteOverlayEnabled, isAdminPage]);
+  
   // If overlay is disabled or we're on an admin page, don't render anything
   if (!config.siteOverlayEnabled || isAdminPage) {
     return null;
@@ -256,7 +273,7 @@ export default function ShowOverlay() {
 
   // Display overlay with prediction if authenticated
   return (
-    <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center">
+    <div className="fixed top-16 left-0 right-0 bottom-0 bg-black/90 backdrop-blur-sm z-40 flex items-center justify-center overflow-auto">
       <div className="container max-w-3xl">
         <Card className="bg-[#1a1a1a] border-[#333] text-white">
           <CardHeader>
