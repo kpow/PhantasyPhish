@@ -1,3 +1,4 @@
 {
-  "testModeEnabled": true
+  "testModeEnabled": true,
+  "siteOverlayEnabled": true
 }

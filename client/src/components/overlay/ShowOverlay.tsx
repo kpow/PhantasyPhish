@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatShowDate } from '@/hooks/usePhishData';
+import { useLocation } from 'wouter';
 
 interface PredictionData {
   id: number;
@@ -18,6 +19,7 @@ interface PredictionData {
 export default function ShowOverlay() {
   const { user, isAuthenticated } = useAuth();
   const { config } = useConfig();
+  const [location] = useLocation();
   const [userPrediction, setUserPrediction] = useState<PredictionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -187,8 +189,11 @@ export default function ShowOverlay() {
     return pastPredictions;
   };
 
-  // If overlay is disabled, don't render anything
-  if (!config.siteOverlayEnabled) {
+  // Check if we're on an admin page
+  const isAdminPage = location.startsWith('/admin');
+  
+  // If overlay is disabled or we're on an admin page, don't render anything
+  if (!config.siteOverlayEnabled || isAdminPage) {
     return null;
   }
 
