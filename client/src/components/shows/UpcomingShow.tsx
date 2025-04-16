@@ -61,7 +61,7 @@ function MainUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPredictio
             onClick={() => onResetPrediction(show)}
           >
             <Trash2 size={16} />
-            <span>Reset my picks</span>
+            <span className="font-display">reset</span>
           </Button>
         )}
       </div>
@@ -84,7 +84,7 @@ function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPre
           {typeof show.location === "string" ? show.location : ""}
         </p>
       </div>
-      <div className="mt-3 flex flex-col gap-2">
+      <div className="mt-3 flex md:flex-col gap-2">
         <Button 
           className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
           onClick={() => onPickSetlist(show)}
@@ -100,7 +100,7 @@ function AdditionalUpcomingShow({ show, onPickSetlist, hasPrediction, onResetPre
             onClick={() => onResetPrediction(show)}
           >
             <Trash2 size={16} />
-            <span>Reset my picks</span>
+            <span className="font-display">reset</span>
           </Button>
         )}
       </div>
@@ -239,7 +239,7 @@ export default function UpcomingShow() {
     return (
       <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
         <CardContent className="p-5">
-          <h2 className="font-display text-xl mb-3 text-white">Next Shows</h2>
+          <h2 className="font-display text-xl mb-3 text-white">sprang tur 2025</h2>
           
           {isMobile ? (
             <div className="relative px-4">
@@ -333,7 +333,7 @@ export default function UpcomingShow() {
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
       <CardContent className="p-5">
-        <h2 className="font-display text-xl mb-3 text-white">next shows</h2>
+        <h2 className="font-display text-xl mb-3 text-white">sprang tur 2025</h2>
         
         {isMobile ? (
           <div className="relative px-4">
