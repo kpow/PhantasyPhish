@@ -55,9 +55,9 @@ export default function Header() {
 
   return (
     <header className="m-4 mb-0 px-6">
-      <nav className="container mx-auto flex flex-col items-center mb-2 md:mb-6">
+      <nav className="container mx-auto flex justify-between items-center mb-2 md:mb-6">
         <div 
-          className="w-full flex items-center justify-center cursor-pointer mb-4" 
+          className="flex items-center cursor-pointer" 
           onClick={() => navigateTo("/")}
         >
           <FishIcon className="w-20 h-20 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
@@ -70,7 +70,7 @@ export default function Header() {
           </h1>
         </div>
         
-        <div className="w-full flex justify-center space-x-2 md:space-x-4">
+        <div className="flex items-center space-x-2 md:space-x-4">
           {isLoading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : isAuthenticated ? (
