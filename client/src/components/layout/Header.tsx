@@ -55,22 +55,28 @@ export default function Header() {
 
   return (
     <header className="m-4 mb-0 px-6">
-      <nav className="container mx-auto flex flex-col sm:flex-row sm:justify-between items-center mb-2 md:mb-6">
+      <nav className="container mx-auto flex justify-between items-center mb-2 md:mb-6">
+        {/* Logo and title section */}
         <div 
-          className="flex items-center justify-center w-full sm:w-auto cursor-pointer mb-4 sm:mb-0" 
+          className="flex items-center cursor-pointer" 
           onClick={() => navigateTo("/")}
         >
-          <FishIcon className="w-20 h-20 sm:w-20 sm:h-20 md:w-20 md:h-20 mr-2 text-primary-foreground" />
+          <FishIcon className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 mr-2 text-primary-foreground" />
+          
+          {/* Mobile version */}
           <div className="sm:hidden flex flex-col items-start justify-center">
-            <h1 className="font-display text-2xl leading-tight text-primary font-bold">phantasy</h1>
-            <h1 className="font-display text-2xl leading-tight text-primary font-bold -mt-1">phish</h1>
+            <h1 className="font-display text-lg leading-tight text-primary font-bold">phantasy</h1>
+            <h1 className="font-display text-lg leading-tight text-primary font-bold -mt-1">phish</h1>
           </div>
+          
+          {/* Desktop version */}
           <h1 className="hidden sm:block font-display text-3xl sm:text-3xl md:text-4xl lg:text-5xl text-primary truncate font-bold">
             phantasy phish
           </h1>
         </div>
         
-        <div className="flex items-center space-x-2 md:space-x-4">
+        {/* Auth section */}
+        <div className="flex items-center">
           {isLoading ? (
             <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
           ) : isAuthenticated ? (
@@ -126,12 +132,21 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center space-x-1 md:space-x-2">
-              <Button variant="ghost" size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => navigateTo("/login")}>
-                Log in
-              </Button>
-              <Button size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => navigateTo("/register")}>
+            <div className="flex flex-col sm:flex-row items-end sm:items-center sm:space-x-2">
+              <Button 
+                size="sm" 
+                className="mb-1 sm:mb-0 text-xs md:text-sm px-2 md:px-4 min-w-16" 
+                onClick={() => navigateTo("/register")}
+              >
                 Register
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs md:text-sm px-2 md:px-4 min-w-16" 
+                onClick={() => navigateTo("/login")}
+              >
+                Log in
               </Button>
             </div>
           )}
