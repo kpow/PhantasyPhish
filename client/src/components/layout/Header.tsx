@@ -126,20 +126,11 @@ export default function Header() {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-[11px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 h-8 sm:h-9 md:h-10" 
-                onClick={() => navigateTo("/login")}
-              >
+            <div className="flex items-center space-x-1 md:space-x-2">
+              <Button variant="ghost" size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => navigateTo("/login")}>
                 Log in
               </Button>
-              <Button 
-                size="sm" 
-                className="text-[11px] sm:text-xs md:text-sm px-2 sm:px-3 md:px-4 h-8 sm:h-9 md:h-10" 
-                onClick={() => navigateTo("/register")}
-              >
+              <Button size="sm" className="text-xs md:text-sm px-2 md:px-4" onClick={() => navigateTo("/register")}>
                 Register
               </Button>
             </div>
