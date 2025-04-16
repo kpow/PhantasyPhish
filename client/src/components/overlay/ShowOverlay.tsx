@@ -258,38 +258,38 @@ export default function ShowOverlay() {
 
   // Check what page we're on
   const isAdminPage = location.startsWith("/admin");
-  const isAuthPage = 
-    location === "/login" || 
-    location === "/register" || 
-    location === "/forgot-password" || 
-    location === "/reset-password" || 
-    location === "/verify-email" || 
+  const isAuthPage =
+    location === "/login" ||
+    location === "/register" ||
+    location === "/forgot-password" ||
+    location === "/reset-password" ||
+    location === "/verify-email" ||
     location === "/resend-verification" ||
     location === "/profile" ||
     location === "/my-predictions" ||
-    location.startsWith("/reset-password/") || 
+    location.startsWith("/reset-password/") ||
     location.startsWith("/verify-email/");
-  
+
   // We only want to show the overlay on the main setlist builder pages
   const shouldShowOverlay = !isAdminPage && !isAuthPage;
-  
+
   // Add a side effect to disable scrolling when the overlay is active
   useEffect(() => {
     // Only apply if overlay is enabled and we should show the overlay
     if (config.siteOverlayEnabled && shouldShowOverlay) {
       // Save the current overflow value
       const originalOverflow = document.body.style.overflow;
-      
+
       // Disable scrolling on the body
       document.body.style.overflow = "hidden";
-      
+
       // Cleanup function to restore scrolling when component unmounts
       return () => {
         document.body.style.overflow = originalOverflow;
       };
     }
   }, [config.siteOverlayEnabled, shouldShowOverlay]);
-  
+
   // If overlay is disabled or we shouldn't show the overlay, don't render anything
   if (!config.siteOverlayEnabled || !shouldShowOverlay) {
     return null;
@@ -320,7 +320,7 @@ export default function ShowOverlay() {
         <Card className="bg-[#1a1a1a] border-[#333] text-white">
           <CardHeader>
             <CardTitle className="text-center text-primary font-display text-3xl">
-              phish is playing right now, <br></br>where are your shoes!
+              phish is playing right now, <br></br>where are your shoes?
             </CardTitle>
             <p className="text-center text-gray-400 mt-2">
               the site is disabled during the show. Check back later to score
