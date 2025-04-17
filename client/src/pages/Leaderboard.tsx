@@ -119,6 +119,9 @@ export default function Leaderboard() {
                             {getRankIcon(index + 1)}
                           </div>
                           <Avatar className="h-10 w-10">
+                            {entry.avatar ? (
+                              <AvatarImage src={entry.avatar} alt={entry.userName} />
+                            ) : null}
                             <AvatarFallback>
                               {entry.userName.slice(0, 2)}
                             </AvatarFallback>
@@ -128,7 +131,7 @@ export default function Leaderboard() {
                               {entry.userName} <MedalEmoji rank={index + 1} />
                             </div>
                             <div className="text-sm text-muted-foreground">
-                              {entry.showsParticipated} shows
+                              {entry.showsParticipated} shows • Best: <span className="text-primary">{entry.bestScore}</span>
                             </div>
                           </div>
                         </div>
