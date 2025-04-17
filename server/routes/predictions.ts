@@ -174,14 +174,18 @@ router.delete("/users/current/predictions/:showId", async (req, res) => {
 // Test scoring for predictions (for frontend testing/debugging)
 router.post("/test/score", async (req, res) => {
   try {
-    const { prediction, actual } = req.body;
+    // Handle both naming conventions (actual and actualSetlist)
+    const { prediction, actual, actualSetlist } = req.body;
     
-    if (!prediction || !actual) {
+    // Use actualSetlist if provided, otherwise use actual
+    const setlistToScore = actualSetlist || actual;
+    
+    if (!prediction || !setlistToScore) {
       return res.status(400).json({ message: "Missing prediction or actual setlist data" });
     }
     
     // Score the prediction
-    const scoringResult = scorePrediction(prediction, actual);
+    const scoringResult = scorePrediction(prediction, setlistToScore);
     
     res.json(scoringResult);
   } catch (error) {
