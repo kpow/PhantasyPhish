@@ -77,10 +77,14 @@ export interface IStorage {
   
   // Leaderboard operations
   getLeaderboardForShow(showId: string): Promise<{userId: number, userName: string, score: number}[]>;
-  getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]>;
+  getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number, bestScore: number, avatar: string | null}[]>;
   getUserScoreForTour(userId: number, tourId: number): Promise<{totalScore: number, showsParticipated: number}>;
   scoreAllPredictionsForShow(showId: string): Promise<{processed: number, updated: number, errors: number}>;
-  getGlobalLeaderboard(limit?: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]>;
+  getGlobalLeaderboard(limit?: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number, bestScore: number, avatar: string | null}[]>;
+  
+  // Site configuration operations
+  getSiteConfig(key: string): Promise<Record<string, any> | null>;
+  saveSiteConfig(key: string, value: Record<string, any>): Promise<void>;
 }
 
 // Export the database implementation of the storage interface

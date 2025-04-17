@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, jsonb, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -166,3 +166,21 @@ export type Show = typeof shows.$inferSelect;
 
 export type InsertPrediction = z.infer<typeof insertPredictionSchema>;
 export type Prediction = typeof predictions.$inferSelect;
+
+// Site configuration table for storing application settings
+export const site_config = pgTable("site_config", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 255 }).notNull().unique(),
+  value: jsonb("value").notNull(),
+  updated_at: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Schema for inserting a site configuration entry
+export const insertSiteConfigSchema = createInsertSchema(site_config).pick({
+  key: true,
+  value: true,
+});
+
+// Types for site configuration
+export type InsertSiteConfig = z.infer<typeof insertSiteConfigSchema>;
+export type SiteConfig = typeof site_config.$inferSelect;
