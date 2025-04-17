@@ -102,7 +102,7 @@ export default function UpcomingShow() {
   const { upcomingShows, isLoadingUpcomingShow } = usePhishData();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
-  const { setSelectedShow, loadPredictionForShow, deletePredictionForShow } =
+  const { setSelectedShow, loadPredictionForShow, selectedShow, deletePredictionForShow } =
     useSetlist();
   const { scrollToSet } = useScroll();
   const isMobile = useIsMobile();
@@ -285,12 +285,12 @@ export default function UpcomingShow() {
   };
 
   return (
+    <>
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
       <CardContent className="p-1">
         <h2 className="font-display text-xl mb-0 text-white p-3">
           sprang tur 2025
         </h2>
-
         <div className={`relative px-2 mb-6 }`}>
           <Carousel
             opts={carouselOpts}
@@ -315,7 +315,13 @@ export default function UpcomingShow() {
             </div>
           </Carousel>
         </div>
+        {!selectedShow && (
+          <div className="m-4 p-3 translate-y-2 bg-red-900/30 border border-red-500/50 rounded-md text-red-200">
+            <p className="text-sm text-center font-bold">sign up/log in and pick a show</p>
+          </div>
+        )}
       </CardContent>
     </Card>
+    </>
   );
 }

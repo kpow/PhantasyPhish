@@ -16,6 +16,7 @@ import { useSetlist } from "@/contexts/SetlistContextRefactored";
 export default function Home() {
   const { isLoadingSongs, isLoadingUpcomingShow, isLoadingRecentShows } =
     usePhishData();
+  
   const [location] = useLocation();
 
   const isLoading =
@@ -136,13 +137,13 @@ function MainContent() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-0">
       {/* Left Column */}
-      <div className="lg:col-span-3 space-y-6">
+      <div className="lg:col-span-3 md:col-span-4 space-y-6">
         {/* Title Card */}
         <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
           <CardContent className="p-5">
             <h2 className="font-display text-2xl mb-2 text-white">whazzup</h2>
-            <p className="text-[#E5E5E5] mb-4">
-              pick the setlist and score points based on what Phish plays!
+            <p className="text-[#E5E5E5] mb-4 font-bold">
+              Remember when you called that Tela encore, get the credit now! Pick the setlist, score points and share in the groove!
             </p>
             <Link href="/leaderboard">
               <Button 
@@ -150,7 +151,7 @@ function MainContent() {
                 className="w-full bg-primary/10 border-primary/20 hover:bg-primary/20 text-white"
               >
                 <Trophy className="h-4 w-4 mr-2" />
-                View Leaderboard
+                view leaderboard
               </Button>
             </Link>
           </CardContent>

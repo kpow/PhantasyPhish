@@ -361,9 +361,9 @@ export default function SetlistBuilder() {
           </div>
         ) : (
           <div className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-md text-red-200">
-            <p className="font-semibold">No show selected</p>
-            <p className="text-sm">
-              Please select an upcoming show to build a setlist
+            <p className="font-bold text-center">no show selected</p>
+            <p className="text-sm font-semibold text-center">
+            make sure you sign up/log in and select an show to build a setlist, it's a good time.
             </p>
           </div>
         )}
