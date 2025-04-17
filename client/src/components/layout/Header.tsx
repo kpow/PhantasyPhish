@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { User, LogOut } from "lucide-react";
 import FishIcon from "@/components/icons/FishIcon";
+import MetallicFishIcon from "@/components/icons/MetallicFishIcon";
 
 export default function Header() {
   const { user, isAuthenticated, isLoading, logout } = useAuth();
@@ -61,7 +62,7 @@ export default function Header() {
           className="flex items-center cursor-pointer"
           onClick={() => navigateTo("/")}
         >
-          <FishIcon className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 mr-1 text-primary-foreground" />
+          <MetallicFishIcon className="w-[19.8rem] h-[19.8rem] sm:w-[24.8rem] sm:h-[24.8rem] md:w-[29.8rem] md:h-[29.8rem] mr-1 text-primary-foreground" />
 
           {/* Mobile version */}
           <div className="sm:hidden flex flex-col items-start justify-center">
