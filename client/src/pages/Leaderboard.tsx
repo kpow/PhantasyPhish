@@ -67,10 +67,10 @@ export default function Leaderboard() {
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold font-display mb-2">
           <Crown className="h-8 w-8 md:h-10 md:w-10 inline-block mr-2 text-yellow-500" />
-          LEADERBOARD
+          leaderboard
         </h1>
         <p className="text-lg text-muted-foreground">
-          See who's crushing it with their Phish predictions!
+          see who's crushing it with their Phish picks!
         </p>
       </div>
       
@@ -78,20 +78,20 @@ export default function Leaderboard() {
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
           <TabsTrigger value="global">
             <Users className="h-4 w-4 mr-2" />
-            Global Leaders
+            global leaders
           </TabsTrigger>
           <TabsTrigger value="tour">
             <Trophy className="h-4 w-4 mr-2" />
-            Tour Rankings
+            tour rankings
           </TabsTrigger>
         </TabsList>
         
         <TabsContent value="global">
           <Card className="w-full shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl text-center">Global Leaderboard</CardTitle>
+              <CardTitle className="text-2xl text-center font-display">global leaderboard</CardTitle>
               <CardDescription className="text-center">
-                Top predictors across all concerts
+                Top players across all concerts
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -194,7 +194,7 @@ export default function Leaderboard() {
         <TabsContent value="tour">
           <Card className="w-full shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl text-center">Tour Leaderboard</CardTitle>
+              <CardTitle className="text-2xl text-center font-display">tour leaderboard</CardTitle>
               <CardDescription className="text-center">
                 Select a tour to see rankings
               </CardDescription>
