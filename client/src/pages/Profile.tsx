@@ -247,7 +247,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-background p-4">
+    <div className="flex justify-center bg-background p-4 pb-10">
       <div className="w-full max-w-4xl">
         {/* Back Button */}
         <div className="w-full flex justify-start mb-4">

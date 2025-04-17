@@ -140,8 +140,7 @@ function MainContent() {
           <CardContent className="p-5">
             <h2 className="font-display text-2xl mb-2 text-white">whazzup</h2>
             <p className="text-[#E5E5E5]">
-              pick the setlist and score points based on what Phish actually
-              plays!
+              pick the setlist and score points based on what Phish plays!
             </p>
           </CardContent>
         </Card>
