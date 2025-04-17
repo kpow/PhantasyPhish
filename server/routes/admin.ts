@@ -6,6 +6,7 @@
  * - Configuration management
  * - Tour management
  * - Show scoring and prediction management
+ * - File management and downloads
  * 
  * These routes typically require admin authentication.
  */
@@ -16,6 +17,9 @@ import { fetchPhishData, slugifySongName } from "../utils/api-utils";
 import { insertSongSchema, insertShowSchema, insertTourSchema } from "@shared/schema";
 import { scorePrediction, processRawSetlist } from "../utils/scoring-utils";
 import { z } from "zod";
+import fs from "fs";
+import path from "path";
+import archiver from "archiver";
 
 const router = express.Router();
 
@@ -441,6 +445,130 @@ router.post("/admin/reset-prediction-scores", isAuthenticated, isAdmin, async (r
     });
   } catch (error) {
     console.error("Error resetting prediction scores:", error);
+    res.status(500).json({ message: (error as Error).message });
+  }
+});
+
+/**
+ * GET /api/admin/uploads
+ * 
+ * Get a list of all uploaded files.
+ * 
+ * This endpoint scans the uploads directory and returns information about all files.
+ * Requires admin authentication.
+ */
+router.get("/admin/uploads", isAuthenticated, isAdmin, async (_req, res) => {
+  try {
+    const baseUploadsDir = path.join(process.cwd(), "uploads");
+    const files: Array<{path: string, name: string, size: number, type: string, created: Date}> = [];
+    
+    // Recursive function to scan directories
+    const scanDirectory = (dirPath: string, relativePath: string = '') => {
+      const items = fs.readdirSync(dirPath);
+      
+      for (const item of items) {
+        const fullPath = path.join(dirPath, item);
+        const relPath = path.join(relativePath, item);
+        const stats = fs.statSync(fullPath);
+        
+        if (stats.isDirectory()) {
+          // Recursively scan subdirectories
+          scanDirectory(fullPath, relPath);
+        } else {
+          // Add file info to the list
+          const fileExtension = path.extname(item).toLowerCase();
+          let fileType = 'other';
+          
+          // Detect file type based on extension
+          if (['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp'].includes(fileExtension)) {
+            fileType = 'image';
+          } else if (['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'].includes(fileExtension)) {
+            fileType = 'document';
+          }
+          
+          files.push({
+            path: relPath,
+            name: item,
+            size: stats.size,
+            type: fileType,
+            created: stats.birthtime
+          });
+        }
+      }
+    };
+    
+    // Start scanning from the base uploads directory
+    scanDirectory(baseUploadsDir);
+    
+    // Sort files by creation date (newest first)
+    files.sort((a, b) => b.created.getTime() - a.created.getTime());
+    
+    // Return the file list
+    res.json({ 
+      message: `Found ${files.length} uploaded files`,
+      files
+    });
+  } catch (error) {
+    console.error("Error listing uploaded files:", error);
+    res.status(500).json({ message: (error as Error).message });
+  }
+});
+
+/**
+ * GET /api/admin/uploads/download
+ * 
+ * Download all uploaded files as a ZIP archive.
+ * 
+ * This endpoint creates a ZIP archive of all files in the uploads directory
+ * and streams it to the client for download.
+ * Requires admin authentication.
+ */
+router.get("/admin/uploads/download", isAuthenticated, isAdmin, async (_req, res) => {
+  try {
+    const baseUploadsDir = path.join(process.cwd(), "uploads");
+    const timestamp = new Date().toISOString().replace(/[:.-]/g, '_');
+    const archiveName = `uploads_backup_${timestamp}.zip`;
+    
+    // Set response headers for file download
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', `attachment; filename=${archiveName}`);
+    
+    // Create a ZIP archive
+    const archive = archiver('zip', {
+      zlib: { level: 5 } // Compression level (0-9)
+    });
+    
+    // Pipe the archive to the response
+    archive.pipe(res);
+    
+    // Recursive function to add files and directories to the archive
+    const addDirectoryToArchive = (dirPath: string, relativePath: string = '') => {
+      const items = fs.readdirSync(dirPath);
+      
+      for (const item of items) {
+        const fullPath = path.join(dirPath, item);
+        const archivePath = path.join(relativePath, item);
+        const stats = fs.statSync(fullPath);
+        
+        if (stats.isDirectory()) {
+          // Recursively add subdirectories
+          addDirectoryToArchive(fullPath, archivePath);
+        } else {
+          // Add file to the archive
+          archive.file(fullPath, { name: archivePath });
+        }
+      }
+    };
+    
+    // Start adding files from the base uploads directory
+    addDirectoryToArchive(baseUploadsDir);
+    
+    // Finalize the archive
+    await archive.finalize();
+    
+    // No need to explicitly end the response here as it's handled by the archive pipe
+  } catch (error) {
+    console.error("Error creating ZIP archive of uploads:", error);
     res.status(500).json({ message: (error as Error).message });
   }
 });
