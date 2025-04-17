@@ -1,3 +1,9 @@
+/**
+ * Song Routes Module
+ * 
+ * This module contains all routes related to Phish songs, including retrieving song listings,
+ * loading songs from cached data files, and reloading/updating the song database.
+ */
 import express from "express";
 import fs from "fs";
 import path from "path";
@@ -6,7 +12,12 @@ import { insertSongSchema } from "@shared/schema";
 
 const router = express.Router();
 
-// Get all songs
+/**
+ * GET /api/songs
+ * 
+ * Retrieve a list of all songs from the database.
+ * This endpoint provides a simple way to get all songs without additional processing.
+ */
 router.get("/songs", async (_req, res) => {
   try {
     const songs = await storage.getAllSongs();
@@ -17,7 +28,14 @@ router.get("/songs", async (_req, res) => {
   }
 });
 
-// Get all songs from local data file
+/**
+ * GET /api/songs/all
+ * 
+ * Retrieve all songs with smart fallback to local data file.
+ * This endpoint first attempts to get songs from the database.
+ * If the database is empty, it loads songs from a cached JSON file
+ * and populates the database before returning the results.
+ */
 router.get("/songs/all", async (_req, res) => {
   try {
     // Try to get from storage first
@@ -40,7 +58,7 @@ router.get("/songs/all", async (_req, res) => {
           
           console.log(`Loaded ${songsList.length} songs from cached file`);
           
-          // Save to storage
+          // Save each song to the database
           for (const song of songsList) {
             await storage.createSong({
               name: song.name,
@@ -49,6 +67,7 @@ router.get("/songs/all", async (_req, res) => {
             });
           }
           
+          // Fetch the newly populated songs from storage
           songs = await storage.getAllSongs();
         } catch (err) {
           console.error("Error reading songs from cached file:", err);
@@ -69,10 +88,16 @@ router.get("/songs/all", async (_req, res) => {
   }
 });
 
-// Reload songs from the JSON file - useful when we add new songs to the database
+/**
+ * POST /api/songs/reload
+ * 
+ * Reload songs from the JSON file, adding only new songs to the database.
+ * This is useful when new songs are added to the JSON file and we want to
+ * update the database without duplicating existing entries.
+ */
 router.post("/songs/reload", async (_req, res) => {
   try {
-    // Get the song we're looking for
+    // Path to the cached songs data file
     const songsFilePath = path.join(process.cwd(), 'data', 'phish_songs.json');
     
     // Check if local file exists
@@ -85,18 +110,19 @@ router.post("/songs/reload", async (_req, res) => {
         
         console.log(`Found ${songsList.length} songs in file, checking for new songs...`);
         
-        // Get existing songs
+        // Get existing songs to avoid duplicates
         const existingSongs = await storage.getAllSongs();
         const existingSongNames = new Set(existingSongs.map(song => song.name));
         
-        // Filter to new songs only
+        // Filter to find only new songs that don't exist in the database
         const newSongs = songsList.filter((song: {name: string, slug: string, times_played: number}) => !existingSongNames.has(song.name));
         
+        // If no new songs found, return early
         if (newSongs.length === 0) {
           return res.json({ message: "No new songs found to add", songsAdded: 0 });
         }
         
-        // Save new songs to storage
+        // Save each new song to the database
         for (const song of newSongs) {
           await storage.createSong({
             name: song.name,
@@ -106,6 +132,7 @@ router.post("/songs/reload", async (_req, res) => {
           console.log(`Added new song: ${song.name}`);
         }
         
+        // Return success response with details
         return res.json({ 
           message: `Successfully added ${newSongs.length} new song(s)`, 
           songsAdded: newSongs.length,
