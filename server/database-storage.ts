@@ -348,11 +348,11 @@ export class DatabaseStorage implements IStorage {
          SUM(p.score) as "totalScore",
          COUNT(p.id) as "showsParticipated",
          MAX(p.score) as "bestScore",
-         u.avatar as "avatar"
+         u.avatar_path as "avatar"
        FROM predictions p
        JOIN users u ON p.user_id = u.id
        WHERE p.show_id = ANY(ARRAY[${showIds.map(id => `'${id}'`).join(',')}]::text[]) AND p.score IS NOT NULL
-       GROUP BY p.user_id, u.display_name, u.avatar
+       GROUP BY p.user_id, u.display_name, u.avatar_path
        ORDER BY "totalScore" DESC`
     );
     
@@ -410,11 +410,11 @@ export class DatabaseStorage implements IStorage {
          SUM(p.score) as "totalScore",
          COUNT(p.id) as "showsParticipated",
          MAX(p.score) as "bestScore",
-         u.avatar as "avatar"
+         u.avatar_path as "avatar"
        FROM predictions p
        JOIN users u ON p.user_id = u.id
        WHERE p.score IS NOT NULL
-       GROUP BY p.user_id, u.display_name, u.avatar
+       GROUP BY p.user_id, u.display_name, u.avatar_path
        ORDER BY "totalScore" DESC
        LIMIT ${limit}`
     );

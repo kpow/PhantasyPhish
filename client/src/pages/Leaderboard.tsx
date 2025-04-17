@@ -176,6 +176,7 @@ export default function Leaderboard() {
                             </div>
                           </td>
                           <td className="py-4 px-4 text-right">{entry.showsParticipated}</td>
+                          <td className="py-4 px-4 text-right text-primary font-medium">{entry.bestScore}</td>
                           <td className="py-4 px-4 text-right font-bold">{entry.totalScore}</td>
                         </tr>
                       ))}
@@ -266,7 +267,7 @@ export default function Leaderboard() {
                                   {entry.userName} <MedalEmoji rank={index + 1} />
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                  {entry.showsParticipated} shows
+                                  {entry.showsParticipated} shows • Best: <span className="text-primary">{entry.bestScore}</span>
                                 </div>
                               </div>
                             </div>
@@ -281,6 +282,7 @@ export default function Leaderboard() {
                             <th className="text-left py-3 px-4 w-16">Rank</th>
                             <th className="text-left py-3 px-4">Player</th>
                             <th className="text-right py-3 px-4">Shows</th>
+                            <th className="text-right py-3 px-4">Best Show</th>
                             <th className="text-right py-3 px-4">Total Score</th>
                           </tr>
                         </thead>
@@ -313,6 +315,7 @@ export default function Leaderboard() {
                                 </div>
                               </td>
                               <td className="py-4 px-4 text-right">{entry.showsParticipated}</td>
+                              <td className="py-4 px-4 text-right text-primary font-medium">{entry.bestScore}</td>
                               <td className="py-4 px-4 text-right font-bold">{entry.totalScore}</td>
                             </tr>
                           ))}
