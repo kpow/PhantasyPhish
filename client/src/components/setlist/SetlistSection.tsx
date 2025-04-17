@@ -113,7 +113,16 @@ export default function SetlistSection({
 
   // Count filled slots (where song is not null)
   const filledSlotsCount = setItems.filter(item => item.song !== null).length;
-  const totalSlotsCount = setItems.length;
+  
+  // Use standard slot counts for each set type
+  let totalSlotsCount = 8; // Default for set1 and set2
+  if (setType === "encore") {
+    totalSlotsCount = 3;
+  } else if (setType === "set1") {
+    totalSlotsCount = 8;
+  } else if (setType === "set2") {
+    totalSlotsCount = 8;
+  }
   
   return (
     <div className="mb-6">
