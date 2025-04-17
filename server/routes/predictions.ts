@@ -187,7 +187,11 @@ router.post("/test/score", async (req, res) => {
     // Score the prediction
     const scoringResult = scorePrediction(prediction, setlistToScore);
     
-    res.json(scoringResult);
+    // Return the result matching the client's expected format
+    res.json({
+      score: scoringResult.totalScore,  // Add total score at the top level for the toast
+      breakdown: scoringResult          // Include the full breakdown for the scoring card
+    });
   } catch (error) {
     console.error("Error scoring test prediction:", error);
     res.status(500).json({ message: (error as Error).message });
