@@ -17,7 +17,6 @@ import Leaderboard from "@/pages/Leaderboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Scoring from "@/pages/Scoring";
 import TestTourShows from "@/pages/TestTourShows";
-import MetallicDemo from "@/pages/MetallicDemo";
 import { SetlistProvider } from "./contexts/SetlistContextRefactored";
 import { ScrollProvider } from "./contexts/ScrollContext";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
@@ -100,7 +99,6 @@ function Router() {
       
       {/* Public routes */}
       <Route path="/leaderboard" component={Leaderboard} />
-      <Route path="/metallic-demo" component={MetallicDemo} />
       
       {/* Home route - this should be after more specific routes */}
       <Route path="/" component={Home} />
