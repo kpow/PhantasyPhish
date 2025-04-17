@@ -1,3 +1,14 @@
+/**
+ * Admin Routes Module
+ * 
+ * This module handles all administrative routes, including:
+ * - User management
+ * - Configuration management
+ * - Tour management
+ * - Show scoring and prediction management
+ * 
+ * These routes typically require admin authentication.
+ */
 import express from "express";
 import { storage } from "../storage";
 import { isAuthenticated, isAdmin } from "../auth/middleware";
@@ -7,6 +18,18 @@ import { scorePrediction, processRawSetlist } from "../utils/scoring-utils";
 import { z } from "zod";
 
 const router = express.Router();
+
+// In-memory site configuration store with default values
+// This allows us to persist config between requests without using the database
+const siteConfig = {
+  testModeEnabled: true, // Enable test mode for development
+  siteOverrides: {
+    bannerMessage: null,
+    maintenanceMode: false,
+    predictionsClosed: false,
+  },
+  // Additional config properties can be added here
+};
 
 // Check if user is an admin
 router.get("/admin/check", isAuthenticated, isAdmin, (req, res) => {
@@ -300,36 +323,44 @@ router.get("/admin/users", isAuthenticated, isAdmin, async (_req, res) => {
   }
 });
 
-// Get admin configuration
+/**
+ * GET /api/admin/config
+ * 
+ * Get the current application configuration.
+ * 
+ * This endpoint returns the current state of the application config.
+ * It's publicly accessible but provides additional info for admins.
+ */
 router.get("/admin/config", async (req, res) => {
   // This is a special config endpoint that doesn't require authentication
   // so we can bootstrap the frontend with some basic configuration
   try {
-    // For now we just have some hardcoded config values
-    const config = {
-      testModeEnabled: true, // Enable test mode for development
-      siteOverrides: {
-        bannerMessage: null,
-        maintenanceMode: false,
-        predictionsClosed: false,
-      },
-      // If user is authenticated and admin, return more config
-      admin: false
-    };
+    // Create a copy of the config to avoid modifying the original
+    const configResponse = { ...siteConfig };
     
-    // If user is authenticated and an admin, add admin flag
+    // Add admin flag if authenticated as admin
     if (req.isAuthenticated() && (req.user as any)?.is_admin) {
-      config.admin = true;
+      configResponse.admin = true;
+    } else {
+      configResponse.admin = false;
     }
     
-    res.json({ config });
+    res.json({ config: configResponse });
   } catch (error) {
     console.error("Error fetching admin config:", error);
     res.status(500).json({ message: (error as Error).message });
   }
 });
 
-// Update admin configuration
+/**
+ * POST /api/admin/config
+ * 
+ * Update the application configuration.
+ * 
+ * This endpoint allows administrators to modify the application config.
+ * Changes are persisted in memory until the server restarts.
+ * In a production environment, this would store the config in a database.
+ */
 router.post("/admin/config", isAuthenticated, isAdmin, async (req, res) => {
   try {
     const { config } = req.body;
@@ -338,13 +369,17 @@ router.post("/admin/config", isAuthenticated, isAdmin, async (req, res) => {
       return res.status(400).json({ message: "No configuration data provided" });
     }
     
-    // For now we just log the config changes
-    // In a real implementation, we would store this in the database
+    // Log the configuration changes
     console.log("Admin updated site configuration:", config);
     
+    // Update our in-memory configuration
+    // Merge the new config with the existing config to avoid losing properties
+    Object.assign(siteConfig, config);
+    
+    // Return the updated config
     res.json({ 
       message: "Configuration updated successfully",
-      config
+      config: { ...siteConfig, admin: true }
     });
   } catch (error) {
     console.error("Error updating admin config:", error);
