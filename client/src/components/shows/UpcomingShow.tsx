@@ -291,7 +291,7 @@ export default function UpcomingShow() {
           sprang tur 2025
         </h2>
 
-        <div className={`relative ${isMobile ? 'px-4' : 'px-2 mb-8'}`}>
+        <div className={`relative px-2 mb-6 }`}>
           <Carousel
             opts={carouselOpts}
             className="w-full"
@@ -310,8 +310,8 @@ export default function UpcomingShow() {
               ))}
             </CarouselContent>
             <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
-              <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-              <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+              <CarouselPrevious className="relative left-0 top-0 translate-y-2 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+              <CarouselNext className="relative right-0 top-0 translate-y-2 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
             </div>
           </Carousel>
         </div>
