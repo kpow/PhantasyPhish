@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
-import SetlistBuilder from "@/components/setlist/SetlistBuilderRefactored";
+import SetlistBuilder from "@/components/setlist/SetlistBuilder";
 import SongsList from "@/components/setlist/SongsList";
 import ScoreCard from "@/components/setlist/ScoreCard";
 import ScoringExplanation from "@/components/scoring/ScoringExplanation";
@@ -130,7 +130,7 @@ function LoadingState() {
 
 function MainContent() {
   const { isInScoringMode, scoringData } = useSetlist();
-  
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-0">
       {/* Left Column */}
@@ -148,7 +148,7 @@ function MainContent() {
 
         {/* Upcoming Shows Cards */}
         <UpcomingShow />
-        
+
         {/* Scoring Explanation */}
         <ScoringExplanation />
       </div>
