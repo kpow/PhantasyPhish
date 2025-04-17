@@ -38,8 +38,8 @@ interface ShowCardProps {
   onResetPrediction?: (show: PhishShow) => void;
 }
 
-// Main upcoming show component
-function MainUpcomingShow({
+// Unified show card component
+function ShowCard({
   show,
   onPickSetlist,
   hasPrediction,
@@ -50,7 +50,7 @@ function MainUpcomingShow({
       <div className="text-[#E5E5E5]">
         <p className="text-lg font-semibold">{formatShowDate(show.showdate)}</p>
         <p>{show.venue}</p>
-        <p>{typeof show.location === "string" ? show.location : ""}</p>
+        <p className="truncate">{typeof show.location === "string" ? show.location : ""}</p>
       </div>
 
       <div className="mt-4 flex gap-2">
@@ -88,69 +88,6 @@ function MainUpcomingShow({
                   className="bg-red-600 hover:bg-red-700"
                 >
                   Reset
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// Additional upcoming show component (smaller card)
-function AdditionalUpcomingShow({
-  show,
-  onPickSetlist,
-  hasPrediction,
-  onResetPrediction,
-}: ShowCardProps) {
-  return (
-    <div className="p-6 bg-[#252525] rounded-lg">
-      <h3 className="font-semibold text-white text-base mb-2">
-        {formatShowDate(show.showdate)}
-      </h3>
-      <div className="text-[#E5E5E5] text-sm">
-        <p>{show.venue}</p>
-        <p className="truncate">
-          {typeof show.location === "string" ? show.location : ""}
-        </p>
-      </div>
-      <div className="mt-3 flex gap-2">
-        <Button
-          className="font-display bg-primary hover:bg-purple-500 font-medium py-2 px-2 rounded-lg transition-colors w-full flex items-center justify-center gap-2"
-          onClick={() => onPickSetlist(show)}
-        >
-          <Music size={12} />
-          <span>{hasPrediction ? "edit" : "Pick"}</span>
-        </Button>
-
-        {hasPrediction && onResetPrediction && (
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button
-                variant="destructive"
-                className="py-2 px-4 rounded-lg transition-colors w-full flex items-center justify-center gap-2 text-sm"
-              >
-                <Trash2 size={16} />
-                <span className="font-display">reset</span>
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>reset picks?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to reset your setlist picks for{" "}
-                  {formatShowDate(show.showdate)}? This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => onResetPrediction(show)}
-                  className="bg-red-600 hover:bg-red-700 font-display"
-                >
-                  reset
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
@@ -301,12 +238,12 @@ export default function UpcomingShow() {
             sprang tur 2025
           </h2>
 
-          {isMobile ? (
-            <div className="relative px-4">
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {/* Main show skeleton */}
-                  <CarouselItem className="basis-full">
+          <div className={`relative ${isMobile ? 'px-4' : 'px-2'}`}>
+            <Carousel className="w-full">
+              <CarouselContent>
+                {/* Loading skeletons for shows */}
+                {[...Array(8)].map((_, i) => (
+                  <CarouselItem key={i} className="basis-full">
                     <div className="p-4 bg-[#252525] rounded-lg">
                       <div className="space-y-2">
                         <Skeleton className="h-6 w-3/4" />
@@ -318,62 +255,14 @@ export default function UpcomingShow() {
                       </div>
                     </div>
                   </CarouselItem>
-
-                  {/* Additional shows skeletons */}
-                  {[...Array(7)].map((_, i) => (
-                    <CarouselItem key={i} className="basis-full">
-                      <div className="p-4 bg-[#252525] rounded-lg">
-                        <Skeleton className="h-5 w-3/4 mb-2" />
-                        <Skeleton className="h-4 w-1/2 mb-1" />
-                        <Skeleton className="h-4 w-2/3 mb-3" />
-                        <Skeleton className="h-8 w-full rounded-lg" />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
-                  <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                  <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                </div>
-              </Carousel>
-            </div>
-          ) : (
-            <div className="relative px-4">
-              <Carousel className="w-full">
-                <CarouselContent>
-                  {/* Main show skeleton */}
-                  <CarouselItem className="basis-full">
-                    <div className="p-4 bg-[#252525] rounded-lg">
-                      <div className="space-y-2">
-                        <Skeleton className="h-6 w-3/4" />
-                        <Skeleton className="h-4 w-2/3" />
-                        <Skeleton className="h-4 w-1/2" />
-                      </div>
-                      <div className="mt-4">
-                        <Skeleton className="h-10 w-full rounded-lg" />
-                      </div>
-                    </div>
-                  </CarouselItem>
-
-                  {/* Additional shows skeletons */}
-                  {[...Array(7)].map((_, i) => (
-                    <CarouselItem key={i} className="basis-full">
-                      <div className="p-4 bg-[#252525] rounded-lg">
-                        <Skeleton className="h-5 w-3/4 mb-2" />
-                        <Skeleton className="h-4 w-1/2 mb-1" />
-                        <Skeleton className="h-4 w-2/3 mb-3" />
-                        <Skeleton className="h-8 w-full rounded-lg" />
-                      </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
-                  <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                  <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                </div>
-              </Carousel>
-            </div>
-          )}
+                ))}
+              </CarouselContent>
+              <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
+                <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+              </div>
+            </Carousel>
+          </div>
         </CardContent>
       </Card>
     );
@@ -390,6 +279,11 @@ export default function UpcomingShow() {
     );
   }
 
+  // Common carousel options without type errors
+  const carouselOpts = {
+    loop: true
+  };
+
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
       <CardContent className="p-1">
@@ -397,83 +291,30 @@ export default function UpcomingShow() {
           sprang tur 2025
         </h2>
 
-        {isMobile ? (
-          <div className="relative px-4">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
-            >
-              <CarouselContent>
-                {/* Main upcoming show as first slide */}
-                <CarouselItem className="basis-full">
-                  <MainUpcomingShow
-                    show={upcomingShows[0]}
+        <div className={`relative ${isMobile ? 'px-4' : 'px-2 mb-8'}`}>
+          <Carousel
+            opts={carouselOpts}
+            className="w-full"
+          >
+            <CarouselContent>
+              {/* All upcoming shows with the same card component */}
+              {upcomingShows.map((show) => (
+                <CarouselItem key={show.showid} className="basis-full">
+                  <ShowCard
+                    show={show}
                     onPickSetlist={handlePickSetlist}
-                    hasPrediction={showPredictions[upcomingShows[0].showid]}
+                    hasPrediction={showPredictions[show.showid]}
                     onResetPrediction={handleResetPrediction}
                   />
                 </CarouselItem>
-
-                {/* Additional upcoming shows as separate slides */}
-                {upcomingShows.slice(1).map((show) => (
-                  <CarouselItem key={show.showid} className="basis-full">
-                    <AdditionalUpcomingShow
-                      show={show}
-                      onPickSetlist={handlePickSetlist}
-                      hasPrediction={showPredictions[show.showid]}
-                      onResetPrediction={handleResetPrediction}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
-                <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-              </div>
-            </Carousel>
-          </div>
-        ) : (
-          <div className="relative px-2 mb-8">
-            <Carousel
-              opts={{
-                align: "start",
-                loop: true,
-              }}
-              className="w-full"
-            >
-              <CarouselContent>
-                {/* Main upcoming show as first slide */}
-                <CarouselItem className="basis-full">
-                  <MainUpcomingShow
-                    show={upcomingShows[0]}
-                    onPickSetlist={handlePickSetlist}
-                    hasPrediction={showPredictions[upcomingShows[0].showid]}
-                    onResetPrediction={handleResetPrediction}
-                  />
-                </CarouselItem>
-
-                {/* Additional upcoming shows as separate slides */}
-                {upcomingShows.slice(1).map((show) => (
-                  <CarouselItem key={show.showid} className="basis-full">
-                    <AdditionalUpcomingShow
-                      show={show}
-                      onPickSetlist={handlePickSetlist}
-                      hasPrediction={showPredictions[show.showid]}
-                      onResetPrediction={handleResetPrediction}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
-                <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                <CarouselNext className="relative right-0 top-0 -translate-y-100 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-              </div>
-            </Carousel>
-          </div>
-        )}
+              ))}
+            </CarouselContent>
+            <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
+              <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+              <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+            </div>
+          </Carousel>
+        </div>
       </CardContent>
     </Card>
   );
