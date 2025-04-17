@@ -99,13 +99,21 @@ export default function SetlistSection({
   };
 
   const getItemIds = () => {
-    return setItems.map((_, index) => `${setType}-${index}`);
+    // Create an array of proper length based on totalSlotsCount rather than setItems.length
+    return Array(totalSlotsCount).fill(0).map((_, index) => `${setType}-${index}`);
   };
 
   const handleSongClick = (position: number) => {
     // With the quick add menu, we now only allow removing songs by clicking on them
+    // Check if we have an item at this position, if not, we're dealing with a placeholder
+    if (position >= setItems.length) {
+      // This is a placeholder, do nothing when clicked
+      return;
+    }
+    
+    // Otherwise, check if the item has a song
     const currentItem = setItems[position];
-    if (currentItem.song) {
+    if (currentItem?.song) {
       // If clicking on a song that's already set, remove it
       onSetSong(setType, position, null);
     }
@@ -144,7 +152,9 @@ export default function SetlistSection({
               items={getItemIds()}
               strategy={verticalListSortingStrategy}
             >
-              {setItems.map((item, index) => {
+              {Array(totalSlotsCount).fill(0).map((_, index) => {
+                // Use the item at this index if it exists, otherwise create an empty placeholder
+                const item = index < setItems.length ? setItems[index] : { position: index, song: null };
                 const songName = item.song ? item.song.name : "?";
                 const textColor = item.song ? "text-white" : "text-gray-500";
 
