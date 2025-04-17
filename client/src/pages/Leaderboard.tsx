@@ -11,6 +11,8 @@ interface LeaderboardEntry {
   userName: string;
   totalScore: number;
   showsParticipated: number;
+  bestScore: number;
+  avatar: string | null;
 }
 
 interface Tour {
@@ -141,6 +143,7 @@ export default function Leaderboard() {
                         <th className="text-left py-3 px-4 w-16">Rank</th>
                         <th className="text-left py-3 px-4">Player</th>
                         <th className="text-right py-3 px-4">Shows</th>
+                        <th className="text-right py-3 px-4">Best Show</th>
                         <th className="text-right py-3 px-4">Total Score</th>
                       </tr>
                     </thead>
@@ -161,6 +164,9 @@ export default function Leaderboard() {
                           <td className="py-4 px-4">
                             <div className="flex items-center">
                               <Avatar className="h-8 w-8 mr-2">
+                                {entry.avatar ? (
+                                  <AvatarImage src={entry.avatar} alt={entry.userName} />
+                                ) : null}
                                 <AvatarFallback>
                                   {entry.userName.slice(0, 2)}
                                 </AvatarFallback>
@@ -248,6 +254,9 @@ export default function Leaderboard() {
                                 {getRankIcon(index + 1)}
                               </div>
                               <Avatar className="h-10 w-10">
+                                {entry.avatar ? (
+                                  <AvatarImage src={entry.avatar} alt={entry.userName} />
+                                ) : null}
                                 <AvatarFallback>
                                   {entry.userName.slice(0, 2)}
                                 </AvatarFallback>
@@ -292,6 +301,9 @@ export default function Leaderboard() {
                               <td className="py-4 px-4">
                                 <div className="flex items-center">
                                   <Avatar className="h-8 w-8 mr-2">
+                                    {entry.avatar ? (
+                                      <AvatarImage src={entry.avatar} alt={entry.userName} />
+                                    ) : null}
                                     <AvatarFallback>
                                       {entry.userName.slice(0, 2)}
                                     </AvatarFallback>

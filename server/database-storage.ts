@@ -331,7 +331,7 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
-  async getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]> {
+  async getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number, bestScore: number, avatar: string | null}[]> {
     // Get all shows in this tour
     const tourShows = await this.getShowsByTour(tourId);
     const showIds = tourShows.map(show => show.show_id);
@@ -341,16 +341,18 @@ export class DatabaseStorage implements IStorage {
     }
     
     // Get aggregate scores by user across all shows in the tour - construct SQL directly
-    const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number}>(
+    const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number, bestScore: number, avatar: string | null}>(
       `SELECT 
          p.user_id as "userId", 
          u.display_name as "userName", 
          SUM(p.score) as "totalScore",
-         COUNT(p.id) as "showsParticipated"
+         COUNT(p.id) as "showsParticipated",
+         MAX(p.score) as "bestScore",
+         u.avatar as "avatar"
        FROM predictions p
        JOIN users u ON p.user_id = u.id
        WHERE p.show_id = ANY(ARRAY[${showIds.map(id => `'${id}'`).join(',')}]::text[]) AND p.score IS NOT NULL
-       GROUP BY p.user_id, u.display_name
+       GROUP BY p.user_id, u.display_name, u.avatar
        ORDER BY "totalScore" DESC`
     );
     
@@ -358,7 +360,9 @@ export class DatabaseStorage implements IStorage {
       userId: Number(row.userId),
       userName: String(row.userName || 'Anonymous'),
       totalScore: Number(row.totalScore || 0),
-      showsParticipated: Number(row.showsParticipated || 0)
+      showsParticipated: Number(row.showsParticipated || 0),
+      bestScore: Number(row.bestScore || 0),
+      avatar: row.avatar
     }));
   }
 
@@ -397,18 +401,20 @@ export class DatabaseStorage implements IStorage {
     return { processed: 0, updated: 0, errors: 0 };
   }
 
-  async getGlobalLeaderboard(limit: number = 10): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]> {
+  async getGlobalLeaderboard(limit: number = 10): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number, bestScore: number, avatar: string | null}[]> {
     // Get aggregate scores by user across all predictions with scores
-    const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number}>(
+    const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number, bestScore: number, avatar: string | null}>(
       `SELECT 
          p.user_id as "userId", 
          u.display_name as "userName", 
          SUM(p.score) as "totalScore",
-         COUNT(p.id) as "showsParticipated"
+         COUNT(p.id) as "showsParticipated",
+         MAX(p.score) as "bestScore",
+         u.avatar as "avatar"
        FROM predictions p
        JOIN users u ON p.user_id = u.id
        WHERE p.score IS NOT NULL
-       GROUP BY p.user_id, u.display_name
+       GROUP BY p.user_id, u.display_name, u.avatar
        ORDER BY "totalScore" DESC
        LIMIT ${limit}`
     );
@@ -417,7 +423,9 @@ export class DatabaseStorage implements IStorage {
       userId: Number(row.userId),
       userName: String(row.userName || 'Anonymous'),
       totalScore: Number(row.totalScore || 0),
-      showsParticipated: Number(row.showsParticipated || 0)
+      showsParticipated: Number(row.showsParticipated || 0),
+      bestScore: Number(row.bestScore || 0),
+      avatar: row.avatar
     }));
   }
 }
