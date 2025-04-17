@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useRoute, useLocation } from "wouter";
+import { useRoute, useLocation, Link } from "wouter";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
 import SetlistBuilder from "@/components/setlist/SetlistBuilder";
@@ -9,6 +9,8 @@ import ScoringExplanation from "@/components/scoring/ScoringExplanation";
 import { usePhishData } from "@/hooks/usePhishData";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { Trophy } from "lucide-react";
 import { useSetlist } from "@/contexts/SetlistContextRefactored";
 
 export default function Home() {
@@ -139,9 +141,18 @@ function MainContent() {
         <Card className="bg-[#1E1E1E] rounded-xl shadow-lg">
           <CardContent className="p-5">
             <h2 className="font-display text-2xl mb-2 text-white">whazzup</h2>
-            <p className="text-[#E5E5E5]">
+            <p className="text-[#E5E5E5] mb-4">
               pick the setlist and score points based on what Phish plays!
             </p>
+            <Link href="/leaderboard">
+              <Button 
+                variant="outline" 
+                className="w-full bg-primary/10 border-primary/20 hover:bg-primary/20 text-white"
+              >
+                <Trophy className="h-4 w-4 mr-2" />
+                View Leaderboard
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 

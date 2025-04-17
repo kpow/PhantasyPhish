@@ -13,6 +13,7 @@ import VerifyEmail from "@/pages/VerifyEmail";
 import ResendVerification from "@/pages/ResendVerification";
 import Profile from "@/pages/Profile";
 import MyPredictions from "@/pages/MyPredictions";
+import Leaderboard from "@/pages/Leaderboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Scoring from "@/pages/Scoring";
 import TestTourShows from "@/pages/TestTourShows";
@@ -95,6 +96,9 @@ function Router() {
       <Route path="/prediction/:showId">
         <ProtectedRoute component={Home} />
       </Route>
+      
+      {/* Public routes */}
+      <Route path="/leaderboard" component={Leaderboard} />
       
       {/* Home route - this should be after more specific routes */}
       <Route path="/" component={Home} />
