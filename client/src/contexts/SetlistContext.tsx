@@ -23,7 +23,7 @@ interface SetlistContextType {
   };
   selectedSong: PhishSong | null;
   selectedShow: PhishShow | null;
-  scoringMode: boolean;
+  isInScoringMode: boolean; // Changed from scoringMode to match SetlistBuilder
   scoringData: ScoringData;
   setSelectedSong: (song: PhishSong | null) => void;
   setSelectedShow: (show: PhishShow | null) => void;
@@ -44,7 +44,10 @@ interface SetlistContextType {
   loadPredictionForShow: (showId: string) => Promise<boolean>;
   deletePredictionForShow: (showId: string) => Promise<boolean>;
   scorePrediction: (predictionId: number) => Promise<boolean>;
-  toggleScoringMode: () => void;
+  // Added these properties to match what SetlistBuilder expects
+  exitScoringMode: () => void;
+  enterScoringMode: () => void;
+  navigateToShow: (showId: string, scoring?: boolean) => void;
   setSetlist: React.Dispatch<
     React.SetStateAction<{
       set1: SetlistItem[];
@@ -62,7 +65,7 @@ export const SetlistContext = createContext<SetlistContextType>({
   },
   selectedSong: null,
   selectedShow: null,
-  scoringMode: false,
+  isInScoringMode: false,
   scoringData: {
     breakdown: null,
     actualSetlist: null,
@@ -81,7 +84,9 @@ export const SetlistContext = createContext<SetlistContextType>({
   loadPredictionForShow: async () => false,
   deletePredictionForShow: async () => false,
   scorePrediction: async () => false,
-  toggleScoringMode: () => {},
+  exitScoringMode: () => {},
+  enterScoringMode: () => {},
+  navigateToShow: () => {},
   // Empty function for the default value of setSetlist
   setSetlist: () => {},
 });
@@ -197,13 +202,40 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     }
   }, [location, scoringMode]);
 
+  // Helper function to navigate to a show with optional scoring parameter
+  const navigateToShow = (showId: string, scoring: boolean = false) => {
+    if (scoring) {
+      setLocation(`/prediction/${showId}/score`);
+    } else {
+      setLocation(`/prediction/${showId}`);
+    }
+  };
+  
+  // Helper to exit scoring mode
+  const exitScoringMode = () => {
+    setScoringMode(false);
+    if (selectedShow) {
+      navigateToShow(selectedShow.showid, false);
+    }
+  };
+  
+  // Helper to enter scoring mode
+  const enterScoringMode = () => {
+    setScoringMode(true);
+    if (selectedShow) {
+      navigateToShow(selectedShow.showid, true);
+    }
+  };
+
   const toggleScoringMode = () => {
     const newScoringMode = !scoringMode;
     setScoringMode(newScoringMode);
     
     // If turning off scoring mode and we have a show selected, immediately redirect
     if (!newScoringMode && selectedShow) {
-      setLocation(`/prediction/${selectedShow.showid}`);
+      navigateToShow(selectedShow.showid, false);
+    } else if (newScoringMode && selectedShow) {
+      navigateToShow(selectedShow.showid, true);
     }
   };
 
@@ -608,13 +640,16 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     }
   };
 
+  // Compute isInScoringMode based on URL route
+  const isInScoringMode = !!scoringRoute;
+
   return (
     <SetlistContext.Provider
       value={{
         setlist,
         selectedSong,
         selectedShow,
-        scoringMode,
+        isInScoringMode,
         scoringData,
         setSelectedSong,
         setSelectedShow,
@@ -627,7 +662,9 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         loadPredictionForShow,
         deletePredictionForShow,
         scorePrediction,
-        toggleScoringMode,
+        exitScoringMode,
+        enterScoringMode,
+        navigateToShow,
         setSetlist,
       }}
     >

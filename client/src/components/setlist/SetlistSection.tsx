@@ -98,6 +98,16 @@ export default function SetlistSection({
     }
   };
 
+  // Use standard slot counts for each set type
+  let totalSlotsCount = 8; // Default for set1 and set2
+  if (setType === "encore") {
+    totalSlotsCount = 3;
+  } else if (setType === "set1") {
+    totalSlotsCount = 8;
+  } else if (setType === "set2") {
+    totalSlotsCount = 8;
+  }
+
   const getItemIds = () => {
     // Create an array of proper length based on totalSlotsCount rather than setItems.length
     return Array(totalSlotsCount).fill(0).map((_, index) => `${setType}-${index}`);
@@ -121,16 +131,6 @@ export default function SetlistSection({
 
   // Count filled slots (where song is not null)
   const filledSlotsCount = setItems.filter(item => item.song !== null).length;
-  
-  // Use standard slot counts for each set type
-  let totalSlotsCount = 8; // Default for set1 and set2
-  if (setType === "encore") {
-    totalSlotsCount = 3;
-  } else if (setType === "set1") {
-    totalSlotsCount = 8;
-  } else if (setType === "set2") {
-    totalSlotsCount = 8;
-  }
   
   return (
     <div className="mb-6">
