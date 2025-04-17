@@ -417,9 +417,11 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
           // Parse the JSON string stored in the database
           const setlistData = data.prediction.setlist;
 
-          // Map the songs into the right format
+          // Map the songs into the right format, while ensuring we always have the required number of slots
+          // For set1: Always maintain 8 slots
           if (setlistData.set1 && Array.isArray(setlistData.set1)) {
-            predictionSetlist.set1 = setlistData.set1.map(
+            // Map existing songs
+            const set1Songs = setlistData.set1.map(
               (songData: any, index: number) => ({
                 position: index,
                 song: songData
@@ -432,10 +434,25 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
                   : null,
               }),
             );
+            
+            // Fill the rest with empty slots to reach 8 total
+            const currentCount = set1Songs.length;
+            if (currentCount < 8) {
+              for (let i = currentCount; i < 8; i++) {
+                set1Songs.push({
+                  position: i,
+                  song: null
+                });
+              }
+            }
+            
+            predictionSetlist.set1 = set1Songs;
           }
 
+          // For set2: Always maintain 8 slots
           if (setlistData.set2 && Array.isArray(setlistData.set2)) {
-            predictionSetlist.set2 = setlistData.set2.map(
+            // Map existing songs
+            const set2Songs = setlistData.set2.map(
               (songData: any, index: number) => ({
                 position: index,
                 song: songData
@@ -448,10 +465,25 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
                   : null,
               }),
             );
+            
+            // Fill the rest with empty slots to reach 8 total
+            const currentCount = set2Songs.length;
+            if (currentCount < 8) {
+              for (let i = currentCount; i < 8; i++) {
+                set2Songs.push({
+                  position: i,
+                  song: null
+                });
+              }
+            }
+            
+            predictionSetlist.set2 = set2Songs;
           }
 
+          // For encore: Always maintain 3 slots
           if (setlistData.encore && Array.isArray(setlistData.encore)) {
-            predictionSetlist.encore = setlistData.encore.map(
+            // Map existing songs
+            const encoreSongs = setlistData.encore.map(
               (songData: any, index: number) => ({
                 position: index,
                 song: songData
@@ -464,6 +496,19 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
                   : null,
               }),
             );
+            
+            // Fill the rest with empty slots to reach 3 total
+            const currentCount = encoreSongs.length;
+            if (currentCount < 3) {
+              for (let i = currentCount; i < 3; i++) {
+                encoreSongs.push({
+                  position: i,
+                  song: null
+                });
+              }
+            }
+            
+            predictionSetlist.encore = encoreSongs;
           }
 
           // Update the setlist
