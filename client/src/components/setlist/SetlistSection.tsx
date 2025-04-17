@@ -111,9 +111,18 @@ export default function SetlistSection({
     }
   };
 
+  // Count filled slots (where song is not null)
+  const filledSlotsCount = setItems.filter(item => item.song !== null).length;
+  const totalSlotsCount = setItems.length;
+  
   return (
     <div className="mb-6">
-      <h3 className={`font-display text-xl mb-3 ${titleColor}`}>{title}</h3>
+      <div className="flex justify-between items-center mb-3">
+        <h3 className={`font-display text-xl ${titleColor}`}>{title}</h3>
+        <div className={`px-2 py-1 rounded-full text-xs font-medium bg-gray-800 ${titleColor}`}>
+          {filledSlotsCount} of {totalSlotsCount} songs
+        </div>
+      </div>
       <div className="border border-gray-800 rounded-lg overflow-hidden">
         {/* <ScrollArea className={`${height} pr-2`} ref={scrollRef}> */}
         <div className="p-2">
