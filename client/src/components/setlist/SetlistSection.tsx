@@ -98,6 +98,22 @@ export default function SetlistSection({
     }
   };
 
+  const getItemIds = () => {
+    return setItems.map((_, index) => `${setType}-${index}`);
+  };
+
+  const handleSongClick = (position: number) => {
+    // With the quick add menu, we now only allow removing songs by clicking on them
+    const currentItem = setItems[position];
+    if (currentItem.song) {
+      // If clicking on a song that's already set, remove it
+      onSetSong(setType, position, null);
+    }
+  };
+
+  // Count filled slots (where song is not null)
+  const filledSlotsCount = setItems.filter(item => item.song !== null).length;
+  
   // Use standard slot counts for each set type
   let totalSlotsCount = 8; // Default for set1 and set2
   if (setType === "encore") {
@@ -107,30 +123,6 @@ export default function SetlistSection({
   } else if (setType === "set2") {
     totalSlotsCount = 8;
   }
-
-  const getItemIds = () => {
-    // Create an array of proper length based on totalSlotsCount rather than setItems.length
-    return Array(totalSlotsCount).fill(0).map((_, index) => `${setType}-${index}`);
-  };
-
-  const handleSongClick = (position: number) => {
-    // With the quick add menu, we now only allow removing songs by clicking on them
-    // Check if we have an item at this position, if not, we're dealing with a placeholder
-    if (position >= setItems.length) {
-      // This is a placeholder, do nothing when clicked
-      return;
-    }
-    
-    // Otherwise, check if the item has a song
-    const currentItem = setItems[position];
-    if (currentItem?.song) {
-      // If clicking on a song that's already set, remove it
-      onSetSong(setType, position, null);
-    }
-  };
-
-  // Count filled slots (where song is not null)
-  const filledSlotsCount = setItems.filter(item => item.song !== null).length;
   
   return (
     <div className="mb-6">
@@ -152,9 +144,7 @@ export default function SetlistSection({
               items={getItemIds()}
               strategy={verticalListSortingStrategy}
             >
-              {Array(totalSlotsCount).fill(0).map((_, index) => {
-                // Use the item at this index if it exists, otherwise create an empty placeholder
-                const item = index < setItems.length ? setItems[index] : { position: index, song: null };
+              {setItems.map((item, index) => {
                 const songName = item.song ? item.song.name : "?";
                 const textColor = item.song ? "text-white" : "text-gray-500";
 

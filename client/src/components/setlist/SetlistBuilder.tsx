@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import SetlistSection from './SetlistSection';
-import { useSetlist } from '@/contexts/SetlistContext';
+import { useSetlist } from '@/contexts/SetlistContextRefactored';
 import { useAuth } from '@/contexts/AuthContext';
 import { useConfig } from '@/contexts/ConfigContext';
 import { formatShowDate } from '@/hooks/usePhishData';
