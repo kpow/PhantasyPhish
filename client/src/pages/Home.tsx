@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useRoute, useLocation } from "wouter";
 import UpcomingShow from "@/components/shows/UpcomingShow";
 import RecentShows from "@/components/shows/RecentShows";
-import SetlistBuilder from "@/components/setlist/SetlistBuilderRefactored";
+import SetlistBuilder from "@/components/setlist/SetlistBuilder";
 import SongsList from "@/components/setlist/SongsList";
 import ScoreCard from "@/components/setlist/ScoreCard";
 import ScoringExplanation from "@/components/scoring/ScoringExplanation";
@@ -130,7 +130,7 @@ function LoadingState() {
 
 function MainContent() {
   const { isInScoringMode, scoringData } = useSetlist();
-  
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-0">
       {/* Left Column */}
@@ -148,7 +148,7 @@ function MainContent() {
 
         {/* Upcoming Shows Cards */}
         <UpcomingShow />
-        
+
         {/* Scoring Explanation */}
         <ScoringExplanation />
       </div>
@@ -160,7 +160,9 @@ function MainContent() {
             <Card className="bg-[#1E1E1E] rounded-xl shadow-lg p-5 h-full">
               <CardContent className="flex items-center justify-center h-full">
                 <div className="text-center py-6">
-                  <div className="mb-4 text-primary">Loading setlist data...</div>
+                  <div className="mb-4 text-primary">
+                    Loading setlist data...
+                  </div>
                   <div className="animate-pulse h-6 w-32 bg-primary/20 rounded-md mx-auto mb-3"></div>
                   <div className="animate-pulse h-4 w-48 bg-gray-700 rounded-md mx-auto"></div>
                 </div>
@@ -176,7 +178,7 @@ function MainContent() {
               </CardContent>
             </Card>
           ) : (
-            <ScoreCard 
+            <ScoreCard
               scoreBreakdown={scoringData.breakdown!}
               actualSetlist={scoringData.actualSetlist}
               showDetails={scoringData.showDetails}
