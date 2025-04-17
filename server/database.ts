@@ -8,7 +8,8 @@ import {
   shows, 
   predictions, 
   password_reset_tokens,
-  email_verification_tokens
+  email_verification_tokens,
+  site_config
 } from "@shared/schema";
 
 const { Pool } = pg;
@@ -24,7 +25,7 @@ export const db = drizzle(pool);
 // Check if required tables exist in the database
 export async function checkDatabaseTables() {
   try {
-    const tables = ['users', 'password_reset_tokens', 'email_verification_tokens', 'songs', 'shows', 'predictions', 'session'];
+    const tables = ['users', 'password_reset_tokens', 'email_verification_tokens', 'songs', 'shows', 'predictions', 'session', 'site_config'];
     let allTablesExist = true;
     
     console.log('Checking database tables...');

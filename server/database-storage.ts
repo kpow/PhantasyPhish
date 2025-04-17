@@ -431,4 +431,55 @@ export class DatabaseStorage implements IStorage {
       avatar: row.avatar
     }));
   }
+
+  // Site configuration operations
+  async getSiteConfig(key: string): Promise<Record<string, any> | null> {
+    try {
+      const result = await db
+        .select()
+        .from(site_config)
+        .where(eq(site_config.key, key));
+      
+      if (result.length === 0) {
+        return null;
+      }
+      
+      return result[0].value as Record<string, any>;
+    } catch (error) {
+      console.error(`Error retrieving site config with key ${key}:`, error);
+      return null;
+    }
+  }
+
+  async saveSiteConfig(key: string, value: Record<string, any>): Promise<void> {
+    try {
+      // First check if the config entry already exists
+      const existing = await db
+        .select()
+        .from(site_config)
+        .where(eq(site_config.key, key));
+      
+      if (existing.length > 0) {
+        // Update existing config
+        await db
+          .update(site_config)
+          .set({ 
+            value: value as any, // Cast to any for jsonb type
+            updated_at: new Date() 
+          })
+          .where(eq(site_config.key, key));
+      } else {
+        // Insert new config
+        await db
+          .insert(site_config)
+          .values({
+            key,
+            value: value as any, // Cast to any for jsonb type
+          });
+      }
+    } catch (error) {
+      console.error(`Error saving site config with key ${key}:`, error);
+      throw error;
+    }
+  }
 }

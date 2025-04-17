@@ -19,16 +19,17 @@ import { z } from "zod";
 
 const router = express.Router();
 
-// In-memory site configuration store with default values
-// This allows us to persist config between requests without using the database
-const siteConfig = {
+// Configuration constants
+const CONFIG_KEY = 'app_config'; // Database key for storing the application config
+
+// Default site configuration values - used when no config exists in the database yet
+const DEFAULT_CONFIG = {
   testModeEnabled: true, // Enable test mode for development
   siteOverrides: {
     bannerMessage: null,
     maintenanceMode: false,
     predictionsClosed: false,
-  },
-  // Additional config properties can be added here
+  }
 };
 
 // Check if user is an admin
@@ -330,13 +331,22 @@ router.get("/admin/users", isAuthenticated, isAdmin, async (_req, res) => {
  * 
  * This endpoint returns the current state of the application config.
  * It's publicly accessible but provides additional info for admins.
+ * Configuration is fetched from the database for persistence.
  */
 router.get("/admin/config", async (req, res) => {
   // This is a special config endpoint that doesn't require authentication
   // so we can bootstrap the frontend with some basic configuration
   try {
-    // Create a copy of the config to avoid modifying the original
-    const configResponse = { ...siteConfig };
+    // Fetch configuration from database
+    let config = await storage.getSiteConfig(CONFIG_KEY);
+    
+    // If no configuration exists yet, use default values
+    if (!config) {
+      config = { ...DEFAULT_CONFIG };
+    }
+    
+    // Create a response object with the config data
+    const configResponse = { ...config };
     
     // Add admin flag if authenticated as admin
     if (req.isAuthenticated() && (req.user as any)?.is_admin) {
@@ -358,8 +368,7 @@ router.get("/admin/config", async (req, res) => {
  * Update the application configuration.
  * 
  * This endpoint allows administrators to modify the application config.
- * Changes are persisted in memory until the server restarts.
- * In a production environment, this would store the config in a database.
+ * Changes are persisted in the database for permanent storage.
  */
 router.post("/admin/config", isAuthenticated, isAdmin, async (req, res) => {
   try {
@@ -372,14 +381,22 @@ router.post("/admin/config", isAuthenticated, isAdmin, async (req, res) => {
     // Log the configuration changes
     console.log("Admin updated site configuration:", config);
     
-    // Update our in-memory configuration
-    // Merge the new config with the existing config to avoid losing properties
-    Object.assign(siteConfig, config);
+    // Get current config from database or use default
+    let currentConfig = await storage.getSiteConfig(CONFIG_KEY);
+    if (!currentConfig) {
+      currentConfig = { ...DEFAULT_CONFIG };
+    }
+    
+    // Merge the new config with the existing config and save to database
+    const updatedConfig = { ...currentConfig, ...config };
+    
+    // Save updated config to the database
+    await storage.saveSiteConfig(CONFIG_KEY, updatedConfig);
     
     // Return the updated config
     res.json({ 
       message: "Configuration updated successfully",
-      config: { ...siteConfig, admin: true }
+      config: { ...updatedConfig, admin: true }
     });
   } catch (error) {
     console.error("Error updating admin config:", error);
