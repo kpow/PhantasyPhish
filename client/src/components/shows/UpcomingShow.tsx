@@ -393,7 +393,7 @@ export default function UpcomingShow() {
   return (
     <Card className="bg-[#1E1E1E] rounded-xl shadow-lg border-0 overflow-hidden">
       <CardContent className="p-1">
-        <h2 className="font-display text-xl mb-3 text-white p-3">
+        <h2 className="font-display text-xl mb-0 text-white p-3">
           sprang tur 2025
         </h2>
 
@@ -436,7 +436,7 @@ export default function UpcomingShow() {
             </Carousel>
           </div>
         ) : (
-          <div className="relative px-2 mb-4">
+          <div className="relative px-2 mb-8">
             <Carousel
               opts={{
                 align: "start",
@@ -469,7 +469,7 @@ export default function UpcomingShow() {
               </CarouselContent>
               <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-1 py-2">
                 <CarouselPrevious className="relative left-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
-                <CarouselNext className="relative right-0 top-0 translate-y-0 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
+                <CarouselNext className="relative right-0 top-0 -translate-y-100 h-8 w-8 rounded-full bg-gray-800 border-gray-700" />
               </div>
             </Carousel>
           </div>

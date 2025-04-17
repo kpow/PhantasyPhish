@@ -64,6 +64,7 @@ export default function Leaderboard() {
   
   return (
     <div className="container max-w-6xl mx-auto px-4 py-8">
+     
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold font-display mb-2">
           <Crown className="h-8 w-8 md:h-10 md:w-10 inline-block mr-2 text-yellow-500" />
@@ -73,7 +74,7 @@ export default function Leaderboard() {
           see who's crushing it with their Phish picks!
         </p>
       </div>
-      
+
       <Tabs defaultValue="global" className="w-full">
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
           <TabsTrigger value="global">
@@ -336,6 +337,7 @@ export default function Leaderboard() {
           </Card>
         </TabsContent>
       </Tabs>
+      
     </div>
   );
 }
