@@ -95,11 +95,7 @@ interface SetlistProviderProps {
 
 export function SetlistProvider({ children }: SetlistProviderProps) {
   // Initialize setlist with 8 spots in sets 1 and 2, and 3 spots in encore
-  const initialSetlist: {
-    set1: SetlistItem[];
-    set2: SetlistItem[];
-    encore: SetlistItem[];
-  } = {
+  const createEmptySetlist = () => ({
     set1: Array(8)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
@@ -109,7 +105,9 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     encore: Array(3)
       .fill(0)
       .map((_, i) => ({ position: i, song: null as PhishSong | null })),
-  };
+  });
+  
+  const initialSetlist = createEmptySetlist();
 
   const [setlist, setSetlist] = useState<{
     set1: SetlistItem[];
@@ -283,23 +281,17 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     position: number,
     song: PhishSong | null,
   ) => {
+    // Always maintain the fixed number of slots (8 for sets, 3 for encore)
+    const maxSlots = set === "encore" ? 3 : 8;
+    
     if (song === null) {
-      // If removing a song, remove the entire item from the array
-      setSetlist((prev) => {
-        // Filter out the item at the specified position
-        const newSetItems = prev[set].filter(item => item.position !== position);
-        
-        // Update the positions of the remaining items
-        const updatedItems = newSetItems.map((item, index) => ({
-          ...item,
-          position: index,
-        }));
-        
-        return {
-          ...prev,
-          [set]: updatedItems,
-        };
-      });
+      // If removing a song, just clear the song at that position but keep the slot
+      setSetlist((prev) => ({
+        ...prev,
+        [set]: prev[set].map((item) =>
+          item.position === position ? { ...item, song: null } : item,
+        ),
+      }));
     } else {
       // If adding a song, update the existing slot
       setSetlist((prev) => ({
@@ -309,6 +301,37 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
         ),
       }));
     }
+    
+    // After update, ensure we have exactly the correct number of slots
+    setSetlist((prev) => {
+      const currentItems = [...prev[set]];
+      
+      // If we somehow have too few items, add empty slots
+      if (currentItems.length < maxSlots) {
+        for (let i = currentItems.length; i < maxSlots; i++) {
+          currentItems.push({
+            position: i,
+            song: null
+          });
+        }
+      }
+      
+      // If we somehow have too many items, truncate
+      if (currentItems.length > maxSlots) {
+        currentItems.length = maxSlots;
+      }
+      
+      // Make sure positions are correct
+      const updatedItems = currentItems.map((item, index) => ({
+        ...item,
+        position: index,
+      }));
+      
+      return {
+        ...prev,
+        [set]: updatedItems,
+      };
+    });
 
     // Clear the selected song after adding it
     setSelectedSong(null);
@@ -336,10 +359,29 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     // Create a completely new setlist object to ensure React re-renders
     const newSetArray = [...setlist[set], newSpot];
 
+    // Ensure we have exactly the right number of slots
+    while (newSetArray.length < maxSize) {
+      newSetArray.push({
+        position: newSetArray.length,
+        song: null
+      });
+    }
+    
+    // If somehow we have too many, truncate
+    if (newSetArray.length > maxSize) {
+      newSetArray.length = maxSize;
+    }
+    
+    // Update positions
+    const updatedArray = newSetArray.map((item, index) => ({
+      ...item,
+      position: index
+    }));
+    
     // Update state with the new setlist
     setSetlist({
       ...setlist,
-      [set]: newSetArray,
+      [set]: updatedArray,
     });
   };
 
@@ -349,6 +391,9 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
     oldIndex: number,
     newIndex: number,
   ) => {
+    // Define maximum size based on the set type
+    const maxSize = set === "encore" ? 3 : 8;
+    
     // Create a new array for the specific set
     const items = [...setlist[set]];
 
@@ -357,6 +402,19 @@ export function SetlistProvider({ children }: SetlistProviderProps) {
 
     // Add the item at its new position
     items.splice(newIndex, 0, removedItem);
+
+    // Ensure we have exactly the right number of slots
+    while (items.length < maxSize) {
+      items.push({
+        position: items.length,
+        song: null
+      });
+    }
+    
+    // If somehow we have too many, truncate
+    if (items.length > maxSize) {
+      items.length = maxSize;
+    }
 
     // Update the position property of each item
     const updatedItems = items.map((item, index) => ({
