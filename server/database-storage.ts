@@ -396,4 +396,28 @@ export class DatabaseStorage implements IStorage {
     // since it requires fetching the actual setlist from the API
     return { processed: 0, updated: 0, errors: 0 };
   }
+
+  async getGlobalLeaderboard(limit: number = 10): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]> {
+    // Get aggregate scores by user across all predictions with scores
+    const result = await db.execute<{userId: number, userName: string, totalScore: number, showsParticipated: number}>(
+      `SELECT 
+         p.user_id as "userId", 
+         u.display_name as "userName", 
+         SUM(p.score) as "totalScore",
+         COUNT(p.id) as "showsParticipated"
+       FROM predictions p
+       JOIN users u ON p.user_id = u.id
+       WHERE p.score IS NOT NULL
+       GROUP BY p.user_id, u.display_name
+       ORDER BY "totalScore" DESC
+       LIMIT ${limit}`
+    );
+    
+    return result.rows.map(row => ({
+      userId: Number(row.userId),
+      userName: String(row.userName || 'Anonymous'),
+      totalScore: Number(row.totalScore || 0),
+      showsParticipated: Number(row.showsParticipated || 0)
+    }));
+  }
 }

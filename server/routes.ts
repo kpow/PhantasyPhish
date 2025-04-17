@@ -1090,6 +1090,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Public leaderboard endpoints
+  // Get global leaderboard
+  app.get("/api/leaderboard", async (req, res) => {
+    try {
+      const limitParam = req.query.limit;
+      const limit = limitParam ? parseInt(limitParam as string) : 10;
+      const leaderboard = await storage.getGlobalLeaderboard(limit);
+      res.json({ leaderboard });
+    } catch (error) {
+      console.error("Error fetching global leaderboard:", error);
+      res.status(500).json({ message: (error as Error).message });
+    }
+  });
+  
   // Get tours for leaderboard
   app.get("/api/tours", async (_req, res) => {
     try {

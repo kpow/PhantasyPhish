@@ -80,6 +80,7 @@ export interface IStorage {
   getLeaderboardForTour(tourId: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]>;
   getUserScoreForTour(userId: number, tourId: number): Promise<{totalScore: number, showsParticipated: number}>;
   scoreAllPredictionsForShow(showId: string): Promise<{processed: number, updated: number, errors: number}>;
+  getGlobalLeaderboard(limit?: number): Promise<{userId: number, userName: string, totalScore: number, showsParticipated: number}[]>;
 }
 
 // Export the database implementation of the storage interface
