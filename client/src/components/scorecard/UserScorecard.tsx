@@ -23,11 +23,10 @@ interface Tour {
 }
 
 interface TourScore {
-  tourName: string;
-  score: {
-    totalScore: number;
-    showsParticipated: number;
-  }
+  userId: number;
+  tourId: number;
+  totalScore: number;
+  showsParticipated: number;
 }
 
 export default function UserScorecard({ className }: { className?: string }) {
@@ -55,12 +54,13 @@ export default function UserScorecard({ className }: { className?: string }) {
   
   // Fetch tour leaderboard
   const { data: leaderboardData, isLoading: isLoadingLeaderboard } = useQuery<{ 
-    tourName: string, 
     leaderboard: Array<{
       userId: number;
       userName: string;
       totalScore: number;
       showsParticipated: number;
+      bestScore: number;
+      avatar: string | null;
     }> 
   }>({
     queryKey: [`/api/tours/${selectedTourId}/leaderboard`],
@@ -160,13 +160,13 @@ export default function UserScorecard({ className }: { className?: string }) {
                 ) : userScore ? (
                   <div>
                     <p className="text-2xl font-bold text-white">
-                      {userScore.score.totalScore}
+                      {userScore.totalScore}
                       <span className="text-xs text-gray-400 ml-2">
                         points
                       </span>
                     </p>
                     <p className="text-sm text-gray-400 mt-1">
-                      From {userScore.score.showsParticipated} show{userScore.score.showsParticipated !== 1 ? 's' : ''}
+                      From {userScore.showsParticipated} show{userScore.showsParticipated !== 1 ? 's' : ''}
                     </p>
                   </div>
                 ) : (
@@ -219,13 +219,13 @@ export default function UserScorecard({ className }: { className?: string }) {
               </div>
               
               {/* Average Score Card */}
-              {userScore && userScore.score.showsParticipated > 0 && (
+              {userScore && userScore.showsParticipated > 0 && (
                 <div className="bg-[#252525] p-4 rounded-lg sm:col-span-2">
                   <h3 className="text-primary font-medium text-sm mb-2 flex items-center">
                     <Clock className="mr-2 h-4 w-4" /> Average Score
                   </h3>
                   <div className="text-2xl font-bold text-white">
-                    {Math.round(userScore.score.totalScore / userScore.score.showsParticipated)}
+                    {Math.round(userScore.totalScore / userScore.showsParticipated)}
                     <span className="text-xs text-gray-400 ml-2">
                       points per show
                     </span>
