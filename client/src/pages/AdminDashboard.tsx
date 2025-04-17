@@ -20,7 +20,18 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertTriangle, CheckCircle2, Settings, BarChart3, RefreshCw } from "lucide-react";
+import { 
+  AlertTriangle, 
+  CheckCircle2, 
+  Settings, 
+  BarChart3, 
+  RefreshCw, 
+  Download, 
+  FileIcon, 
+  Image, 
+  File, 
+  Folder
+} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -48,12 +59,21 @@ interface User {
   updated_at: string;
 }
 
+interface UploadedFile {
+  path: string;
+  name: string;
+  size: number;
+  type: string;
+  created: string;
+}
+
 export default function AdminDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
   const { config, isLoading: isLoadingConfig, updateConfig } = useConfig();
   const [adminChecked, setAdminChecked] = useState(false);
   const [isResettingScores, setIsResettingScores] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Query to check admin access
   const adminCheckQuery = useQuery({
@@ -76,6 +96,12 @@ export default function AdminDashboard() {
   // Query to fetch all users
   const { data: userData, isLoading: isLoadingUsers } = useQuery<{ users: User[] }>({
     queryKey: ["/api/admin/users"],
+    enabled: adminChecked
+  });
+  
+  // Query to fetch all uploaded files
+  const { data: filesData, isLoading: isLoadingFiles } = useQuery<{ message: string, files: UploadedFile[] }>({
+    queryKey: ["/api/admin/uploads"],
     enabled: adminChecked
   });
 
@@ -101,6 +127,44 @@ export default function AdminDashboard() {
         description: "Failed to update application settings."
       });
     }
+  };
+  
+  // Handle file download
+  const handleDownloadFiles = async () => {
+    try {
+      setIsDownloading(true);
+      
+      // Create a link to download the files
+      const downloadLink = document.createElement('a');
+      downloadLink.href = '/api/admin/uploads/download';
+      downloadLink.download = 'uploads_backup.zip';
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      
+      toast({
+        title: "Download Started",
+        description: "Your file download has started. Please wait while the ZIP file is prepared.",
+        duration: 5000
+      });
+    } catch (error) {
+      console.error('Error downloading files:', error);
+      toast({
+        variant: "destructive",
+        title: "Download Failed",
+        description: "Failed to download files. Please try again.",
+        duration: 3000
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+  
+  // Format file size in a readable way
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + ' bytes';
+    else if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    else return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
   
   // Handle prediction score reset
@@ -268,6 +332,99 @@ export default function AdminDashboard() {
                   onCheckedChange={(enabled) => updateConfig({ siteOverlayEnabled: enabled })}
                 />
               </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>
+            <Folder className="mr-2 h-5 w-5 inline" />
+            <span className="font-display">file manager</span>
+          </CardTitle>
+          <CardDescription>
+            view and download all uploaded files
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4 flex justify-between items-center">
+            <div>
+              {!isLoadingFiles && filesData?.files && (
+                <p className="text-sm text-muted-foreground">
+                  {filesData.files.length} files found in uploads directory
+                </p>
+              )}
+            </div>
+            <Button
+              onClick={handleDownloadFiles}
+              className="bg-green-600 hover:bg-green-700 flex items-center gap-2"
+              disabled={isDownloading || isLoadingFiles || !filesData?.files?.length}
+            >
+              {isDownloading ? (
+                <>
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  downloading...
+                </>
+              ) : (
+                <>
+                  <Download className="h-4 w-4" />
+                  download all files
+                </>
+              )}
+            </Button>
+          </div>
+          
+          {isLoadingFiles ? (
+            <div className="flex justify-center py-4">
+              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+            </div>
+          ) : filesData?.files && filesData.files.length > 0 ? (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>File</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Size</TableHead>
+                    <TableHead>Created</TableHead>
+                    <TableHead>Path</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filesData.files.map((file, index) => (
+                    <TableRow key={index}>
+                      <TableCell className="font-medium">{file.name}</TableCell>
+                      <TableCell>
+                        {file.type === "image" ? (
+                          <Badge variant="outline" className="text-blue-600 border-blue-600 flex items-center gap-1 w-fit">
+                            <Image className="h-3 w-3" /> Image
+                          </Badge>
+                        ) : file.type === "document" ? (
+                          <Badge variant="outline" className="text-emerald-600 border-emerald-600 flex items-center gap-1 w-fit">
+                            <File className="h-3 w-3" /> Document
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-gray-600 border-gray-600 flex items-center gap-1 w-fit">
+                            <FileIcon className="h-3 w-3" /> Other
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>{formatFileSize(file.size)}</TableCell>
+                      <TableCell>{formatDate(file.created)}</TableCell>
+                      <TableCell className="text-muted-foreground text-xs">
+                        <code className="bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">
+                          {file.path}
+                        </code>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-muted-foreground">no uploaded files found</p>
             </div>
           )}
         </CardContent>

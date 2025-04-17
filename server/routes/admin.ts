@@ -16,6 +16,7 @@ import { isAuthenticated, isAdmin } from "../auth/middleware";
 import { fetchPhishData, slugifySongName } from "../utils/api-utils";
 import { insertSongSchema, insertShowSchema, insertTourSchema } from "@shared/schema";
 import { scorePrediction, processRawSetlist } from "../utils/scoring-utils";
+import { SetlistItem } from "@shared/types";
 import { z } from "zod";
 import fs from "fs";
 import path from "path";
@@ -231,7 +232,9 @@ router.post("/admin/shows/:showId/test-score", isAuthenticated, isAdmin, async (
     
     // Score each prediction
     const scoredPredictions = predictions.map(prediction => {
-      const score = scorePrediction(prediction.setlist, actualSetlist);
+      // Ensure the actualSetlist is properly typed for scorePrediction function
+      const typedSetlist = actualSetlist as { set1: SetlistItem[]; set2: SetlistItem[]; encore: SetlistItem[] };
+      const score = scorePrediction(prediction.setlist, typedSetlist);
       return {
         prediction_id: prediction.id,
         user_id: prediction.user_id,
