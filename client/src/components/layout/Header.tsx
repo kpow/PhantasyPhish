@@ -62,7 +62,7 @@ export default function Header() {
           className="flex items-center cursor-pointer"
           onClick={() => navigateTo("/")}
         >
-          <MetallicFishIcon className="w-[4.8rem] h-[4.8rem] sm:w-[6rem] sm:h-[6rem] md:w-[7.2rem] md:h-[7.2rem] mr-1 text-primary-foreground" />
+          <MetallicFishIcon className="w-[5rem] h-[5rem] sm:w-[6.2rem] sm:h-[6.2rem] md:w-[7.4rem] md:h-[7.4rem] mr-1 text-primary-foreground" />
 
           {/* Mobile version */}
           <div className="sm:hidden flex flex-col items-start justify-center">
