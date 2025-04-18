@@ -60,17 +60,17 @@ export default function ScoringExplanation() {
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           <span
-            className={`text-white font-semibold w-7 h-7 flex items-center justify-center rounded-full ${item.bgColor} mr-3`}
+            className={`text-white font-semibold w-6 h-6 flex items-center justify-center rounded-full ${item.bgColor} mr-3`}
           >
             {item.icon}
           </span>
           <span className="text-white font-display">{item.title}</span>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="text-md font-bold text-gray-400 mr-2">
+        <div className={`flex flex-col items-center w-[38px] h-[38px] bg-[#1E1E1E] rounded-full`}>
+          <span className="text-md font-bold text-white">
             {item.points}
           </span>
-          <span className="text-xs text-gray-500 mr-2 -mt-1">pts</span>
+          <span className="text-xs -mt-2 text-white">pts</span>
         </div>
       </div>
       <div className="mt-0 pl-10">

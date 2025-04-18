@@ -54,7 +54,8 @@ export default function Header() {
   };
 
   return (
-    <header className="m-2 mb-0 px-3">
+    <header className="m-2 mb-0 px-3 overflow-hidden">
+    
       <nav className="container mx-auto flex justify-between items-center mb-1 md:mb-4">
         {/* Logo and title section */}
         <div
@@ -184,7 +185,7 @@ export default function Header() {
             </div>
           )}
         </div>
-      </nav>
+      </nav>     
     </header>
   );
 }
